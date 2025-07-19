@@ -1,0 +1,357 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>ایجاد و ویرایش کاربر</h3>
+            </div>
+
+            {% include "partials/navbar_search.html" %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>اطلاعات کاربر</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="user-form" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">نام
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="first-name" required="required"
+                                        class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">نام
+                                    خانوادگی <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="last-name" name="last-name" required="required"
+                                        class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nsid" class="control-label col-md-3 col-sm-3 col-xs-12">شماره ملی <span
+                                        class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="nsid" class="form-control col-md-7 col-xs-12" type="text"
+                                        required="required">
+                                    <span class="fa fa-id-card form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="birthdate">تاریخ تولد
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="birthdate" class="date-picker form-control col-md-7 col-xs-12"
+                                        required="required" type="text">
+                                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">ایمیل <span
+                                        class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="email" class="form-control col-md-7 col-xs-12" required="required"
+                                        type="text">
+                                    <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            {% if edit == False %}
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password">رمز عبور <span
+                                        class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="password" class="form-control col-md-7 col-xs-12" required="required"
+                                        type="text">
+                                    <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password-confirm">تایید
+                                    رمز عبور <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="password-confirm" class="form-control col-md-7 col-xs-12"
+                                        required="required" type="text">
+                                    <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="ln_solid"></div>
+                            {% endif %}
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-success">
+                                        {% if edit == True %}
+                                        ویرایش
+                                        {% else %}
+                                        ایجاد کاربر جدید
+                                        {% endif %}
+                                    </button>
+                                    {% if edit == True %}
+                                    <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف
+                                        کاربر</button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+
+            {% if edit == True %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>گروه بندی ها و سطوح دسترسی</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>
+                                            <div class="icheckbox_flat-green" style="position: relative;"><input
+                                                    type="checkbox" id="check-all" class="flat"
+                                                    style="position: absolute; opacity: 0;"><ins class="iCheck-helper"
+                                                    style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                            </div>
+                                        </th>
+                                        <th class="column-title">نام گروه</th>
+                                        <th class="column-title">توضیحات</th>
+                                        <th class="column-title no-link last">عملیات</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="users-tbody">
+                                </tbody>
+                                <script>
+                                    
+                                    function addRole(roleId) {
+                                        $.ajax({
+                                            url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                            method: 'POST',
+                                            contentType: 'application/json',
+                                            success: function (data) {
+                                                alert('Role added successfully');
+                                                loadRoles()
+                                            },
+                                            error: function (xhr, status, error) {
+                                                alert('Failed to add role: ' + error);
+                                            }
+                                        });
+                                    }
+
+                                    function removeRole(roleId) {
+                                        $.ajax({
+                                            url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                            method: 'DELETE',
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function (data) {
+                                                alert('Role removed successfully');
+                                                loadRoles()
+                                            },
+                                            error: function (xhr, status, error) {
+                                                alert('Failed to remove role: ' + error);
+                                            }
+                                        });
+                                    }
+
+                                    function loadRoles() {
+                                        $.ajax({
+                                            url: '/api/salesman/users/{{ user_id }}/roles/',
+                                            method: 'GET',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                var tbody = $('#users-tbody');
+                                                tbody.empty();
+                                                data.forEach(function (role) {
+                                                    var row = '<tr data-role-id="' + role.role_id + '">' +
+                                                        '<td class="a-center">' +
+                                                        '<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>' +
+                                                        '</td>' +
+                                                        '<td>' + role.title + '</td>' +
+                                                        '<td>' + role.description + '</td>' +
+                                                        '<td>' +
+                                                        (role.user_has_role
+                                                            ? '<button class="btn btn-danger btn-xs" onclick="removeRole(\'' + role.role_id + '\')">برداشتن دسترسی</button>'
+                                                            : '<button class="btn btn-primary btn-xs" onclick="addRole(\'' + role.role_id + '\')">اعطای دسترسی</button>'
+                                                        ) +
+                                                        '</td>' +
+                                                        '</tr>';
+                                                    tbody.append(row);
+                                                });
+                                            },
+                                            error: function (xhr, status, error) {
+                                                alert('Failed to load users: ' + error);
+                                            }
+                                        });
+                                    }
+                                    $(document).ready(function () {
+                                        $.ajaxSetup({
+                                            beforeSend: function (xhr, settings) {
+                                                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                                                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                                                }
+                                            }
+                                        });
+                                        loadRoles()
+                                    });
+                                </script>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function getUserFormData() {
+        return {
+            first_name: $('#first-name').val(),
+            last_name: $('#last-name').val(),
+            nsid: $('#nsid').val(),
+            birthdate: $('#birthdate').val(),
+            email: $('#email').val(),
+            password: $('#password').val()
+        };
+    }
+
+    function setUserFormData(data) {
+        $('#first-name').val(data.first_name || '');
+        $('#last-name').val(data.last_name || '');
+        $('#nsid').val(data.nsid || '');
+        $('#birthdate').val(data.birthdate || '');
+        $('#email').val(data.email || '');
+    }
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+
+        var isEdit = "{{ edit }}" == "True";
+        var userId = "{{ user_id|default:'' }}";
+
+        if (isEdit && userId) {
+            $.ajax({
+                url: '/api/salesman/users/' + userId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    setUserFormData(response);
+                },
+                error: function (xhr) {
+                    alert('خطا در بارگذاری اطلاعات کاربر: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                }
+            });
+        }
+
+        $('#user-form').on('submit', function (e) {
+            e.preventDefault();
+
+            if ($('#password').val() !== $('#password-confirm').val()) {
+                alert('رمز عبور و تایید آن یکسان نیستند.');
+                return;
+            }
+
+            var data = getUserFormData();
+
+            if (isEdit && userId) {
+                $.ajax({
+                    url: '/api/salesman/users/' + userId,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('کاربر با موفقیت ویرایش شد.');
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ویرایش کاربر: ' + xhr.responseJSON.error);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/salesman/users/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('کاربر جدید با موفقیت ایجاد شد.');
+                        window.location.href = '/users/edit/' + response.id + '/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ایجاد کاربر: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+
+        window.deleteUser = function () {
+            if (!isEdit || !userId) {
+                alert('کاربری برای حذف انتخاب نشده است.');
+                return;
+            }
+            if (confirm('آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟')) {
+                $.ajax({
+                    url: '/api/salesman/users/' + userId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert('کاربر با موفقیت حذف شد.');
+                        window.location.href = '/users/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در حذف کاربر: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        };
+
+        window.cancel = function () {
+            window.location.href = '/users/';
+        };
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+VENV/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+local_settings.py
+
+# ---- Go ----
+# Binaries for programs and tests
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.cov
+
+# Dependency directories (vendor/)
+vendor/
+
+# Go workspace file
+*.code-workspace
+
+# ---- General ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+tmp/
+
+# ---- Docker ----
+*.pid
+
+# ---- Others ----
+node_modules/
+.npm/

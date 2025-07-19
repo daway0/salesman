@@ -1,0 +1,79 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>لیست خدمات</h3>
+            </div>
+            {% include "partials/navbar_search.html" %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>خدمات سیستم</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="datatable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>شناسه شرکت</th>
+                                    <th>عنوان خدمت</th>
+                                    <th>توضیحات</th>
+                                    <th>قیمت</th>
+                                    <th>آدرس تصویر</th>
+                                    <th>تاریخ ثبت</th>
+                                    <th>تاریخ ویرایش</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="services-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/salesman/services/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (services) {
+                var tbody = $('#services-tbody');
+                tbody.empty();
+                services.forEach(function (service) {
+                    var row = '<tr>' +
+                        '<td>' + (service.company_id || '') + '</td>' +
+                        '<td>' + (service.title || '') + '</td>' +
+                        '<td>' + (service.description && service.description.String ? service.description.String : '') + '</td>' +
+                        '<td>' + (service.price || '') + '</td>' +
+                        '<td>' + (service.image_url && service.image_url.String ? service.image_url.String : '') + '</td>' +
+                        '<td>' + (service.created_at ? service.created_at.split("T")[0] : '') + '</td>' +
+                        '<td>' + (service.updated_at && service.updated_at.Valid ? service.updated_at.Time.split("T")[0] : '') + '</td>' +
+                        '<td>' +
+                        '<a href="/services/edit/' + service.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                        '</td>' +
+                        '</tr>';
+                    tbody.append(row);
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('خطا در بارگذاری خدمات: ' + error);
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>ایجاد و ویرایش خدمت</h3>
+            </div>
+            {% include "partials/navbar_search.html" %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>اطلاعات خدمت</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="service-form" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب شرکت</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="company-id" required>
+                                        <option value="">در حال بارگذاری...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">عنوان خدمت <span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="title" required="required" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-tag form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea id="description" class="form-control col-md-7 col-xs-12"></textarea>
+                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت <span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="number" id="price" required="required" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="image-url">آدرس تصویر</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="image-url" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-image form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-success">
+                                        {% if edit == True %}
+                                        ویرایش
+                                        {% else %}
+                                        ایجاد خدمت جدید
+                                        {% endif %}
+                                    </button>
+                                    {% if edit == True %}
+                                    <button type="button" class="btn btn-danger pull-left" onclick="deleteService()">حذف خدمت</button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function getServiceFormData() {
+        return {
+            company_id: $('#company-id').val(),
+            title: $('#title').val(),
+            description: {'String': $('#description').val(), 'Valid': $('#description').val() !== ''},
+            price: parseFloat($('#price').val()),
+            image_url: {'String': $('#image-url').val(), 'Valid': $('#image-url').val() !== ''}
+        };
+    }
+    function setServiceFormData(data) {
+        $('#company-id').val(data.company_id || '');
+        $('#title').val(data.title || '');
+        $('#description').val(data.description && data.description.String ? data.description.String : '');
+        $('#price').val(data.price || '');
+        $('#image-url').val(data.image_url && data.image_url.String ? data.image_url.String : '');
+    }
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+
+        var isEdit = "{{ edit }}" == "True";
+        var serviceId = "{{ service_id|default:'' }}";
+        var serviceData = null;
+        var companiesLoaded = false;
+
+        $.ajax({
+            url: '/api/salesman/companies/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (companies) {
+                var $select = $('#company-id');
+                $select.empty();
+                $select.append('<option value="">انتخاب شرکت</option>');
+                companies.forEach(function (company) {
+                    $select.append(
+                        $('<option>', {
+                            value: company.id,
+                            text: company.title
+                        })
+                    );
+                });
+                companiesLoaded = true;
+                if (isEdit && serviceData) {
+                    setServiceFormData(serviceData);
+                }
+            },
+            error: function () {
+                $('#company-id').html('<option value="">خطا در بارگذاری شرکت‌ها</option>');
+                companiesLoaded = true;
+            }
+        });
+
+        if (isEdit && serviceId) {
+            $.ajax({
+                url: '/api/salesman/services/' + serviceId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    serviceData = response;
+                    if (companiesLoaded) {
+                        setServiceFormData(serviceData);
+                    }
+                },
+                error: function (xhr) {
+                    alert('خطا در بارگذاری اطلاعات خدمت: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                }
+            });
+        }
+        $('#service-form').on('submit', function (e) {
+            e.preventDefault();
+            var data = getServiceFormData();
+            if (isEdit && serviceId) {
+                $.ajax({
+                    url: '/api/salesman/services/' + serviceId,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('خدمت با موفقیت ویرایش شد.');
+                        window.location.href = '/services/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ویرایش خدمت: ' + xhr.responseJSON.error);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/salesman/services/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('خدمت جدید با موفقیت ایجاد شد.');
+                        window.location.href = '/services/edit/' + response.id + '/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ایجاد خدمت: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+        window.deleteService = function () {
+            if (!isEdit || !serviceId) {
+                alert('خدمتی برای حذف انتخاب نشده است.');
+                return;
+            }
+            if (confirm('آیا مطمئن هستید که می‌خواهید این خدمت را حذف کنید؟')) {
+                $.ajax({
+                    url: '/api/salesman/services/' + serviceId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert('خدمت با موفقیت حذف شد.');
+                        window.location.href = '/services/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در حذف خدمت: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        };
+        window.cancel = function () {
+            window.location.href = '/services/';
+        };
+    });
+</script>
+{% endblock %}

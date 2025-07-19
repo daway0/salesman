@@ -1,0 +1,185 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>ایجاد و ویرایش شرکت</h3>
+            </div>
+
+            {% include "partials/navbar_search.html" %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>اطلاعات شرکت</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="company-form" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">نام شرکت <span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="title" required="required" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-building form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="brand-name">برند</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="brand-name" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-tag form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="cid">کد شرکت</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="cid" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-id-card form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea id="description" class="form-control col-md-7 col-xs-12"></textarea>
+                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="image-url">آدرس تصویر</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="image-url" class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-image form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-success">
+                                        {% if edit == True %}
+                                        ویرایش
+                                        {% else %}
+                                        ایجاد شرکت جدید
+                                        {% endif %}
+                                    </button>
+                                    {% if edit == True %}
+                                    <button type="button" class="btn btn-danger pull-left" onclick="deleteCompany()">حذف شرکت</button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function getCompanyFormData() {
+        return {
+            title: $('#title').val(),
+            brand_name: {'String': $('#brand-name').val(), 'Valid': $('#brand-name').val() !== ''},
+            cid: {'String': $('#cid').val(), 'Valid': $('#cid').val() !== ''},
+            description: {'String': $('#description').val(), 'Valid': $('#description').val() !== ''},
+            image_url: {'String': $('#image-url').val(), 'Valid': $('#image-url').val() !== ''}
+        };
+    }
+    function setCompanyFormData(data) {
+        $('#title').val(data.title || '');
+        
+        $('#brand-name').val((data.brand_name && data.brand_name.Valid) ? data.brand_name.String : '');
+        $('#cid').val((data.cid && data.cid.Valid) ? data.cid.String : '');
+        $('#description').val((data.description && data.description.Valid) ? data.description.String : '');
+        $('#image-url').val((data.image_url && data.image_url.Valid) ? data.image_url.String : '');
+    }
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+        var isEdit = "{{ edit }}" == "True";
+        var companyId = "{{ company_id|default:'' }}";
+        if (isEdit && companyId) {
+            $.ajax({
+                url: '/api/salesman/companies/' + companyId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    setCompanyFormData(response);
+                },
+                error: function (xhr) {
+                    alert('خطا در بارگذاری اطلاعات شرکت: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                }
+            });
+        }
+        $('#company-form').on('submit', function (e) {
+            e.preventDefault();
+            var data = getCompanyFormData();
+            if (isEdit && companyId) {
+                $.ajax({
+                    url: '/api/salesman/companies/' + companyId,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('شرکت با موفقیت ویرایش شد.');
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ویرایش شرکت: ' + xhr.responseJSON.error);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/salesman/companies/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert('شرکت جدید با موفقیت ایجاد شد.');
+                        window.location.href = '/companies/edit/' + response.id + '/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در ایجاد شرکت: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+        window.deleteCompany = function () {
+            if (!isEdit || !companyId) {
+                alert('شرکتی برای حذف انتخاب نشده است.');
+                return;
+            }
+            if (confirm('آیا مطمئن هستید که می‌خواهید این شرکت را حذف کنید؟')) {
+                $.ajax({
+                    url: '/api/salesman/companies/' + companyId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert('شرکت با موفقیت حذف شد.');
+                        window.location.href = '/companies/';
+                    },
+                    error: function (xhr) {
+                        alert('خطا در حذف شرکت: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        };
+        window.cancel = function () {
+            window.location.href = '/companies/';
+        };
+    });
+</script>
+{% endblock %}
