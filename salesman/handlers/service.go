@@ -1,0 +1,132 @@
+package handlers
+
+import (
+	"database/sql"
+	"net/http"
+	"salesman/models"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
+
+type ServiceHandler struct {
+	DB *sql.DB
+}
+
+func (h *ServiceHandler) CreateService(c *gin.Context) {
+	var service models.Service
+	if err := c.ShouldBindJSON(&service); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	service.ID = uuid.New()
+	service.CreatedAt = time.Now()
+
+	query := `INSERT INTO Services (id, company_id, title, description, price, image_url, created_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	err := h.DB.QueryRow(query, service.ID, service.CompanyID, service.Title,
+		service.Description, service.Price, service.ImageURL, service.CreatedAt).Scan(&service.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, service)
+}
+
+func (h *ServiceHandler) GetService(c *gin.Context) {
+	id := c.Param("id")
+	var service models.Service
+	query := `SELECT id, company_id, title, description, price, image_url, created_at, updated_at, deleted_at
+              FROM Services WHERE id = $1 AND deleted_at IS NULL`
+	err := h.DB.QueryRow(query, id).Scan(&service.ID, &service.CompanyID, &service.Title,
+		&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt)
+	if err == sql.ErrNoRows {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Service not found"})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, service)
+}
+
+func (h *ServiceHandler) GetServices(c *gin.Context) {
+	rows, err := h.DB.Query(`SELECT id, company_id, title, description, price, image_url, created_at, updated_at, deleted_at 
+                             FROM Services WHERE deleted_at IS NULL`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var services []models.Service
+	for rows.Next() {
+		var service models.Service
+		err := rows.Scan(&service.ID, &service.CompanyID, &service.Title,
+			&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		services = append(services, service)
+	}
+	if err := rows.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, services)
+}
+
+func (h *ServiceHandler) UpdateService(c *gin.Context) {
+	idStr := c.Param("id")
+
+	serviceID, err := uuid.Parse(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid service ID format"})
+		return
+	}
+
+	var service models.Service
+	if err := c.ShouldBindJSON(&service); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	service.ID = serviceID
+	service.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
+
+	query := `UPDATE Services SET company_id = $1, title = $2, description = $3, price = $4, image_url = $5, updated_at = $6
+              WHERE id = $7 AND deleted_at IS NULL`
+	result, err := h.DB.Exec(query, service.CompanyID, service.Title,
+		service.Description, service.Price, service.ImageURL, service.UpdatedAt, service.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if rows, _ := result.RowsAffected(); rows == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Service not found or already deleted"})
+		return
+	}
+
+	c.JSON(http.StatusOK, service)
+}
+
+func (h *ServiceHandler) DeleteService(c *gin.Context) {
+	id := c.Param("id")
+	deletedAt := time.Now()
+	query := `UPDATE Services SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL`
+	result, err := h.DB.Exec(query, deletedAt, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if rows, _ := result.RowsAffected(); rows == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Service not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Service deleted"})
+}
