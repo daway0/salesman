@@ -7,7 +7,9 @@
             <div class="title_left">
                 <h3>لیست شرکت‌ها</h3>
             </div>
-            {% include "partials/navbar_search.html" %}
+            <div class="title_right">
+                <a href="/companies/create/" class="btn btn-primary pull-left">ایجاد شرکت جدید</a>
+            </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -57,12 +59,12 @@
                 companies.forEach(function (company) {
                     var row = '<tr>' +
                         '<td>' + (company.title || '') + '</td>' +
-                        '<td>' + (company.brand_name && company.brand_name.String ? company.brand_name.String : '') + '</td>' +
-                        '<td>' + (company.cid && company.cid.String ? company.cid.String : '') + '</td>' +
-                        '<td>' + (company.description && company.description.String ? company.description.String : '') + '</td>' +
-                        '<td>' + (company.image_url && company.image_url.String ? company.image_url.String : '') + '</td>' +
+                        '<td>' + (company.brand_name || '') + '</td>' +
+                        '<td>' + (company.cid || '') + '</td>' +
+                        '<td>' + (company.description || '') + '</td>' +
+                        '<td>' + (company.image_url || '') + '</td>' +
                         '<td>' + (company.created_at ? company.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (company.updated_at && company.updated_at.Valid ? company.updated_at.Time.split("T")[0] : '') + '</td>' +
+                        '<td>' + (company.updated_at ? company.updated_at.split("T")[0] : '') + '</td>' +
                         '<td>' +
                         '<a href="/companies/edit/' + company.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
                         '</td>' +
@@ -71,7 +73,12 @@
                 });
             },
             error: function (xhr, status, error) {
-                alert('خطا در بارگذاری شرکت‌ها: ' + error);
+                new PNotify({
+                    title: 'خطا در بارگذاری شرکت‌ها',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
     });

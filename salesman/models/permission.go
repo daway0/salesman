@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -22,6 +21,6 @@ type Permission struct {
 	ContentType uuid.UUID    `json:"content_type" db:"content_type"`
 	ActionType  LogAction    `json:"action_type" db:"action_type"`
 	CreatedAt   time.Time    `json:"created_at" db:"created_at"`
-	UpdatedAt   sql.NullTime `json:"updated_at" db:"updated_at"`
-	DeletedAt   sql.NullTime `json:"deleted_at" db:"deleted_at"`
+	UpdatedAt   *time.Time `json:"updated_at" db:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at" db:"deleted_at"`
 }

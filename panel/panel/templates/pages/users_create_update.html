@@ -8,7 +8,6 @@
                 <h3>ایجاد و ویرایش کاربر</h3>
             </div>
 
-            {% include "partials/navbar_search.html" %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -84,7 +83,7 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input id="password" class="form-control col-md-7 col-xs-12" required="required"
-                                        type="text">
+                                        type="password">
                                     <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -94,7 +93,7 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input id="password-confirm" class="form-control col-md-7 col-xs-12"
-                                        required="required" type="text">
+                                        required="required" type="password">
                                     <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -103,17 +102,15 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                     <button type="submit" class="btn btn-success">
-                                        {% if edit == True %}
-                                        ویرایش
-                                        {% else %}
-                                        ایجاد کاربر جدید
-                                        {% endif %}
+                                        ذخیره اطلاعات
                                     </button>
                                     {% if edit == True %}
                                     <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف
                                         کاربر</button>
+                                    <a class="btn btn-primary pull-left" href="/users/create/">ایجاد کاربر جدید</a>
                                     {% endif %}
                                     <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                    
                                 </div>
                             </div>
 
@@ -166,11 +163,21 @@
                                             method: 'POST',
                                             contentType: 'application/json',
                                             success: function (data) {
-                                                alert('Role added successfully');
+                                                new PNotify({
+                                                    title: 'دسترسی با موفقیت اعطا شد.',
+                                                    text: 'دسترسی با موفقیت اعطا شد.',
+                                                    type: 'success',
+                                                    styling: 'bootstrap3'
+                                                });
                                                 loadRoles()
                                             },
                                             error: function (xhr, status, error) {
-                                                alert('Failed to add role: ' + error);
+                                                new PNotify({
+                                                    title: 'خطا در اعطای دسترسی',
+                                                    text: xhr.responseText,
+                                                    type: 'error',
+                                                    styling: 'bootstrap3'
+                                                });
                                             }
                                         });
                                     }
@@ -182,11 +189,21 @@
                                             dataType: 'json',
                                             contentType: 'application/json',
                                             success: function (data) {
-                                                alert('Role removed successfully');
+                                                new PNotify({
+                                                    title: 'دسترسی با موفقیت برداشته شد.',
+                                                    text: 'دسترسی با موفقیت برداشته شد.',
+                                                    type: 'success',
+                                                    styling: 'bootstrap3'
+                                                });
                                                 loadRoles()
                                             },
                                             error: function (xhr, status, error) {
-                                                alert('Failed to remove role: ' + error);
+                                                new PNotify({
+                                                    title: 'خطا در برداشتن دسترسی',
+                                                    text: xhr.responseText,
+                                                    type: 'error',
+                                                    styling: 'bootstrap3'
+                                                });
                                             }
                                         });
                                     }
@@ -217,7 +234,12 @@
                                                 });
                                             },
                                             error: function (xhr, status, error) {
-                                                alert('Failed to load users: ' + error);
+                                                new PNotify({
+                                                    title: 'خطا در بارگذاری دسترسی ها',
+                                                    text: xhr.responseText,
+                                                    type: 'error',
+                                                    styling: 'bootstrap3'
+                                                });
                                             }
                                         });
                                     }
@@ -283,7 +305,12 @@
                     setUserFormData(response);
                 },
                 error: function (xhr) {
-                    alert('خطا در بارگذاری اطلاعات کاربر: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات کاربر',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
                 }
             });
         }
@@ -292,7 +319,12 @@
             e.preventDefault();
 
             if ($('#password').val() !== $('#password-confirm').val()) {
-                alert('رمز عبور و تایید آن یکسان نیستند.');
+                new PNotify({
+                    title: 'رمز عبور و تایید آن یکسان نیستند.',
+                    text: 'رمز عبور و تایید آن یکسان نیستند.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
                 return;
             }
 
@@ -305,10 +337,20 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('کاربر با موفقیت ویرایش شد.');
+                        new PNotify({
+                            title: 'کاربر با موفقیت ویرایش شد.',
+                            text: 'کاربر با موفقیت ویرایش شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                     },
                     error: function (xhr) {
-                        alert('خطا در ویرایش کاربر: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ویرایش کاربر',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             } else {
@@ -318,11 +360,21 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('کاربر جدید با موفقیت ایجاد شد.');
+                        new PNotify({
+                            title: 'کاربر جدید با موفقیت ایجاد شد.',
+                            text: 'کاربر جدید با موفقیت ایجاد شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/users/edit/' + response.id + '/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ایجاد کاربر: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ایجاد کاربر',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }
@@ -330,7 +382,12 @@
 
         window.deleteUser = function () {
             if (!isEdit || !userId) {
-                alert('کاربری برای حذف انتخاب نشده است.');
+                new PNotify({
+                    title: 'کاربری برای حذف انتخاب نشده است.',
+                    text: 'کاربری برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
                 return;
             }
             if (confirm('آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟')) {
@@ -338,11 +395,21 @@
                     url: '/api/salesman/users/' + userId,
                     type: 'DELETE',
                     success: function (response) {
-                        alert('کاربر با موفقیت حذف شد.');
+                        new PNotify({
+                            title: 'کاربر با موفقیت حذف شد.',
+                            text: 'کاربر با موفقیت حذف شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/users/';
                     },
                     error: function (xhr) {
-                        alert('خطا در حذف کاربر: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در حذف کاربر',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }

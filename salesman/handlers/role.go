@@ -80,9 +80,9 @@ func (h *RoleHandler) GetRoles(c *gin.Context) {
 }
 
 func (h *RoleHandler) UpdateRole(c *gin.Context) {
-	idStr := c.Param("id")
+	id := c.Param("id")
 
-	roleID, err := uuid.Parse(idStr)
+	roleID, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role ID format"})
 		return
@@ -146,7 +146,7 @@ func (h *RoleHandler) GetUserRoles(c *gin.Context) {
 	for rows.Next() {
 		var roleID uuid.UUID
 		var title string
-		var description sql.NullString
+		var description *string
 
 		if err := rows.Scan(&roleID, &title, &description); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -155,7 +155,7 @@ func (h *RoleHandler) GetUserRoles(c *gin.Context) {
 
 		
 		var count int
-		err = h.DB.QueryRow(`SELECT COUNT(1) FROM UserRoles WHERE user_id = $1 AND role_id = $2`, userID, roleID).Scan(&count)
+		err = h.DB.QueryRow(`SELECT COUNT(1) FROM UserRoles WHERE user_id = $1 AND role_id = $2 AND deleted_at IS NULL`, userID, roleID).Scan(&count)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -164,7 +164,7 @@ func (h *RoleHandler) GetUserRoles(c *gin.Context) {
 		roles = append(roles, models.UserRoleInfo{
 			RoleID:      roleID,
 			Title:       title,
-			Description: description.String,
+			Description: *description,
 			UserHasRole: count > 0,
 		})
 	}

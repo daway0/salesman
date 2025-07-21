@@ -54,20 +54,27 @@ CREATE TABLE Services
 CREATE INDEX ON Services
     (company_id);
 
-
+CREATE TYPE Status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED');
 CREATE TABLE SalesLedger
 (
-    id             uuid PRIMARY KEY,
-    approved_by    uuid                     REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    service_id     uuid                     NOT NULL REFERENCES Services (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    price          numeric                  NOT NULL,
-    sales_price    numeric                  NOT NULL,
-    sales_discount numeric,
-    TRN            varchar,
-    approved_at    timestamp with time zone,
-    created_at     timestamp with time zone NOT NULL,
-    updated_at     timestamp with time zone,
-    deleted_at     timestamp with time zone
+    id               uuid PRIMARY KEY,
+    customer_id      uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    service_id       uuid                     NOT NULL REFERENCES Services (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_by       uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    referer_id       uuid REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    approved_by      uuid REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    cancelled_by     uuid REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    status           Status                   NOT NULL,
+    price            numeric                  NOT NULL,
+    sales_price      numeric                  NOT NULL,
+    sales_discount   numeric,
+    TRN              varchar,
+    workflow_history json,
+    approved_at      timestamp with time zone,
+    cancelled_at     timestamp with time zone,
+    created_at       timestamp with time zone NOT NULL,
+    updated_at       timestamp with time zone,
+    deleted_at       timestamp with time zone
 );
 
 ALTER TABLE SalesLedger
@@ -103,8 +110,8 @@ CREATE TABLE Permissions
 (
     id           uuid PRIMARY KEY,
     content_type uuid REFERENCES ContentType (id) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL,
-    action_type  LogAction                NOT NULL,
-    created_at   timestamp with time zone NOT NULL,
+    action_type  LogAction                                                             NOT NULL,
+    created_at   timestamp with time zone                                              NOT NULL,
     updated_at   timestamp with time zone,
     deleted_at   timestamp with time zone
 );
@@ -115,14 +122,11 @@ ALTER TABLE Permissions
 CREATE TABLE RolePermissions
 (
     id            uuid PRIMARY KEY,
-    role_id       uuid NOT NULL REFERENCES Roles (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    permission_id uuid NOT NULL REFERENCES Permissions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    created_at   timestamp with time zone NOT NULL,
-    deleted_at   timestamp with time zone
+    role_id       uuid                     NOT NULL REFERENCES Roles (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    permission_id uuid                     NOT NULL REFERENCES Permissions (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at    timestamp with time zone NOT NULL,
+    deleted_at    timestamp with time zone
 );
-
-ALTER TABLE RolePermissions
-    ADD UNIQUE (role_id, permission_id);
 
 CREATE INDEX ON RolePermissions
     (role_id);
@@ -133,15 +137,13 @@ CREATE INDEX ON RolePermissions
 
 CREATE TABLE UserRoles
 (
-    id      uuid PRIMARY KEY,
-    user_id uuid NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    role_id uuid NOT NULL REFERENCES Roles (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    created_at   timestamp with time zone NOT NULL,
-    deleted_at   timestamp with time zone
+    id         uuid PRIMARY KEY,
+    user_id    uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    role_id    uuid                     NOT NULL REFERENCES Roles (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at timestamp with time zone NOT NULL,
+    deleted_at timestamp with time zone
 );
 
-ALTER TABLE UserRoles
-    ADD UNIQUE (user_id, role_id);
 
 CREATE INDEX ON UserRoles
     (role_id);

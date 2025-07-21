@@ -8,8 +8,8 @@ import (
 	"salesman/db"
 	"salesman/handlers"
 
-	"html/template"
-	"path/filepath"
+	// "html/template"
+	// "path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,15 +45,15 @@ func main() {
 	// 	filepath.Join("templates", "user_form.html"),
 	// )
 
-	t, err := template.ParseFiles(
-		filepath.Join("templates", "base.html"),
-		filepath.Join("templates", "child1.html"),
-		filepath.Join("templates", "child2.html"),
-	)
-	if err != nil {
-		panic(err)
-	}
-	r.SetHTMLTemplate(t)
+	// t, err := template.ParseFiles(
+	// 	filepath.Join("templates", "base.html"),
+	// 	filepath.Join("templates", "child1.html"),
+	// 	filepath.Join("templates", "child2.html"),
+	// )
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// r.SetHTMLTemplate(t)
 
 	r.Use(func(c *gin.Context) {
 		c.Set("db", dbConn)
@@ -61,9 +61,9 @@ func main() {
 	})
 
 	handlers.SetupRoutes(r, dbConn)
-	r.GET("/xx", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "child1.html", gin.H{})
-	})
+	// r.GET("/xx", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "child1.html", gin.H{})
+	// })
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)

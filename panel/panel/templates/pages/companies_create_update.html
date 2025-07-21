@@ -8,7 +8,6 @@
                 <h3>ایجاد و ویرایش شرکت</h3>
             </div>
 
-            {% include "partials/navbar_search.html" %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -73,6 +72,7 @@
                                     </button>
                                     {% if edit == True %}
                                     <button type="button" class="btn btn-danger pull-left" onclick="deleteCompany()">حذف شرکت</button>
+                                    <a class="btn btn-primary pull-left" href="/companies/create/">ایجاد شرکت جدید</a>
                                     {% endif %}
                                     <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
                                 </div>
@@ -88,20 +88,19 @@
 <script>
     function getCompanyFormData() {
         return {
-            title: $('#title').val(),
-            brand_name: {'String': $('#brand-name').val(), 'Valid': $('#brand-name').val() !== ''},
-            cid: {'String': $('#cid').val(), 'Valid': $('#cid').val() !== ''},
-            description: {'String': $('#description').val(), 'Valid': $('#description').val() !== ''},
-            image_url: {'String': $('#image-url').val(), 'Valid': $('#image-url').val() !== ''}
+            title: $('#title').val() || null,
+            brand_name: $('#brand-name').val() || null,
+            cid: $('#cid').val() || null,
+            description: $('#description').val() || null,
+            image_url: $('#image-url').val() || null
         };
     }
     function setCompanyFormData(data) {
-        $('#title').val(data.title || '');
-        
-        $('#brand-name').val((data.brand_name && data.brand_name.Valid) ? data.brand_name.String : '');
-        $('#cid').val((data.cid && data.cid.Valid) ? data.cid.String : '');
-        $('#description').val((data.description && data.description.Valid) ? data.description.String : '');
-        $('#image-url').val((data.image_url && data.image_url.Valid) ? data.image_url.String : '');
+        $('#title').val(data.title || null);
+        $('#brand-name').val(data.brand_name || null);
+        $('#cid').val(data.cid || null);
+        $('#description').val(data.description || null);
+        $('#image-url').val(data.image_url || null);
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -122,7 +121,12 @@
                     setCompanyFormData(response);
                 },
                 error: function (xhr) {
-                    alert('خطا در بارگذاری اطلاعات شرکت: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات شرکت',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
                 }
             });
         }
@@ -136,10 +140,20 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('شرکت با موفقیت ویرایش شد.');
+                        new PNotify({
+                            title: 'شرکت با موفقیت ویرایش شد.',
+                            text: 'شرکت با موفقیت ویرایش شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                     },
                     error: function (xhr) {
-                        alert('خطا در ویرایش شرکت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ویرایش شرکت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             } else {
@@ -149,18 +163,33 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('شرکت جدید با موفقیت ایجاد شد.');
+                        new PNotify({
+                            title: 'شرکت جدید با موفقیت ایجاد شد.',
+                            text: 'شرکت جدید با موفقیت ایجاد شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/companies/edit/' + response.id + '/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ایجاد شرکت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ایجاد شرکت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }
         });
         window.deleteCompany = function () {
             if (!isEdit || !companyId) {
-                alert('شرکتی برای حذف انتخاب نشده است.');
+                new PNotify({
+                    title: 'شرکتی برای حذف انتخاب نشده است.',
+                    text: 'شرکتی برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
                 return;
             }
             if (confirm('آیا مطمئن هستید که می‌خواهید این شرکت را حذف کنید؟')) {
@@ -168,11 +197,21 @@
                     url: '/api/salesman/companies/' + companyId,
                     type: 'DELETE',
                     success: function (response) {
-                        alert('شرکت با موفقیت حذف شد.');
+                        new PNotify({
+                            title: 'شرکت با موفقیت حذف شد.',
+                            text: 'شرکت با موفقیت حذف شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/companies/';
                     },
                     error: function (xhr) {
-                        alert('خطا در حذف شرکت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در حذف شرکت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }

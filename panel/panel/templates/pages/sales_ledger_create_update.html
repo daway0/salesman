@@ -5,16 +5,15 @@
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>ایجاد و ویرایش سند فروش</h3>
+                <h3>فاکتور فروش</h3>
             </div>
-            {% include "partials/navbar_search.html" %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>اطلاعات سند فروش</h2>
+                        <h2>اطلاعات فاکتور فروش</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -24,72 +23,139 @@
                     <div class="x_content">
                         <br />
                         <form id="sales-ledger-form" data-parsley-validate class="form-horizontal form-label-left">
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب خدمت</label>
+                            <div id="sales-ledger-id-panel" class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id">شناسه فاکتور</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="service-id" required>
+                                    <input id="id" type="text" class="form-control" readonly="readonly">
+                                    <span class="fa fa-barcode form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب مشتری <span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="customer-id" required >
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">تاییدکننده</label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب خدمت <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="approved-by">
+                                    <select class="form-control" id="service-id" required >
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="created-by">ایجاد کننده فاکتور <span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="created-by" type="text" class="form-control" readonly="readonly"  value="{{ current_user }}">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="referer-id">معرف</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="referer-id" type="text" class="form-control" value="{{ current_user }}">
+                                    <span class="fa fa-star form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت پایه <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="number" id="price" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" >
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-price">قیمت فروش <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="number" id="sales-price" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="sales-price" required="required" class="form-control col-md-7 col-xs-12">
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-discount">تخفیف فروش</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="number" id="sales-discount" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="sales-discount" class="form-control col-md-7 col-xs-12">
                                     <span class="fa fa-percent form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شماره تراکنش</label>
+                            <div id="trn-panel" class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شماره پیگیری تراکنش <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="trn" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="trn" class="form-control col-md-7 col-xs-12" readonly="readonly" required>
                                     <span class="fa fa-barcode form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="approved-at">تاریخ تایید
-                                </label>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="approved-by">تایید شده توسط</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="approved-at" class="date-picker form-control col-md-7 col-xs-12"
-                                        type="text">
+                                    <input type="text" id="approved-by" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="approved-at">تایید شده در</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="approved-at" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="cancelled-by">لغو شده توسط</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="cancelled-by" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="cancelled-at">لغو شده در</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="cancelled-at" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="created-at">ایجاد شده در</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="created-at" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="updated-at">آخرین بروزرسانی در</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="updated-at" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div id="comment-panel" class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">یادداشت<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea id="comment" class="form-control col-md-7 col-xs-12" placeholder="یادداشتی بگذارید..." required></textarea>
+                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div id="status-panel" class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="status">وضعیت</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <span class="label label-primary mt-10 hidden" id="status-label-pending">درحال بررسی</span>
+                                    <span class="label label-success mt-10 hidden" id="status-label-approved">تایید شده</span>
+                                    <span class="label label-danger mt-10 hidden" id="status-label-rejected">رد شده</span>
+                                    <span class="label label-warning mt-10 hidden" id="status-label-cancelled">لغو شده</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                    <button type="submit" class="btn btn-success">
-                                        {% if edit == True %}
-                                        ویرایش
-                                        {% else %}
-                                        ایجاد سند فروش جدید
-                                        {% endif %}
-                                    </button>
-                                    {% if edit == True %}
-                                    <button type="button" class="btn btn-danger pull-left" onclick="deleteSalesLedger()">حذف سند فروش</button>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                    <button id="create-btn" type="submit" class="btn btn-success" >ایجاد فاکتور و ارسال به مالی</button>
+                                    <button id="save-btn" type="button" class="btn btn-success hidden" onclick="saveAndReSendalesLedger()" disabled>ذخیره و ارسال مجدد به مالی</button>
+                                    <button id="approve-btn" type="button" class="btn btn-success hidden" onclick="approveSalesLedger()" disabled>تایید و ثبت</button>
+                                    <button id="reject-btn" type="button" class="btn btn-danger pull-left hidden" onclick="rejectSalesLedger()" disabled>بازگشت به اپراتور</button>
+                                    <button id="delete-btn" type="button" class="btn btn-danger pull-left hidden" onclick="deleteSalesLedger()" disabled>حذف سند فروش</button>
+                                    <button id="cancel-btn" type="button" class="btn btn-danger pull-left hidden" onclick="cancelSalesLedger()" disabled>لغو بررسی</button>
+                                    <button id="discard-btn" type="button" class="btn btn-primary" onclick="discardSalesLedger()">انصراف</button>
                                 </div>
                             </div>
                         </form>
@@ -97,29 +163,199 @@
                 </div>
             </div>
             <div class="clearfix"></div>
+            
+            <div id="workflow-panel" class="col-md-12 col-sm-12 col-xs-12 hidden">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>گردش کار فاکتور فروش</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>
+                                            <div class="icheckbox_flat-green" style="position: relative;"><input
+                                                    type="checkbox" id="check-all" class="flat"
+                                                    style="position: absolute; opacity: 0;"><ins class="iCheck-helper"
+                                                    style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                            </div>
+                                        </th>
+                                        <th class="column-title">مرحله</th>
+                                        <th class="column-title">یادداشت</th>
+                                        <th class="column-title">تاریخ</th>
+                                        <th class="column-title no-link last">توسط</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="workflow-tbody">
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <script>
     function getSalesLedgerFormData() {
         return {
+            customer_id: $('#customer-id').val(),
             service_id: $('#service-id').val(),
-            approved_by: {"UUID": $('#approved-by').val(), "Valid": $('#approved-by').val() !== ''},
+            created_by: $('#created-by').val(),
+            referer_id: $('#referer-id').val(),
             price: parseFloat($('#price').val()),
             sales_price: parseFloat($('#sales-price').val()),
-            sales_discount: {"Float64": parseFloat($('#sales-discount').val()), "Valid": $('#sales-discount').val() !== ''},
-            trn: {"String": $('#trn').val(), "Valid": $('#trn').val() !== ''},
-            approved_at: {"Time": $('#approved-at').val() || '2006-01-02T15:04:05Z', "Valid": $('#approved-at').val() !== ''}
+            sales_discount: parseFloat($('#sales-discount').val()),
+            trn: $('#trn').val() || null,
+            approved_by: $('#approved-by').val() || null,
+            approved_at: $('#approved-at').val()|| null,
+            cancelled_by: $('#cancelled-by').val() || null,
+            cancelled_at: $('#cancelled-at').val() || null,
         };
     }
     function setSalesLedgerFormData(data) {
+        $('#customer-id').val(data.customer_id || '');
         $('#service-id').val(data.service_id || '');
-        $('#approved-by').val(data.approved_by || '');
+        $('#created-by').val(data.created_by || '');
+        $('#referer-id').val(data.referer_id || '');
         $('#price').val(data.price || '');
         $('#sales-price').val(data.sales_price || '');
-        $('#sales-discount').val(data.sales_discount && data.sales_discount.Valid ? data.sales_discount.Float64 : '');
-        $('#trn').val(data.trn && data.trn.Valid ? data.trn.String : '');
-        $('#approved-at').val(data.approved_at ? data.approved_at.split(".")[0] : '');
+        $('#sales-discount').val(data.sales_discount || '');
+        $('#trn').val(data.trn || '');
+        $('#approved-by').val(data.approved_by || '');
+        $('#approved-at').val(data.approved_at || '');
+        $('#cancelled-by').val(data.cancelled_by || '');
+        $('#cancelled-at').val(data.cancelled_at || '');
+        $('#created-at').val(data.created_at || '');
+        $('#updated-at').val(data.updated_at || '');
+        $('#id').val(data.id || '');
+        renderWorkflowHistory(data.workflow_history);
+        updateUIByStatus(data.status);
+    }
+
+    function renderWorkflowHistory(workflowHistory) {
+        var $tbody = $('#workflow-tbody');
+        $tbody.empty();
+        if (!workflowHistory) return;
+        var workflows = workflowHistory;
+        if (typeof workflowHistory === 'string') {
+            try {
+                workflows = JSON.parse(workflowHistory);
+            } catch (e) {
+                workflows = [];
+            }
+        }
+        if (!Array.isArray(workflows)) return;
+        workflows.forEach(function (item, idx) {
+            var actor = item.actor_id || '';
+            var step = item.step || '';
+            var comment = item.comment || '';
+            var actionAt = item.action_at ? new Date(item.action_at).toLocaleString('fa-IR') : '';
+            var row = '<tr>' +
+                '<td></td>' +
+                '<td>' + step + '</td>' +
+                '<td>' + comment + '</td>' +
+                '<td>' + actionAt + '</td>' +
+                '<td>' + actor + '</td>' +
+                '</tr>';
+            $tbody.append(row);
+        });
+    }
+
+    function updateUIByStatus(status) {
+        var userRole = "{{ user_role }}";
+        
+        // common
+        if (
+            (userRole == 'operator' && (status == 'PENDING' || status == 'APPROVED' || status == 'CANCELLED')) || 
+            (userRole == 'admin' && (status == 'APPROVED' || status == 'CANCELLED' || status == 'REJECTED'))
+        ) {
+            $('#sales-ledger-id-panel').removeClass('hidden');
+            $('#customer-id').prop('disabled', true);
+            $('#service-id').prop('disabled', true);
+            $('#created-by').prop('disabled', true);
+            $('#referer-id').prop('disabled', true);
+            $('#price').prop('disabled', true);
+            $('#sales-price').prop('disabled', true);
+            $('#sales-discount').prop('disabled', true);
+            $('#create-btn').addClass('hidden').prop('disabled', true);
+            $('#save-btn').addClass('hidden').prop('disabled', true);
+            $('#approve-btn').addClass('hidden').prop('disabled', true);
+            $('#reject-btn').addClass('hidden').prop('disabled', true);
+            $('#discard-btn').addClass('hidden').prop('disabled', true);
+            $('#cancel-btn').addClass('hidden').prop('disabled', true);
+            $('#delete-btn').addClass('hidden').prop('disabled', true);
+            $('#status-panel').removeClass('hidden');
+            $('#workflow-panel').removeClass('hidden');
+        } 
+        if (userRole == 'operator' && status == 'REJECTED') {
+            $('#sales-ledger-id-panel').removeClass('hidden');
+            $('#customer-id').prop('disabled', true);
+            $('#service-id').prop('disabled', true);
+            $('#referer-id').prop('disabled', true);
+            $('#price').prop('disabled', true);
+            $('#comment-panel').removeClass('hidden');
+            $('#approve-btn').addClass('hidden').prop('disabled', true);
+            $('#reject-btn').addClass('hidden').prop('disabled', true);
+            $('#create-btn').addClass('hidden').prop('disabled', true);
+            $('#save-btn').removeClass('hidden').prop('disabled', false);
+            $('#discard-btn').removeClass('hidden').prop('disabled', false);
+            $('#cancel-btn').removeClass('hidden').prop('disabled', false);
+            $('#delete-btn').addClass('hidden').prop('disabled', true);
+            $('#status-panel').removeClass('hidden');
+            $('#workflow-panel').removeClass('hidden');
+        }
+        if (userRole == 'admin' && status == 'PENDING') {
+            $('#sales-ledger-id-panel').removeClass('hidden');
+            $('#customer-id').prop('disabled', true);
+            $('#service-id').prop('disabled', true);
+            $('#created-by').prop('disabled', true);
+            $('#referer-id').prop('disabled', true);
+            $('#trn-panel').removeClass('hidden');
+            $('#trn').prop('disabled', false).removeAttr('readonly');
+            $('#price').prop('disabled', true);
+            $('#sales-price').prop('disabled', true);
+            $('#sales-discount').prop('disabled', true);
+            $('#create-btn').addClass('hidden').prop('disabled', true);
+            $('#save-btn').addClass('hidden').prop('disabled', true);
+            $('#approve-btn').removeClass('hidden').prop('disabled', false);
+            $('#reject-btn').removeClass('hidden').prop('disabled', false);
+            $('#discard-btn').removeClass('hidden').prop('disabled', false);
+            $('#cancel-btn').removeClass('hidden').prop('disabled', false);
+            $('#delete-btn').addClass('hidden').prop('disabled', true);
+            $('#comment-panel').removeClass('hidden');
+            $('#status-panel').removeClass('hidden');
+            $('#workflow-panel').removeClass('hidden');
+        }
+
+        if (userRole == 'admin' && (status == 'REJECTED' || status == 'CANCELLED' || status == 'APPROVED')) {
+            $('#trn-panel').removeClass('hidden');
+        }
+        if (status == 'APPROVED') {
+            $('#status-label-approved').removeClass('hidden');
+        }
+        if (status == 'PENDING') {
+            $('#status-label-pending').removeClass('hidden');
+        }
+        if (status == 'REJECTED') {
+            $('#status-label-rejected').removeClass('hidden');
+        }
+        if (status == 'CANCELLED') {
+            $('#status-label-cancelled').removeClass('hidden');
+        }
+
+        
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -129,12 +365,12 @@
                 }
             }
         });
-        var isEdit = "{{ edit }}" == "True";
+        var isInitiate = "{{ initiate }}" == "True";
         var salesLedgerId = "{{ sales_ledger_id|default:'' }}";
         var salesLedgerData = null;
         var servicesLoaded = false;
         var usersLoaded = false;
-        // Load services
+        
         $.ajax({
             url: '/api/salesman/services/',
             type: 'GET',
@@ -152,24 +388,29 @@
                     );
                 });
                 servicesLoaded = true;
-                if (isEdit && salesLedgerData && usersLoaded) {
+                if (!isInitiate && salesLedgerData && usersLoaded) {
                     setSalesLedgerFormData(salesLedgerData);
                 }
             },
             error: function () {
                 $('#service-id').html('<option value="">خطا در بارگذاری خدمات</option>');
                 servicesLoaded = true;
+                new PNotify({
+                    title: 'خطا در بارگذاری خدمات',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
-        // Load users
         $.ajax({
             url: '/api/salesman/users/',
             type: 'GET',
             dataType: 'json',
             success: function (users) {
-                var $select = $('#approved-by');
+                var $select = $('#customer-id');
                 $select.empty();
-                $select.append('<option value="">انتخاب تاییدکننده</option>');
+                $select.append('<option value="">انتخاب مشتری</option>');
                 users.forEach(function (user) {
                     $select.append(
                         $('<option>', {
@@ -179,85 +420,271 @@
                     );
                 });
                 usersLoaded = true;
-                if (isEdit && salesLedgerData && servicesLoaded) {
+                if (!isInitiate && salesLedgerData && servicesLoaded) {
                     setSalesLedgerFormData(salesLedgerData);
                 }
             },
             error: function () {
-                $('#approved-by').html('<option value="">خطا در بارگذاری کاربران</option>');
+                $('#customer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
                 usersLoaded = true;
+                new PNotify({
+                    title: 'خطا در بارگذاری کاربران',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
-        if (isEdit && salesLedgerId) {
+        if (!isInitiate && salesLedgerId) {
             $.ajax({
-                url: '/api/salesman/sales-ledgers/' + salesLedgerId,
+                url: '/api/salesman/sales-ledger/' + salesLedgerId,
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
                     salesLedgerData = response;
                     if (servicesLoaded && usersLoaded) {
                         setSalesLedgerFormData(salesLedgerData);
+                        
                     }
                 },
                 error: function (xhr) {
-                    alert('خطا در بارگذاری اطلاعات سند فروش: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات فاکتور فروش',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
                 }
             });
         }
         $('#sales-ledger-form').on('submit', function (e) {
             e.preventDefault();
             var data = getSalesLedgerFormData();
-            if (isEdit && salesLedgerId) {
+            if (!isInitiate && salesLedgerId) {
                 $.ajax({
-                    url: '/api/salesman/sales-ledgers/' + salesLedgerId,
+                    url: '/api/salesman/sales-ledger/' + salesLedgerId,
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('سند فروش با موفقیت ویرایش شد.');
-                        window.location.href = '/sales-ledgers/';
+                        new PNotify({
+                            title: 'فاکتور فروش با موفقیت ویرایش شد.',
+                            text: response.message,
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/sales-ledger/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ویرایش سند فروش: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ویرایش فاکتور فروش',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             } else {
                 $.ajax({
-                    url: '/api/salesman/sales-ledgers/',
+                    url: '/api/salesman/sales-ledger/',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('سند فروش جدید با موفقیت ایجاد شد.');
-                        window.location.href = '/sales-ledgers/edit/' + response.id + '/';
+                        new PNotify({
+                            title: 'فاکتور فروش جدید با موفقیت ایجاد شد.',
+                            text: response.message,
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/sales-ledger/edit/' + response.id + '/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ایجاد سند فروش: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ایجاد فاکتور فروش',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }
         });
         window.deleteSalesLedger = function () {
-            if (!isEdit || !salesLedgerId) {
-                alert('سندی برای حذف انتخاب نشده است.');
+            if (isInitiate || !salesLedgerId) {
+                new PNotify({
+                    title: 'فاکتور فروشی برای حذف انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
                 return;
             }
             if (confirm('آیا مطمئن هستید که می‌خواهید این سند فروش را حذف کنید؟')) {
                 $.ajax({
-                    url: '/api/salesman/sales-ledgers/' + salesLedgerId,
+                    url: '/api/salesman/sales-ledger/' + salesLedgerId,
                     type: 'DELETE',
                     success: function (response) {
-                        alert('سند فروش با موفقیت حذف شد.');
-                        window.location.href = '/sales-ledgers/';
+                        new PNotify({
+                            title: 'فاکتور فروش با موفقیت حذف شد.',
+                            text: response.message,
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/sales-ledger/';
                     },
                     error: function (xhr) {
-                        alert('خطا در حذف سند فروش: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در حذف فاکتور فروش',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }
         };
-        window.cancel = function () {
-            window.location.href = '/sales-ledgers/';
+        window.approveSalesLedger = function () {
+            if (isInitiate || !salesLedgerId) {
+                new PNotify({
+                    title: 'فاکتور فروشی برای تایید انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای تایید انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+                return;
+            }
+            var approvedBy = '{{ current_user }}';
+            var trn = $('#trn').val() || null;
+            var comment = $('#comment').val() || null;
+            $.ajax({
+                url: '/api/salesman/sales-ledger/' + salesLedgerId + '/approve',    
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    approved_by: approvedBy,
+                    trn: trn,
+                    comment: comment
+                }),
+                success: function (response) {
+                    window.location.href = '/sales-ledger/edit/' + salesLedgerId + '/';
+                },
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در تایید فاکتور فروش',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
+        };
+        window.rejectSalesLedger = function () {
+            if (isInitiate || !salesLedgerId) {
+                new PNotify({
+                    title: 'فاکتور فروشی برای بازگشت انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای بازگشت انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+                return;
+            }
+            var rejectedBy = '{{ current_user }}';
+            var reason = $('#comment').val() || null;
+            $.ajax({
+                url: '/api/salesman/sales-ledger/' + salesLedgerId + '/reject', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    rejected_by: rejectedBy,
+                    reason: reason
+                }), 
+                success: function (response) {
+                    window.location.href = '/sales-ledger/edit/' + salesLedgerId + '/';
+                },
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در بازگشت فاکتور فروش',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
+        };
+        window.saveAndReSendalesLedger = function () {
+            if (isInitiate || !salesLedgerId) {
+                new PNotify({
+                    title: 'فاکتور فروشی برای ذخیره و ارسال مجدد انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای ذخیره و ارسال مجدد انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'   
+                });
+                return;
+            }
+            var price = parseFloat($('#price').val()) || null;
+            var salesPrice = parseFloat($('#sales-price').val()) || null;
+            var salesDiscount = parseFloat($('#sales-discount').val()) || null;
+            var comment = $('#comment').val() || null;
+            var data = {
+                price: price,
+                sales_price: salesPrice,
+                sales_discount: salesDiscount,
+                comment: comment
+            };
+            $.ajax({
+                url: '/api/salesman/sales-ledger/' + salesLedgerId + '/resend', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    window.location.href = '/sales-ledger/edit/' + salesLedgerId + '/';
+                },  
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در ذخیره و ارسال مجدد فاکتور فروش',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'   
+                    });
+                }
+            });
+        };
+        window.discardSalesLedger = function () {
+            window.location.href = '/sales-ledger/';
+        };
+        window.cancelSalesLedger = function () {
+            if (isInitiate || !salesLedgerId) {
+                new PNotify({
+                    title: 'فاکتور فروشی برای لغو انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای لغو انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+                return;
+            }
+            var cancelledBy = '{{ current_user }}';
+            var reason = $('#comment').val() || null;
+            $.ajax({
+                url: '/api/salesman/sales-ledger/' + salesLedgerId + '/cancel',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    cancelled_by: cancelledBy,
+                    reason: reason
+                }),
+                success: function (response) {
+                    window.location.href = '/sales-ledger/edit/' + salesLedgerId + '/';
+                },
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در لغو فاکتور فروش',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
         };
     });
 </script>

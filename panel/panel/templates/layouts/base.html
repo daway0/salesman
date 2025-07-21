@@ -25,20 +25,26 @@
     <!-- bootstrap-daterangepicker -->
     <link href="{% static 'vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
     
-<!-- bootstrap-wysiwyg -->
-<link href="{% static 'vendors/google-code-prettify/bin/prettify.min.css' %}" rel="stylesheet">
-<!-- Select2 -->
-<link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet">
-<!-- Switchery -->
-<link href="{% static 'vendors/switchery/dist/switchery.min.css' %}" rel="stylesheet">
-<!-- starrr -->
-<link href="{% static 'vendors/starrr/dist/starrr.css' %}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="{% static 'vendors/google-code-prettify/bin/prettify.min.css' %}" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="{% static 'vendors/switchery/dist/switchery.min.css' %}" rel="stylesheet">
+    <!-- starrr -->
+    <link href="{% static 'vendors/starrr/dist/starrr.css' %}" rel="stylesheet">
 
-<!-- Custom Theme Style -->
-<link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet">
+    <!-- PNotify -->
+    <link href="{% static 'vendors/pnotify/dist/pnotify.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/pnotify/dist/pnotify.buttons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/pnotify/dist/pnotify.nonblock.css' %}" rel="stylesheet">
 
-<!-- jQuery -->
-<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+
+    <!-- Custom Theme Style -->
+    <link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
 
 </head>
 <!-- /header content -->
@@ -47,9 +53,7 @@
     <div class="main_container">
         <div class="col-md-3 left_col hidden-print">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-                </div>
+                
 
                 <div class="clearfix"></div>
 
@@ -81,15 +85,7 @@
         </div>
         {% endblock %}
 
-        <!-- footer content -->
-        <footer class="hidden-print">
-            <div class="pull-left">
-                Gentelella - قالب پنل مدیریت بوت استرپ <a href="https://colorlib.com">Colorlib</a> | پارسی شده توسط <a
-                    href="https://morteza-karimi.ir">مرتضی کریمی</a>
-            </div>
-            <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
+        
     </div>
 </div>
 <div id="lock_screen">
@@ -144,8 +140,13 @@
 <!-- starrr -->
 <script src="{% static 'vendors/starrr/dist/starrr.js' %}"></script>
 
+<!-- PNotify -->
+<script src="{% static 'vendors/pnotify/dist/pnotify.js' %}"></script>
+<script src="{% static 'vendors/pnotify/dist/pnotify.buttons.js' %}"></script>
+<script src="{% static 'vendors/pnotify/dist/pnotify.nonblock.js' %}"></script>
+
 <!-- Custom Theme Scripts -->
-<script src="{% static 'build/js/custom.min.js' %}"></script>
+<script src="{% static 'build/js/custom.js' %}"></script>
 
 
 </body>

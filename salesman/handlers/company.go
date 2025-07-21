@@ -96,12 +96,13 @@ func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
 	}
 
 	company.ID = companyID
-	company.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
+	now := time.Now()
+	company.UpdatedAt = &now
 
 	query := `UPDATE Companies SET title = $1, brand_name = $2, cid = $3, description = $4, image_url = $5, updated_at = $6
               WHERE id = $7 AND deleted_at IS NULL`
 	result, err := h.DB.Exec(query, company.Title, company.BrandName, company.CID,
-		company.Description, company.ImageURL, company.UpdatedAt, company.ID)
+		company.Description, company.ImageURL, &now, company.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -95,7 +95,8 @@ func (h *PermissionHandler) UpdatePermission(c *gin.Context) {
 	}
 
 	permission.ID = permissionID
-	permission.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
+	now := time.Now()
+	permission.UpdatedAt = &now
 
 	query := `UPDATE Permissions SET content_type = $1, action_type = $2, updated_at = $3
               WHERE id = $4 AND deleted_at IS NULL`

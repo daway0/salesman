@@ -38,12 +38,15 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.PUT("/services/:id", serviceHandler.UpdateService)
 		api.DELETE("/services/:id", serviceHandler.DeleteService)
 
-		api.POST("/sales-ledgers", salesLedgerHandler.CreateSalesLedger)
-		api.GET("/sales-ledgers", salesLedgerHandler.GetSalesLedgers)
-		api.GET("/sales-ledgers/:id", salesLedgerHandler.GetSalesLedger)
-		api.PUT("/sales-ledgers/:id", salesLedgerHandler.UpdateSalesLedger)
-		api.DELETE("/sales-ledgers/:id", salesLedgerHandler.DeleteSalesLedger)
-
+		api.POST("/sales-ledger", salesLedgerHandler.CreateSalesLedger)
+		api.GET("/sales-ledger", salesLedgerHandler.GetSalesLedgers)
+		api.GET("/sales-ledger/:id", salesLedgerHandler.GetSalesLedger)
+		api.PUT("/sales-ledger/:id", salesLedgerHandler.UpdateSalesLedger)
+		api.DELETE("/sales-ledger/:id", salesLedgerHandler.DeleteSalesLedger)
+		api.POST("/sales-ledger/:id/approve", salesLedgerHandler.ApproveSalesLedger)
+		api.POST("/sales-ledger/:id/reject", salesLedgerHandler.RejectSalesLedger)
+		api.POST("/sales-ledger/:id/cancel", salesLedgerHandler.CancelSalesLedger)
+		api.POST("/sales-ledger/:id/resend", salesLedgerHandler.ResendSalesLedger)
 		
 		// rbac
 		api.POST("/roles", roleHandler.CreateRole)

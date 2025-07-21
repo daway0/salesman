@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,9 +15,9 @@ type User struct {
 	Email       string       `json:"email" db:"email"`
 	Password    string       `json:"password" db:"password"`
 	CreatedAt   time.Time    `json:"created_at" db:"created_at"`
-	LastLoginAt sql.NullTime `json:"last_login_at,omitempty" db:"last_login_at"`
-	UpdatedAt   sql.NullTime `json:"updated_at,omitempty" db:"updated_at"`
-	DeletedAt   sql.NullTime `json:"deleted_at,omitempty" db:"deleted_at"`
+	LastLoginAt *time.Time   `json:"last_login_at,omitempty" db:"last_login_at"`
+	UpdatedAt   *time.Time   `json:"updated_at,omitempty" db:"updated_at"`
+	DeletedAt   *time.Time   `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
 type UpdateUserRequest struct {
@@ -30,6 +29,3 @@ type UpdateUserRequest struct {
 	Password  *string    `json:"password"`
 }
 
-type NewType struct {
-	X int
-}

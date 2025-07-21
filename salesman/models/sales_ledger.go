@@ -1,27 +1,62 @@
 package models
 
 import (
-	"database/sql"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-type NullUUID struct {
-	UUID  uuid.UUID
-	Valid bool
+type SalesLedger struct {
+	ID              uuid.UUID        `json:"id" db:"id"`
+	CustomerID      uuid.UUID        `json:"customer_id" db:"customer_id"`
+	ServiceID       uuid.UUID        `json:"service_id" db:"service_id"`
+	CreatedBy       uuid.UUID        `json:"created_by" db:"created_by"`
+	RefererID       *uuid.UUID       `json:"referer_id" db:"referer_id"`
+	Price           float64          `json:"price" db:"price"`
+	SalesPrice      float64          `json:"sales_price" db:"sales_price"`
+	SalesDiscount   *float64         `json:"sales_discount" db:"sales_discount"`
+	TRN             *string          `json:"trn" db:"trn"`
+	WorkflowHistory *json.RawMessage `json:"workflow_history" db:"workflow_history"`
+	ApprovedBy      *uuid.UUID       `json:"approved_by" db:"approved_by"`
+	ApprovedAt      *time.Time       `json:"approved_at" db:"approved_at"`
+	CancelledBy     *uuid.UUID       `json:"cancelled_by" db:"cancelled_by"`
+	CancelledAt     *time.Time       `json:"cancelled_at" db:"cancelled_at"`
+	Status          string           `json:"status" db:"status"`
+	CreatedAt       time.Time        `json:"created_at" db:"created_at"`
+	UpdatedAt       *time.Time       `json:"updated_at" db:"updated_at"`
+	DeletedAt       *time.Time       `json:"deleted_at" db:"deleted_at"`
 }
 
-type SalesLedger struct {
-	ID            uuid.UUID       `json:"id" db:"id"`
-	ApprovedBy    NullUUID        `json:"approved_by" db:"approved_by"`
-	ServiceID     uuid.UUID       `json:"service_id" db:"service_id"`
-	Price         float64         `json:"price" db:"price"`
-	SalesPrice    float64         `json:"sales_price" db:"sales_price"`
-	SalesDiscount sql.NullFloat64 `json:"sales_discount" db:"sales_discount"`
-	TRN           sql.NullString  `json:"trn" db:"trn"`
-	ApprovedAt    sql.NullTime    `json:"approved_at" db:"approved_at"`
-	CreatedAt     time.Time       `json:"created_at" db:"created_at"`
-	UpdatedAt     sql.NullTime    `json:"updated_at" db:"updated_at"`
-	DeletedAt     sql.NullTime    `json:"deleted_at" db:"deleted_at"`
+type Workflow struct {
+	Step     string    `json:"step"`
+	ActionAt time.Time `json:"action_at"`
+	Comment  string    `json:"comment"`
+	ActorId  uuid.UUID `json:"actor_id"`
+}
+
+type SalesLedgerApproval struct {
+	ApproverID uuid.UUID `json:"approved_by"`
+	ApprovedAt time.Time `json:"approved_at"`
+	TRN        string    `json:"trn"`
+	Comment    string    `json:"comment"`
+}
+
+type SalesLedgerRejection struct {
+	RejectedBy uuid.UUID `json:"rejected_by"`
+	RejectedAt time.Time `json:"rejected_at"`
+	Reason     string    `json:"reason"`
+}
+
+type SalesLedgerCancellation struct {
+	CancelledBy uuid.UUID `json:"cancelled_by"`
+	CancelledAt time.Time `json:"cancelled_at"`
+	Reason      string    `json:"reason"`
+}
+
+type SalesLedgerResend struct {
+	Price         float64  `json:"price" db:"price"`
+	SalesPrice    float64  `json:"sales_price" db:"sales_price"`
+	SalesDiscount *float64 `json:"sales_discount" db:"sales_discount"`
+	Comment       string   `json:"comment" db:"comment"`
 }

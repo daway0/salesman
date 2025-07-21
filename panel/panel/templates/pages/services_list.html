@@ -7,7 +7,9 @@
             <div class="title_left">
                 <h3>لیست خدمات</h3>
             </div>
-            {% include "partials/navbar_search.html" %}
+            <div class="title_right">
+                <a href="/services/create/" class="btn btn-primary pull-left">ایجاد خدمت جدید</a>
+            </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -71,7 +73,12 @@
                 });
             },
             error: function (xhr, status, error) {
-                alert('خطا در بارگذاری خدمات: ' + error);
+                new PNotify({
+                    title: 'خطا در بارگذاری خدمات',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
     });

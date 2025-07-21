@@ -7,7 +7,9 @@
             <div class="title_left">
                 <h3>لیست اسناد فروش</h3>
             </div>
-            {% include "partials/navbar_search.html" %}
+            <div class="title_right">
+                <a href="/sales-ledgers/create/" class="btn btn-primary pull-left">ایجاد سند فروش جدید</a>
+            </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -26,14 +28,15 @@
                             <thead>
                                 <tr>
                                     <th>خدمت</th>
-                                    <th>تاییدکننده</th>
+                                    <th>مشتری</th>
                                     <th>قیمت پایه</th>
                                     <th>قیمت فروش</th>
                                     <th>تخفیف فروش</th>
                                     <th>شماره تراکنش</th>
                                     <th>تاریخ تایید</th>
                                     <th>تاریخ ثبت</th>
-                                    <th>تاریخ ویرایش</th>
+                                    <th>تاریخ به روز رسانی</th>
+                                    <th>وضعیت</th>
                                     <th>عملیات</th>
                                 </tr>
                             </thead>
@@ -48,6 +51,20 @@
     </div>
 </div>
 <script>
+    function getStatusLabel(status) {
+        switch (status) {
+            case 'PENDING':
+                return '<span class="label label-primary mt-10">درحال بررسی</span>';
+            case 'APPROVED':
+                return '<span class="label label-success mt-10">تایید شده</span>';
+            case 'REJECTED':
+                return '<span class="label label-danger mt-10">رد شده</span>';
+            case 'CANCELLED':
+                return '<span class="label label-warning mt-10">لغو شده</span>';
+            default:
+                return '';
+        }
+    }
     $(document).ready(function () {
         $.ajax({
             url: '/api/salesman/sales-ledger/',
@@ -59,14 +76,15 @@
                 salesLedgers.forEach(function (ledger) {
                     var row = '<tr>' +
                         '<td>' + (ledger.service_id || '') + '</td>' +
-                        '<td>' + (ledger.approved_by || '') + '</td>' +
+                        '<td>' + (ledger.customer_id || '') + '</td>' +
                         '<td>' + (ledger.price || '') + '</td>' +
                         '<td>' + (ledger.sales_price || '') + '</td>' +
-                        '<td>' + (ledger.sales_discount && ledger.sales_discount.Valid ? ledger.sales_discount.Float64 : '') + '</td>' +
-                        '<td>' + (ledger.trn && ledger.trn.Valid ? ledger.trn.String : '') + '</td>' +
-                        '<td>' + (ledger.approved_at ? ledger.approved_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (ledger.created_at ? ledger.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (ledger.updated_at && ledger.updated_at.Valid ? ledger.updated_at.Time.split("T")[0] : '') + '</td>' +
+                        '<td>' + (ledger.sales_discount || '')  + '</td>' +
+                        '<td>' + (ledger.trn || '') + '</td>' +
+                        '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (ledger.created_at ? new Date(ledger.created_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (ledger.updated_at ? new Date(ledger.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + getStatusLabel(ledger.status) + '</td>' +
                         '<td>' +
                         '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
                         '</td>' +
@@ -75,7 +93,12 @@
                 });
             },
             error: function (xhr, status, error) {
-                alert('خطا در بارگذاری اسناد فروش: ' + error);
+                new PNotify({
+                    title: 'خطا در بارگذاری اسناد فروش',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
     });

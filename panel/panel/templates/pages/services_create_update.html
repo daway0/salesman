@@ -7,7 +7,6 @@
             <div class="title_left">
                 <h3>ایجاد و ویرایش خدمت</h3>
             </div>
-            {% include "partials/navbar_search.html" %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -71,6 +70,7 @@
                                     </button>
                                     {% if edit == True %}
                                     <button type="button" class="btn btn-danger pull-left" onclick="deleteService()">حذف خدمت</button>
+                                    <a class="btn btn-primary pull-left" href="/services/create/">ایجاد خدمت جدید</a>
                                     {% endif %}
                                     <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
                                 </div>
@@ -88,17 +88,17 @@
         return {
             company_id: $('#company-id').val(),
             title: $('#title').val(),
-            description: {'String': $('#description').val(), 'Valid': $('#description').val() !== ''},
+            description: $('#description').val(),
             price: parseFloat($('#price').val()),
-            image_url: {'String': $('#image-url').val(), 'Valid': $('#image-url').val() !== ''}
+            image_url: $('#image-url').val()
         };
     }
     function setServiceFormData(data) {
         $('#company-id').val(data.company_id || '');
         $('#title').val(data.title || '');
-        $('#description').val(data.description && data.description.String ? data.description.String : '');
+        $('#description').val(data.description || '');
         $('#price').val(data.price || '');
-        $('#image-url').val(data.image_url && data.image_url.String ? data.image_url.String : '');
+        $('#image-url').val(data.image_url || '');
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -153,7 +153,12 @@
                     }
                 },
                 error: function (xhr) {
-                    alert('خطا در بارگذاری اطلاعات خدمت: ' + (xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : ''));
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات خدمت',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
                 }
             });
         }
@@ -167,11 +172,21 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('خدمت با موفقیت ویرایش شد.');
+                        new PNotify({
+                            title: 'خدمت با موفقیت ویرایش شد.',
+                            text: 'خدمت با موفقیت ویرایش شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/services/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ویرایش خدمت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ویرایش خدمت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             } else {
@@ -181,18 +196,33 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert('خدمت جدید با موفقیت ایجاد شد.');
+                        new PNotify({
+                            title: 'خدمت جدید با موفقیت ایجاد شد.',
+                            text: 'خدمت جدید با موفقیت ایجاد شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/services/edit/' + response.id + '/';
                     },
                     error: function (xhr) {
-                        alert('خطا در ایجاد خدمت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در ایجاد خدمت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }
         });
         window.deleteService = function () {
             if (!isEdit || !serviceId) {
-                alert('خدمتی برای حذف انتخاب نشده است.');
+                new PNotify({
+                    title: 'خدمتی برای حذف انتخاب نشده است.',
+                    text: 'خدمتی برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
                 return;
             }
             if (confirm('آیا مطمئن هستید که می‌خواهید این خدمت را حذف کنید؟')) {
@@ -200,11 +230,21 @@
                     url: '/api/salesman/services/' + serviceId,
                     type: 'DELETE',
                     success: function (response) {
-                        alert('خدمت با موفقیت حذف شد.');
+                        new PNotify({
+                            title: 'خدمت با موفقیت حذف شد.',
+                            text: 'خدمت با موفقیت حذف شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
                         window.location.href = '/services/';
                     },
                     error: function (xhr) {
-                        alert('خطا در حذف خدمت: ' + xhr.responseJSON.error);
+                        new PNotify({
+                            title: 'خطا در حذف خدمت',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
                     }
                 });
             }

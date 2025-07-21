@@ -8,7 +8,9 @@
                 <h3>لیست کاربران</h3>
             </div>
 
-            {% include "partials/navbar_search.html" %}
+            <div class="title_right">
+                <a href="/users/create/" class="btn btn-primary pull-left">ایجاد کاربر جدید</a>
+            </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -80,7 +82,12 @@
                 });
             },
             error: function (xhr, status, error) {
-                alert('خطا در بارگذاری کاربران: ' + error);
+                new PNotify({
+                    title: 'خطا در بارگذاری کاربران',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
             }
         });
     });

@@ -96,12 +96,13 @@ func (h *ServiceHandler) UpdateService(c *gin.Context) {
 	}
 
 	service.ID = serviceID
-	service.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
+	now := time.Now()
+	service.UpdatedAt = &now
 
 	query := `UPDATE Services SET company_id = $1, title = $2, description = $3, price = $4, image_url = $5, updated_at = $6
               WHERE id = $7 AND deleted_at IS NULL`
 	result, err := h.DB.Exec(query, service.CompanyID, service.Title,
-		service.Description, service.Price, service.ImageURL, service.UpdatedAt, service.ID)
+		service.Description, service.Price, service.ImageURL, &now, service.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -117,9 +118,8 @@ func (h *ServiceHandler) UpdateService(c *gin.Context) {
 
 func (h *ServiceHandler) DeleteService(c *gin.Context) {
 	id := c.Param("id")
-	deletedAt := time.Now()
 	query := `UPDATE Services SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL`
-	result, err := h.DB.Exec(query, deletedAt, id)
+	result, err := h.DB.Exec(query, time.Now(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

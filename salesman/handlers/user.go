@@ -114,7 +114,8 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	}
 
 	user.ID = userID
-	user.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
+	now := time.Now()
+	user.UpdatedAt = &now
 
 	query := `UPDATE Users SET first_name = $1, last_name = $2, NSID = $3, birthdate = $4, email = $5, password = $6, updated_at = $7
               WHERE id = $8 AND deleted_at IS NULL`
@@ -134,9 +135,9 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
-	deletedAt := time.Now()
+	now := time.Now()
 	query := `UPDATE Users SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL`
-	result, err := h.DB.Exec(query, deletedAt, id)
+	result, err := h.DB.Exec(query, now, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -150,13 +151,18 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 
 
 func (h *UserHandler) AddUserRole(c *gin.Context) {
-	userRoleID := uuid.New()
-	userID := c.Param("id")
-	roleID := c.Param("role_id")
-	createdAt := time.Now()
-
+	userID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+	roleID, err := uuid.Parse(c.Param("role_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role ID format"})
+		return
+	}
 	query := `INSERT INTO UserRoles (id, user_id, role_id, created_at) VALUES ($1, $2, $3, $4)`
-	_, err := h.DB.Exec(query, userRoleID, userID, roleID, createdAt)
+	_, err = h.DB.Exec(query, uuid.New(), userID, roleID, time.Now())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -165,11 +171,18 @@ func (h *UserHandler) AddUserRole(c *gin.Context) {
 }
 
 func (h *UserHandler) RemoveUserRole(c *gin.Context) {
-	userID := c.Param("id")
-	roleID := c.Param("role_id")
-
-	query := `DELETE FROM UserRoles WHERE user_id = $1 AND role_id = $2 AND deleted_at IS NULL`
-	_, err := h.DB.Exec(query, userID, roleID)	
+	userID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+	roleID, err := uuid.Parse(c.Param("role_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role ID format"})
+		return
+	}
+	query := `UPDATE UserRoles SET deleted_at = $1 WHERE user_id = $2 AND role_id = $3 AND deleted_at IS NULL`
+	_, err = h.DB.Exec(query, time.Now(), userID, roleID)	
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
