@@ -164,7 +164,7 @@ func (h *RoleHandler) GetUserRoles(c *gin.Context) {
 		roles = append(roles, models.UserRoleInfo{
 			RoleID:      roleID,
 			Title:       title,
-			Description: *description,
+			Description: description,
 			UserHasRole: count > 0,
 		})
 	}

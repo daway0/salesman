@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="right_col" role="main">
@@ -7,12 +8,16 @@
             <div class="title_left">
                 <h3>لیست خدمات</h3>
             </div>
-            <div class="title_right">
-                <a href="/services/create/" class="btn btn-primary pull-left">ایجاد خدمت جدید</a>
+            {% if permissions|has_permission:"CREATE_ALL_SERVICES" %}
+                <div class="title_right">
+                    <a href="/services/create/" class="btn btn-primary pull-left">ایجاد خدمت جدید</a>
+                </div>
+            {% endif %}
             </div>
         </div>
         <div class="clearfix"></div>
         <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_SERVICES_LIST" %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -34,7 +39,9 @@
                                     <th>آدرس تصویر</th>
                                     <th>تاریخ ثبت</th>
                                     <th>تاریخ ویرایش</th>
-                                    <th>عملیات</th>
+                                    {% if permissions|has_permission:"UPDATE_ALL_SERVICES" or permissions|has_permission:"DELETE_ALL_SERVICES" or permissions|has_permission:"VIEW_ALL_SERVICES" %}
+                                        <th>عملیات</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody id="services-tbody">
@@ -43,6 +50,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="clearfix"></div>
         </div>
     </div>
@@ -65,9 +73,11 @@
                         '<td>' + (service.image_url && service.image_url.String ? service.image_url.String : '') + '</td>' +
                         '<td>' + (service.created_at ? service.created_at.split("T")[0] : '') + '</td>' +
                         '<td>' + (service.updated_at && service.updated_at.Valid ? service.updated_at.Time.split("T")[0] : '') + '</td>' +
-                        '<td>' +
-                        '<a href="/services/edit/' + service.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
-                        '</td>' +
+                        {% if permissions|has_permission:"UPDATE_ALL_SERVICES" or permissions|has_permission:"DELETE_ALL_SERVICES" or permissions|has_permission:"VIEW_ALL_SERVICES" %}
+                            '<td>' +
+                            '<a href="/services/edit/' + service.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '</td>' +
+                        {% endif %}
                         '</tr>';
                     tbody.append(row);
                 });

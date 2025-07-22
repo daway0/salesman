@@ -17,6 +17,6 @@ type Role struct {
 type UserRoleInfo struct {
 	RoleID      uuid.UUID `json:"role_id"`
 	Title       string    `json:"title"`
-	Description string    `json:"description"`
+	Description *string    `json:"description"`
 	UserHasRole bool      `json:"user_has_role"`
 }

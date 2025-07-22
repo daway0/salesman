@@ -1,37 +1,64 @@
+{% load custom_tags %}
 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
     <div class="menu_section">
         <h3>عمومی</h3>
         <ul class="nav side-menu">
-            <li><a><i class="fa fa-home"></i> خانه <span class="fa fa-chevron-down"></span></a>
+            
+            {% comment %} <li><a><i class="fa fa-home"></i> خانه <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/">داشبورد</a></li>
+                        <li><a href="/">داشبورد</a></li>                    
                 </ul>
-            </li>
+            </li> {% endcomment %}
+            
+            {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"CREATE_ALL_INVOICES" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
             <li><a><i class="fa fa-edit"></i> سند فروش <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/sales-ledger/create/">ایجاد سند فروش</a></li>
-                    <li><a href="/sales-ledger/">لیست سند فروش</a></li>
+                    {% if permissions|has_permission:"CREATE_INVOICE" %}
+                        <li><a href="/sales-ledger/create/">ایجاد فاکتور فروش</a></li>
+                    {% endif %}
+                    {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" %}
+                        <li><a href="/sales-ledger/">لیست فاکتورهای فروش</a></li>
+                    {% endif %}
                 </ul>
             </li>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" or permissions|has_permission:"CREATE_ALL_COMPANIES" %}
             <li><a><i class="fa fa-desktop"></i>شرکت ها <span
                     class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/companies/create/">ایجاد شرکت</a></li>
-                    <li><a href="/companies/">لیست شرکت ها</a></li>
+                    {% if permissions|has_permission:"CREATE_ALL_COMPANIES" %}
+                        <li><a href="/companies/create/">ایجاد شرکت</a></li>
+                    {% endif %}
+                    {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" %}
+                        <li><a href="/companies/">لیست شرکت ها</a></li>
+                    {% endif %}
                 </ul>
             </li>
-            <li><a><i class="fa fa-table"></i> سرویس ها <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="/services/create/">ایجاد سرویس</a></li>
-                    <li><a href="/services/">لیست سرویس ها</a></li>
-                </ul>
-            </li>
-            <li><a><i class="fa fa-bar-chart-o"></i> کاربران <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="/users/create/">ایجاد کاربر</a></li>
-                    <li><a href="/users/">لیست کاربران</a></li>
-                </ul>
-            </li>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_SERVICES_LIST" or permissions|has_permission:"CREATE_ALL_SERVICES" %}
+                <li><a><i class="fa fa-table"></i> سرویس ها <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        {% if permissions|has_permission:"CREATE_ALL_SERVICES" %}
+                            <li><a href="/services/create/">ایجاد سرویس</a></li>
+                        {% endif %}
+                        {% if permissions|has_permission:"VIEW_ALL_SERVICES_LIST" %}
+                            <li><a href="/services/">لیست سرویس ها</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_USERS_LIST" or permissions|has_permission:"CREATE_ALL_USERS" %}
+                <li><a><i class="fa fa-bar-chart-o"></i> کاربران <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        {% if permissions|has_permission:"CREATE_ALL_USERS" %}
+                            <li><a href="/users/create/">ایجاد کاربر</a></li>
+                        {% endif %}
+                        {% if permissions|has_permission:"VIEW_ALL_USERS_LIST" %}
+                        <li><a href="/users/">لیست کاربران</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
         </ul>
     </div>
     

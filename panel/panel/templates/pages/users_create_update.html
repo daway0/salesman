@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="right_col" role="main">
@@ -11,6 +12,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_USERS" %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -31,7 +33,10 @@
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="first-name" required="required"
+                                    <input type="text" id="first-name" required="required" 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                        readonly="readonly"
+                                    {% endif %}
                                         class="form-control col-md-7 col-xs-12">
                                     <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                 </div>
@@ -42,7 +47,10 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="last-name" name="last-name" required="required"
-                                        class="form-control col-md-7 col-xs-12">
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                        readonly="readonly"
+                                    {% endif %}    
+                                    class="form-control col-md-7 col-xs-12">
                                     <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -51,7 +59,11 @@
                                         class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input id="nsid" class="form-control col-md-7 col-xs-12" type="text"
-                                        required="required">
+                                        required="required"
+                                        {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                            readonly="readonly"
+                                        {% endif %}
+                                    >
                                     <span class="fa fa-id-card form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -62,7 +74,10 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input id="birthdate" class="date-picker form-control col-md-7 col-xs-12"
-                                        required="required" type="text">
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                        readonly="readonly"
+                                    {% endif %}    
+                                    required="required" type="text">
                                     <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -72,6 +87,9 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input id="email" class="form-control col-md-7 col-xs-12" required="required"
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                        readonly="readonly"
+                                    {% endif %}    
                                         type="text">
                                     <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
                                 </div>
@@ -101,15 +119,25 @@
                             {% endif %}
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                    <button type="submit" class="btn btn-success">
-                                        ذخیره اطلاعات
-                                    </button>
-                                    {% if edit == True %}
-                                    <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف
-                                        کاربر</button>
-                                    <a class="btn btn-primary pull-left" href="/users/create/">ایجاد کاربر جدید</a>
+                                    
+                                    {% if edit == False and permissions|has_permission:"CREATE_ALL_USERS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ایجاد کاربر
+                                        </button>
+                                    {% elif edit == True and permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ویرایش کاربر
+                                        </button>
                                     {% endif %}
-                                    <button type="button" class="btn btn-primary" onclick="cancel()">انصراف</button>
+                                    
+                                    {% if edit == True %}
+                                        {% if permissions|has_permission:"DELETE_ALL_USERS" %}
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف کاربر</button>
+                                        {% endif %}
+                                        {% if permissions|has_permission:"CREATE_ALL_USERS" %}
+                                            <a class="btn btn-primary pull-left" href="/users/create/">ایجاد کاربر جدید</a>
+                                        {% endif %}
+                                    {% endif %}
                                     
                                 </div>
                             </div>
@@ -118,147 +146,150 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="clearfix"></div>
 
 
             {% if edit == True %}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>گروه بندی ها و سطوح دسترسی</h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            </li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a>
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
+                {% if permissions|has_permission:"VIEW_USER_ROLES" %}
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>گروه بندی ها و سطوح دسترسی</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
 
-                    <div class="x_content">
-                        <div class="table-responsive">
-                            <table class="table table-striped jambo_table bulk_action">
-                                <thead>
-                                    <tr class="headings">
-                                        <th>
-                                            <div class="icheckbox_flat-green" style="position: relative;"><input
-                                                    type="checkbox" id="check-all" class="flat"
-                                                    style="position: absolute; opacity: 0;"><ins class="iCheck-helper"
-                                                    style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
-                                            </div>
-                                        </th>
-                                        <th class="column-title">نام گروه</th>
-                                        <th class="column-title">توضیحات</th>
-                                        <th class="column-title no-link last">عملیات</th>
-                                    </tr>
-                                </thead>
+                            <div class="x_content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr class="headings">
+                                                <th>
+                                                    <div class="icheckbox_flat-green" style="position: relative;"><input
+                                                            type="checkbox" id="check-all" class="flat"
+                                                            style="position: absolute; opacity: 0;"><ins class="iCheck-helper"
+                                                            style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                                    </div>
+                                                </th>
+                                                <th class="column-title">نام گروه</th>
+                                                <th class="column-title">توضیحات</th>
+                                                <th class="column-title">دسترسی دارد؟</th>
+                                                <th class="column-title no-link last">عملیات</th>
+                                            </tr>
+                                        </thead>
 
-                                <tbody id="users-tbody">
-                                </tbody>
-                                <script>
-                                    
-                                    function addRole(roleId) {
-                                        $.ajax({
-                                            url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
-                                            method: 'POST',
-                                            contentType: 'application/json',
-                                            success: function (data) {
-                                                new PNotify({
-                                                    title: 'دسترسی با موفقیت اعطا شد.',
-                                                    text: 'دسترسی با موفقیت اعطا شد.',
-                                                    type: 'success',
-                                                    styling: 'bootstrap3'
+                                        <tbody id="users-tbody">
+                                        </tbody>
+                                        <script>
+                                            
+                                            function addRole(roleId) {
+                                                $.ajax({
+                                                    url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                                    method: 'POST',
+                                                    contentType: 'application/json',
+                                                    success: function (data) {
+                                                        new PNotify({
+                                                            title: 'دسترسی با موفقیت اعطا شد.',
+                                                            text: 'دسترسی با موفقیت اعطا شد.',
+                                                            type: 'success',
+                                                            styling: 'bootstrap3'
+                                                        });
+                                                        loadRoles()
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        new PNotify({
+                                                            title: 'خطا در اعطای دسترسی',
+                                                            text: xhr.responseText,
+                                                            type: 'error',
+                                                            styling: 'bootstrap3'
+                                                        });
+                                                    }
+                                                });
+                                            }
+
+                                            function removeRole(roleId) {
+                                                $.ajax({
+                                                    url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                                    method: 'DELETE',
+                                                    dataType: 'json',
+                                                    contentType: 'application/json',
+                                                    success: function (data) {
+                                                        new PNotify({
+                                                            title: 'دسترسی با موفقیت برداشته شد.',
+                                                            text: 'دسترسی با موفقیت برداشته شد.',
+                                                            type: 'success',
+                                                            styling: 'bootstrap3'
+                                                        });
+                                                        loadRoles()
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        new PNotify({
+                                                            title: 'خطا در برداشتن دسترسی',
+                                                            text: xhr.responseText,
+                                                            type: 'error',
+                                                            styling: 'bootstrap3'
+                                                        });
+                                                    }
+                                                });
+                                            }
+
+                                            function loadRoles() {
+                                                $.ajax({
+                                                    url: '/api/salesman/users/{{ user_id }}/roles/',
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (data) {
+                                                        var tbody = $('#users-tbody');
+                                                        tbody.empty();
+                                                        data.forEach(function (role) {
+                                                            var row = '<tr data-role-id="' + role.role_id + '">' +
+                                                                '<td class="a-center">' +
+                                                                '<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>' +
+                                                                '</td>' +
+                                                                '<td>' + role.title + '</td>' +
+                                                                '<td>' + role.description + '</td>' +
+                                                                '<td>' + (role.user_has_role ? '<span class="fa fa-check text-success" aria-hidden="true"></span>' : '<span class="fa fa-times text-danger" aria-hidden="true"></span>') + '</td>' +
+                                                                '<td>' +
+                                                                (role.user_has_role && {% if permissions|has_permission:"DELETE_USER_ROLE" %}true{% else %}false{% endif %} ? '<button class="btn btn-danger btn-xs" onclick="removeRole(\'' + role.role_id + '\')">حذف دسترسی</button>':'') +
+                                                                (!role.user_has_role && {% if permissions|has_permission:"ADD_USER_ROLE" %}true{% else %}false{% endif %} ? '<button class="btn btn-success btn-xs" onclick="addRole(\'' + role.role_id + '\')">اعطای دسترسی</button>' : '') +
+                                                                '</td>' +
+                                                                '</tr>';
+                                                            tbody.append(row);
+                                                        });
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        new PNotify({
+                                                            title: 'خطا در بارگذاری دسترسی ها',
+                                                            text: xhr.responseText,
+                                                            type: 'error',
+                                                            styling: 'bootstrap3'
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            $(document).ready(function () {
+                                                $.ajaxSetup({
+                                                    beforeSend: function (xhr, settings) {
+                                                        if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                                                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                                                        }
+                                                    }
                                                 });
                                                 loadRoles()
-                                            },
-                                            error: function (xhr, status, error) {
-                                                new PNotify({
-                                                    title: 'خطا در اعطای دسترسی',
-                                                    text: xhr.responseText,
-                                                    type: 'error',
-                                                    styling: 'bootstrap3'
-                                                });
-                                            }
-                                        });
-                                    }
-
-                                    function removeRole(roleId) {
-                                        $.ajax({
-                                            url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
-                                            method: 'DELETE',
-                                            dataType: 'json',
-                                            contentType: 'application/json',
-                                            success: function (data) {
-                                                new PNotify({
-                                                    title: 'دسترسی با موفقیت برداشته شد.',
-                                                    text: 'دسترسی با موفقیت برداشته شد.',
-                                                    type: 'success',
-                                                    styling: 'bootstrap3'
-                                                });
-                                                loadRoles()
-                                            },
-                                            error: function (xhr, status, error) {
-                                                new PNotify({
-                                                    title: 'خطا در برداشتن دسترسی',
-                                                    text: xhr.responseText,
-                                                    type: 'error',
-                                                    styling: 'bootstrap3'
-                                                });
-                                            }
-                                        });
-                                    }
-
-                                    function loadRoles() {
-                                        $.ajax({
-                                            url: '/api/salesman/users/{{ user_id }}/roles/',
-                                            method: 'GET',
-                                            dataType: 'json',
-                                            success: function (data) {
-                                                var tbody = $('#users-tbody');
-                                                tbody.empty();
-                                                data.forEach(function (role) {
-                                                    var row = '<tr data-role-id="' + role.role_id + '">' +
-                                                        '<td class="a-center">' +
-                                                        '<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>' +
-                                                        '</td>' +
-                                                        '<td>' + role.title + '</td>' +
-                                                        '<td>' + role.description + '</td>' +
-                                                        '<td>' +
-                                                        (role.user_has_role
-                                                            ? '<button class="btn btn-danger btn-xs" onclick="removeRole(\'' + role.role_id + '\')">برداشتن دسترسی</button>'
-                                                            : '<button class="btn btn-primary btn-xs" onclick="addRole(\'' + role.role_id + '\')">اعطای دسترسی</button>'
-                                                        ) +
-                                                        '</td>' +
-                                                        '</tr>';
-                                                    tbody.append(row);
-                                                });
-                                            },
-                                            error: function (xhr, status, error) {
-                                                new PNotify({
-                                                    title: 'خطا در بارگذاری دسترسی ها',
-                                                    text: xhr.responseText,
-                                                    type: 'error',
-                                                    styling: 'bootstrap3'
-                                                });
-                                            }
-                                        });
-                                    }
-                                    $(document).ready(function () {
-                                        $.ajaxSetup({
-                                            beforeSend: function (xhr, settings) {
-                                                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
-                                                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-                                                }
-                                            }
-                                        });
-                                        loadRoles()
-                                    });
-                                </script>
-                            </table>
+                                            });
+                                        </script>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endif %}
             {% endif %}
         </div>
 
@@ -413,10 +444,6 @@
                     }
                 });
             }
-        };
-
-        window.cancel = function () {
-            window.location.href = '/users/';
         };
     });
 </script>

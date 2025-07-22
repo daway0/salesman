@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="right_col" role="main">
@@ -7,12 +8,15 @@
             <div class="title_left">
                 <h3>لیست شرکت‌ها</h3>
             </div>
-            <div class="title_right">
-                <a href="/companies/create/" class="btn btn-primary pull-left">ایجاد شرکت جدید</a>
+            {% if permissions|has_permission:"CREATE_ALL_COMPANIES" %}
+                <div class="title_right">
+                    <a href="/companies/create/" class="btn btn-primary pull-left">ایجاد شرکت جدید</a>
             </div>
+            {% endif %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -34,7 +38,9 @@
                                     <th>آدرس تصویر</th>
                                     <th>تاریخ ثبت</th>
                                     <th>تاریخ ویرایش</th>
-                                    <th>عملیات</th>
+                                    {% if permissions|has_permission:"UPDATE_ALL_COMPANIES" or permissions|has_permission:"DELETE_ALL_COMPANIES" or permissions|has_permission:"VIEW_ALL_COMPANIES" %}
+                                        <th>عملیات</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody id="companies-tbody">
@@ -43,6 +49,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="clearfix"></div>
         </div>
     </div>
@@ -65,9 +72,11 @@
                         '<td>' + (company.image_url || '') + '</td>' +
                         '<td>' + (company.created_at ? company.created_at.split("T")[0] : '') + '</td>' +
                         '<td>' + (company.updated_at ? company.updated_at.split("T")[0] : '') + '</td>' +
-                        '<td>' +
-                        '<a href="/companies/edit/' + company.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
-                        '</td>' +
+                        {% if permissions|has_permission:"UPDATE_ALL_COMPANIES" or permissions|has_permission:"DELETE_ALL_COMPANIES" or permissions|has_permission:"VIEW_ALL_COMPANIES" %}
+                            '<td>' +
+                            '<a href="/companies/edit/' + company.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '</td>' +
+                        {% endif %}
                         '</tr>';
                     tbody.append(row);
                 });

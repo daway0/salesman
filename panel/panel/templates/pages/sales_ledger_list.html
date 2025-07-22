@@ -8,7 +8,7 @@
                 <h3>لیست اسناد فروش</h3>
             </div>
             <div class="title_right">
-                <a href="/sales-ledgers/create/" class="btn btn-primary pull-left">ایجاد سند فروش جدید</a>
+                <a href="/sales-ledger/create/" class="btn btn-primary pull-left">ایجاد سند فروش جدید</a>
             </div>
         </div>
         <div class="clearfix"></div>
@@ -54,7 +54,7 @@
     function getStatusLabel(status) {
         switch (status) {
             case 'PENDING':
-                return '<span class="label label-primary mt-10">درحال بررسی</span>';
+                return '<span class="label label-default mt-10">درحال بررسی</span>';
             case 'APPROVED':
                 return '<span class="label label-success mt-10">تایید شده</span>';
             case 'REJECTED':
@@ -86,7 +86,7 @@
                         '<td>' + (ledger.updated_at ? new Date(ledger.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + getStatusLabel(ledger.status) + '</td>' +
                         '<td>' +
-                        '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                        '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">مشاهده</a>' +
                         '</td>' +
                         '</tr>';
                     tbody.append(row);

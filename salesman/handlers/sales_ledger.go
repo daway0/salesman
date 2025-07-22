@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"salesman/models"
 	"time"
@@ -63,6 +64,7 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 	recordUpdatedAt := time.Now()
 	id := c.Param("id")
 
+	log.Println(approval.TRN)
 
 	query := `
 	UPDATE SalesLedger SET status = 'APPROVED', approved_by = $1, approved_at = $2, trn = $3, updated_at = $5

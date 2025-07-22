@@ -1,4 +1,4 @@
-CREATE TABLE Users
+CREATE TABLE Users 
 (
     id            uuid PRIMARY KEY,
     first_name    varchar                  NOT NULL,
@@ -21,7 +21,7 @@ ALTER TABLE Users
     ADD UNIQUE (email);
 
 
-CREATE TABLE Companies
+CREATE TABLE Companies 
 (
     id          uuid PRIMARY KEY,
     title       varchar                  NOT NULL,
@@ -38,7 +38,7 @@ ALTER TABLE Companies
     ADD UNIQUE (CID);
 
 
-CREATE TABLE Services
+CREATE TABLE Services 
 (
     id          uuid PRIMARY KEY,
     company_id  uuid                     NOT NULL REFERENCES Companies (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -51,11 +51,11 @@ CREATE TABLE Services
     deleted_at  timestamp with time zone
 );
 
-CREATE INDEX ON Services
+CREATE INDEX ON Services 
     (company_id);
 
 CREATE TYPE Status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED');
-CREATE TABLE SalesLedger
+CREATE TABLE SalesLedger 
 (
     id               uuid PRIMARY KEY,
     customer_id      uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -86,7 +86,7 @@ CREATE INDEX ON SalesLedger
     (approved_by);
 
 
-CREATE TABLE Roles
+CREATE TABLE Roles 
 (
     id          uuid PRIMARY KEY,
     title       varchar                  NOT NULL,
@@ -99,27 +99,17 @@ CREATE TABLE Roles
 ALTER TABLE Roles
     ADD UNIQUE (title);
 
-CREATE TABLE ContentType
-(
-    id    uuid PRIMARY KEY,
-    model varchar NOT NULL
-);
 
-CREATE TYPE LogAction AS ENUM ('READ', 'WRITE', 'UPDATE', 'DELETE', 'EXECUTE');
-CREATE TABLE Permissions
+
+CREATE TABLE Permissions 
 (
     id           uuid PRIMARY KEY,
-    content_type uuid REFERENCES ContentType (id) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL,
-    action_type  LogAction                                                             NOT NULL,
-    created_at   timestamp with time zone                                              NOT NULL,
-    updated_at   timestamp with time zone,
-    deleted_at   timestamp with time zone
+    action       varchar                  NOT NULL,
+    description  text
 );
 
-ALTER TABLE Permissions
-    ADD UNIQUE (content_type, action_type);
 
-CREATE TABLE RolePermissions
+CREATE TABLE RolePermissions 
 (
     id            uuid PRIMARY KEY,
     role_id       uuid                     NOT NULL REFERENCES Roles (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -135,7 +125,7 @@ CREATE INDEX ON RolePermissions
     (permission_id);
 
 
-CREATE TABLE UserRoles
+CREATE TABLE UserRoles 
 (
     id         uuid PRIMARY KEY,
     user_id    uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -151,7 +141,7 @@ CREATE INDEX ON UserRoles
 CREATE INDEX ON UserRoles
     (user_id);
 
-CREATE TABLE Logs
+CREATE TABLE Logs 
 (
     id                uuid PRIMARY KEY,
     user_id           uuid                     NOT NULL REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
