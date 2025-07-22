@@ -6,7 +6,7 @@
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>ایجاد و ویرایش کاربر</h3>
+                <h3>ایجاد و ویرایش گروه</h3>
             </div>
 
         </div>
@@ -16,7 +16,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>اطلاعات کاربر</h2>
+                        <h2>اطلاعات گروه</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
@@ -27,115 +27,51 @@
                     </div>
                     <div class="x_content">
                         <br />
-                        <form id="user-form" data-parsley-validate class="form-horizontal form-label-left">
+                        <form id="role-form" data-parsley-validate class="form-horizontal form-label-left">
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">نام
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">عنوان
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="first-name" required="required" 
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                    <input type="text" id="title" required="required" 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_ROLES" %}
                                         readonly="readonly"
                                     {% endif %}
                                         class="form-control col-md-7 col-xs-12">
-                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                    <span class="fa fa-tag form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">نام
-                                    خانوادگی <span class="required">*</span>
-                                </label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="last-name" name="last-name" required="required"
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                    <textarea id="description" class="form-control col-md-7 col-xs-12"
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_ROLES" %}
                                         readonly="readonly"
                                     {% endif %}    
-                                    class="form-control col-md-7 col-xs-12">
-                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="nsid" class="control-label col-md-3 col-sm-3 col-xs-12">شماره ملی <span
-                                        class="required">*</span></label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="nsid" class="form-control col-md-7 col-xs-12" type="text"
-                                        required="required"
-                                        {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
-                                            readonly="readonly"
-                                        {% endif %}
-                                    >
-                                    <span class="fa fa-id-card form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="birthdate">تاریخ تولد
-                                    <span class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="birthdate" class="date-picker form-control col-md-7 col-xs-12"
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
-                                        readonly="readonly"
-                                    {% endif %}    
-                                    required="required" type="text">
-                                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">ایمیل <span
-                                        class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="email" class="form-control col-md-7 col-xs-12" required="required"
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
-                                        readonly="readonly"
-                                    {% endif %}    
-                                        type="text">
-                                    <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            {% if edit == False %}
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password">رمز عبور <span
-                                        class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="password" class="form-control col-md-7 col-xs-12" required="required"
-                                        type="password">
-                                    <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password-confirm">تایید
-                                    رمز عبور <span class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="password-confirm" class="form-control col-md-7 col-xs-12"
-                                        required="required" type="password">
-                                    <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
+                                    ></textarea>
+                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="ln_solid"></div>
-                            {% endif %}
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                     
-                                    {% if edit == False and permissions|has_permission:"CREATE_ALL_USERS" %}
+                                    {% if edit == False and permissions|has_permission:"CREATE_ALL_ROLES" %}
                                         <button type="submit" class="btn btn-success">
-                                            ایجاد کاربر
+                                            ایجاد گروه
                                         </button>
-                                    {% elif edit == True and permissions|has_permission:"UPDATE_ALL_USERS" %}
+                                    {% elif edit == True and permissions|has_permission:"UPDATE_ALL_ROLES" %}
                                         <button type="submit" class="btn btn-success">
-                                            ویرایش کاربر
+                                            ویرایش گروه
                                         </button>
                                     {% endif %}
                                     
                                     {% if edit == True %}
-                                        {% if permissions|has_permission:"DELETE_ALL_USERS" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف کاربر</button>
+                                        {% if permissions|has_permission:"DELETE_ALL_ROLES" %}
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteRole()">حذف گروه</button>
                                         {% endif %}
-                                        {% if permissions|has_permission:"CREATE_ALL_USERS" %}
-                                            <a class="btn btn-primary pull-left" href="/users/create/">ایجاد کاربر جدید</a>
+                                        {% if permissions|has_permission:"CREATE_ALL_ROLES" %}
+                                            <a class="btn btn-primary pull-left" href="/roles/create/">ایجاد گروه جدید</a>
                                         {% endif %}
                                     {% endif %}
                                     
@@ -151,11 +87,11 @@
 
 
             {% if edit == True %}
-                {% if permissions|has_permission:"VIEW_USER_ROLES" %}
+                {% if permissions|has_permission:"VIEW_ROLE_PERMISSIONS" %}
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>گروه بندی ها و سطوح دسترسی</h2>
+                                <h2>دسترسی ها</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
@@ -177,20 +113,20 @@
                                                             style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
                                                     </div>
                                                 </th>
-                                                <th class="column-title">نام گروه</th>
+                                                <th class="column-title">عنوان دسترسی</th>
                                                 <th class="column-title">توضیحات</th>
                                                 <th class="column-title">دسترسی دارد؟</th>
                                                 <th class="column-title no-link last">عملیات</th>
                                             </tr>
                                         </thead>
 
-                                        <tbody id="users-tbody">
+                                        <tbody id="roles-tbody">
                                         </tbody>
                                         <script>
                                             
-                                            function addRole(roleId) {
+                                            function addPermission(permissionId) {
                                                 $.ajax({
-                                                    url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                                    url: '/api/salesman/roles/{{ role_id }}/permission/' + permissionId,
                                                     method: 'POST',
                                                     contentType: 'application/json',
                                                     success: function (data) {
@@ -200,7 +136,7 @@
                                                             type: 'success',
                                                             styling: 'bootstrap3'
                                                         });
-                                                        loadRoles()
+                                                        loadPermissions()
                                                     },
                                                     error: function (xhr, status, error) {
                                                         new PNotify({
@@ -213,9 +149,9 @@
                                                 });
                                             }
 
-                                            function removeRole(roleId) {
+                                            function removePermission(permissionId) {
                                                 $.ajax({
-                                                    url: '/api/salesman/users/{{ user_id }}/role/' + roleId,
+                                                    url: '/api/salesman/roles/{{ role_id }}/permission/' + permissionId,
                                                     method: 'DELETE',
                                                     dataType: 'json',
                                                     contentType: 'application/json',
@@ -226,7 +162,7 @@
                                                             type: 'success',
                                                             styling: 'bootstrap3'
                                                         });
-                                                        loadRoles()
+                                                        loadPermissions()
                                                     },
                                                     error: function (xhr, status, error) {
                                                         new PNotify({
@@ -239,28 +175,26 @@
                                                 });
                                             }
 
-                                            function loadRoles() {
+                                            function loadPermissions() {
                                                 $.ajax({
-                                                    url: '/api/salesman/users/{{ user_id }}/roles/',
+                                                    url: '/api/salesman/roles/{{ role_id }}/permissions/',
                                                     method: 'GET',
                                                     dataType: 'json',
                                                     success: function (data) {
-                                                        var tbody = $('#users-tbody');
+                                                        var tbody = $('#roles-tbody');
                                                         tbody.empty();
-                                                        data.forEach(function (role) {
-                                                            var row = '<tr data-role-id="' + role.role_id + '">' +
+                                                        data.forEach(function (permission) {
+                                                            var row = '<tr data-permission-id="' + permission.permission_id + '">' +
                                                                 '<td class="a-center">' +
                                                                 '<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>' +
                                                                 '</td>' +
-                                                                '<td>' + role.title + '</td>' +
-                                                                '<td>' + role.description + '</td>' +
-                                                                '<td>' + (role.user_has_role ? '<span class="fa fa-check text-success" aria-hidden="true"></span>' : '<span class="fa fa-times text-danger" aria-hidden="true"></span>') + '</td>' +
+                                                                '<td>' + permission.permission_action + '</td>' +
+                                                                '<td>' + permission.description + '</td>' +
+                                                                '<td>' + (permission.role_has_permission ? '<span class="fa fa-check text-success" aria-hidden="true"></span>' : '<span class="fa fa-times text-danger" aria-hidden="true"></span>') + '</td>' +
                                                                 '<td>' +
-                                                                (role.user_has_role && {% if permissions|has_permission:"DELETE_USER_ROLE" %}true{% else %}false{% endif %} ? '<button class="btn btn-danger btn-xs" onclick="removeRole(\'' + role.role_id + '\')">حذف دسترسی</button>':'') +
-                                                                (!role.user_has_role && {% if permissions|has_permission:"ADD_USER_ROLE" %}true{% else %}false{% endif %} ? '<button class="btn btn-success btn-xs" onclick="addRole(\'' + role.role_id + '\')">اعطای دسترسی</button>' : '') +
+                                                                (permission.role_has_permission && {% if permissions|has_permission:"DELETE_ROLE_PERMISSION" %}true{% else %}false{% endif %} ? '<button class="btn btn-danger btn-xs" onclick="removePermission(\'' + permission.permission_id + '\')">حذف دسترسی</button>':'') +
+                                                                (!permission.role_has_permission && {% if permissions|has_permission:"ADD_ROLE_PERMISSION" %}true{% else %}false{% endif %} ? '<button class="btn btn-success btn-xs" onclick="addPermission(\'' + permission.permission_id + '\')">اعطای دسترسی</button>' : '') +
                                                                 '</td>' +
-
-                                                                
                                                                 '</tr>';
                                                             tbody.append(row);
                                                         });
@@ -283,7 +217,7 @@
                                                         }
                                                     }
                                                 });
-                                                loadRoles()
+                                                loadPermissions()
                                             });
                                         </script>
                                     </table>
@@ -299,23 +233,16 @@
 </div>
 
 <script>
-    function getUserFormData() {
+    function getRoleFormData() {
         return {
-            first_name: $('#first-name').val(),
-            last_name: $('#last-name').val(),
-            nsid: $('#nsid').val(),
-            birthdate: $('#birthdate').val(),
-            email: $('#email').val(),
-            password: $('#password').val()
+            title: $('#title').val() || null,
+            description: $('#description').val() || null
         };
     }
 
-    function setUserFormData(data) {
-        $('#first-name').val(data.first_name || '');
-        $('#last-name').val(data.last_name || '');
-        $('#nsid').val(data.nsid || '');
-        $('#birthdate').val(data.birthdate || '');
-        $('#email').val(data.email || '');
+    function setRoleFormData(data) {
+        $('#title').val(data.title || '');
+        $('#description').val(data.description || '');
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -327,19 +254,19 @@
         });
 
         var isEdit = "{{ edit }}" == "True";
-        var userId = "{{ user_id|default:'' }}";
+        var roleId = "{{ role_id|default:'' }}";
 
-        if (isEdit && userId) {
+        if (isEdit && roleId) {
             $.ajax({
-                url: '/api/salesman/users/' + userId,
+                url: '/api/salesman/roles/' + roleId,
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    setUserFormData(response);
+                    setRoleFormData(response);
                 },
                 error: function (xhr) {
                     new PNotify({
-                        title: 'خطا در بارگذاری اطلاعات کاربر',
+                        title: 'خطا در بارگذاری اطلاعات گروه',
                         text: xhr.responseText,
                         type: 'error',
                         styling: 'bootstrap3'
@@ -348,38 +275,28 @@
             });
         }
 
-        $('#user-form').on('submit', function (e) {
+        $('#role-form').on('submit', function (e) {
             e.preventDefault();
 
-            if ($('#password').val() !== $('#password-confirm').val()) {
-                new PNotify({
-                    title: 'رمز عبور و تایید آن یکسان نیستند.',
-                    text: 'رمز عبور و تایید آن یکسان نیستند.',
-                    type: 'error',
-                    styling: 'bootstrap3'
-                });
-                return;
-            }
+            var data = getRoleFormData();
 
-            var data = getUserFormData();
-
-            if (isEdit && userId) {
+            if (isEdit && roleId) {
                 $.ajax({
-                    url: '/api/salesman/users/' + userId,
+                    url: '/api/salesman/roles/' + roleId,
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
                         new PNotify({
-                            title: 'کاربر با موفقیت ویرایش شد.',
-                            text: 'کاربر با موفقیت ویرایش شد.',
+                            title: 'گروه با موفقیت ویرایش شد.',
+                            text: 'گروه با موفقیت ویرایش شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در ویرایش کاربر',
+                            title: 'خطا در ویرایش گروه',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'
@@ -388,22 +305,22 @@
                 });
             } else {
                 $.ajax({
-                    url: '/api/salesman/users/',
+                    url: '/api/salesman/roles/',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
                         new PNotify({
-                            title: 'کاربر جدید با موفقیت ایجاد شد.',
-                            text: 'کاربر جدید با موفقیت ایجاد شد.',
+                            title: 'گروه جدید با موفقیت ایجاد شد.',
+                            text: 'گروه جدید با موفقیت ایجاد شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
-                        window.location.href = '/users/edit/' + response.id + '/';
+                        window.location.href = '/roles/edit/' + response.id + '/';
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در ایجاد کاربر',
+                            title: 'خطا در ایجاد گروه',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'
@@ -413,32 +330,32 @@
             }
         });
 
-        window.deleteUser = function () {
-            if (!isEdit || !userId) {
+        window.deleteRole = function () {
+            if (!isEdit || !roleId) {
                 new PNotify({
-                    title: 'کاربری برای حذف انتخاب نشده است.',
-                    text: 'کاربری برای حذف انتخاب نشده است.',
+                    title: 'گروهی برای حذف انتخاب نشده است.',
+                    text: 'گروهی برای حذف انتخاب نشده است.',
                     type: 'error',
                     styling: 'bootstrap3'
                 });
                 return;
             }
-            if (confirm('آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟')) {
+            if (confirm('آیا مطمئن هستید که می‌خواهید این گروه را حذف کنید؟')) {
                 $.ajax({
-                    url: '/api/salesman/users/' + userId,
+                    url: '/api/salesman/roles/' + roleId,
                     type: 'DELETE',
                     success: function (response) {
                         new PNotify({
-                            title: 'کاربر با موفقیت حذف شد.',
-                            text: 'کاربر با موفقیت حذف شد.',
+                            title: 'گروه با موفقیت حذف شد.',
+                            text: 'گروه با موفقیت حذف شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
-                        window.location.href = '/users/';
+                        window.location.href = '/roles/';
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در حذف کاربر',
+                            title: 'خطا در حذف گروه',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'

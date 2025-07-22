@@ -6,21 +6,21 @@
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>لیست کاربران</h3>
+                <h3>لیست گروه ها</h3>
             </div>
-            {% if permissions|has_permission:"CREATE_ALL_USERS" %}
+            {% if permissions|has_permission:"CREATE_ALL_ROLES" %}
                 <div class="title_right">
-                    <a href="/users/create/" class="btn btn-primary pull-left">ایجاد کاربر جدید</a>
+                    <a href="/roles/create/" class="btn btn-primary pull-left">ایجاد گروه جدید</a>
                 </div>
             {% endif %}
         </div>
         <div class="clearfix"></div>
         <div class="row">
-            {% if permissions|has_permission:"VIEW_ALL_USERS_LIST" %}
+            {% if permissions|has_permission:"VIEW_ALL_ROLES_LIST" %}
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>کاربران سیستم
+                            <h2>گروه ها
                             </h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -34,21 +34,16 @@
                             <table id="datatable" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>نام</th>
-                                        <th>نام خانوادگی</th>
-                                        <th>کد ملی</th>
-                                        <th>تاریخ تولد</th>
-                                        <th>ایمیل</th>
-                                        <th>تاریخ ثبت نام</th>
-                                        <th>تاریخ آخرین ورود</th>
-                                        {% if permissions|has_permission:"UPDATE_ALL_USERS" or permissions|has_permission:"DELETE_ALL_USERS" %}
+                                        <th>عنوان</th>
+                                        <th>توضیحات</th>
+                                        {% if permissions|has_permission:"UPDATE_ALL_ROLES" or permissions|has_permission:"DELETE_ALL_ROLES" or permissions|has_permission:"VIEW_ALL_ROLES" %}
                                             <th>عملیات</th>
                                         {% endif %}
                                     </tr>
                                 </thead>
 
 
-                                <tbody id="users-tbody">
+                                <tbody id="roles-tbody">
                                 </tbody>
                             </table>
                         </div>
@@ -65,24 +60,19 @@
 
     $(document).ready(function () {
         $.ajax({
-            url: '/api/salesman/users/',
+            url: '/api/salesman/roles/',
             type: 'GET',
             dataType: 'json',
-            success: function (users) {
-                var tbody = $('#users-tbody');
+            success: function (roles) {
+                var tbody = $('#roles-tbody');
                 tbody.empty();
-                users.forEach(function (user) {
+                roles.forEach(function (role) {
                     var row = '<tr>' +
-                        '<td>' + (user.first_name || '') + '</td>' +
-                        '<td>' + (user.last_name || '') + '</td>' +
-                        '<td>' + (user.nsid || '') + '</td>' +
-                        '<td>' + (user.birthdate ? user.birthdate.split("T")[0] : '') + '</td>' +
-                        '<td>' + (user.email || '') + '</td>' +
-                        '<td>' + (user.created_at ? user.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (user.last_login_at ? user.last_login_at.Time.split("T")[0] : '') + '</td>' +
-                        {% if permissions|has_permission:"UPDATE_ALL_USERS" or permissions|has_permission:"DELETE_ALL_USERS" or permissions|has_permission:"ADD_USER_ROLE" or permissions|has_permission:"DELETE_USER_ROLE" or permissions|has_permission:"VIEW_USER_ROLES" or permissions|has_permission:"VIEW_ALL_USERS" %}
+                        '<td>' + (role.title || '') + '</td>' +
+                        '<td>' + (role.description || '') + '</td>' +
+                        {% if permissions|has_permission:"UPDATE_ALL_ROLES" or permissions|has_permission:"DELETE_ALL_ROLES" or permissions|has_permission:"VIEW_ALL_ROLES" %}
                             '<td>' +
-                            '<a href="/users/edit/' + user.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/roles/edit/' + role.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
                             '</td>' +
                         {% endif %}
                         '</tr>';
@@ -91,7 +81,7 @@
             },
             error: function (xhr, status, error) {
                 new PNotify({
-                    title: 'خطا در بارگذاری کاربران',
+                    title: 'خطا در بارگذاری گروه ها',
                     text: xhr.responseText,
                     type: 'error',
                     styling: 'bootstrap3'

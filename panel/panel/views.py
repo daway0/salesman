@@ -18,30 +18,33 @@ ADMIN_PERMISSIONS = [
         
         'VIEW_ALL_USERS_LIST',
         'VIEW_ALL_USERS',
-        # 'CREATE_ALL_USERS',
-        # 'UPDATE_ALL_USERS',
-        # 'DELETE_ALL_USERS',
+        'CREATE_ALL_USERS',
+        'UPDATE_ALL_USERS',
+        'DELETE_ALL_USERS',
         'VIEW_USER_ROLES',
-        # 'ADD_USER_ROLE',
-        # 'DELETE_USER_ROLE',
+        'ADD_USER_ROLE',
+        'DELETE_USER_ROLE',
         
         'VIEW_ALL_SERVICES_LIST',
         'VIEW_ALL_SERVICES',
-        # 'CREATE_ALL_SERVICES',
-        # 'UPDATE_ALL_SERVICES',
-        # 'DELETE_ALL_SERVICES',
+        'CREATE_ALL_SERVICES',
+        'UPDATE_ALL_SERVICES',
+        'DELETE_ALL_SERVICES',
         
         'VIEW_ALL_COMPANIES_LIST',
         'VIEW_ALL_COMPANIES',
-        # 'CREATE_ALL_COMPANIES',
-        # 'UPDATE_ALL_COMPANIES',
-        # 'DELETE_ALL_COMPANIES',
+        'CREATE_ALL_COMPANIES',
+        'UPDATE_ALL_COMPANIES',
+        'DELETE_ALL_COMPANIES',
         
         'VIEW_ALL_ROLES_LIST',
         'VIEW_ALL_ROLES',
-        'CREATE_ALL_ROLES',
-        'UPDATE_ALL_ROLES',
-        'DELETE_ALL_ROLES',
+        # 'CREATE_ALL_ROLES',
+        # 'UPDATE_ALL_ROLES',
+        # 'DELETE_ALL_ROLES',
+        'VIEW_ROLE_PERMISSIONS',
+        # 'ADD_ROLE_PERMISSION',
+        # 'DELETE_ROLE_PERMISSION',
         
         'VIEW_ALL_LOGS'
 ]
@@ -57,6 +60,7 @@ OPERATOR_PERMISSIONS = [
 ]
 FINANANCE_PERMISSIONS = [
         'VIEW_ALL_INVOICES_LIST',
+
         'VIEW_ALL_INVOICES',
         'DELETE_ALL_INVOICES',
         'APPROVE_ALL_INVOICES',
@@ -119,6 +123,29 @@ def users_list(request):
         "permissions": USER_PERMISSIONS,
     }
     return render(request, 'pages/users_list.html', context)
+
+
+# roles
+def roles_create_update(request, id=None):
+    context = {
+        "edit": False,
+        "role_id": None,
+        "current_user": None,
+        "permissions": USER_PERMISSIONS,
+    }
+    if id:
+        context["edit"] = True
+        context["role_id"] = id
+    return render(request, 'pages/roles_create_update.html', context)
+
+
+def roles_list(request):
+    context = {
+        "current_user": None,
+        "permissions": USER_PERMISSIONS,
+    }
+    return render(request, 'pages/roles_list.html', context)
+
 
 # companies
 def companies_create_update(request, id=None):

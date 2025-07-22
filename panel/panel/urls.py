@@ -22,6 +22,11 @@ urlpatterns = [
     path('sales-ledger/edit/<uuid:id>/', views.sales_ledger_create_update, name='sales_ledger_create_update'),
     path('sales-ledger/', views.sales_ledger_list, name='sales_ledger_list'),
 
+    # Roles
+    path('roles/create/', views.roles_create_update, name='roles_create_update'),
+    path('roles/edit/<uuid:id>/', views.roles_create_update, name='roles_create_update'),
+    path('roles/', views.roles_list, name='roles_list'),
+
     # Dashboard
     path('', views.dashboard, name='dashboard'),
 

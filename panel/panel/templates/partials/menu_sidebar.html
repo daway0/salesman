@@ -10,6 +10,7 @@
                 </ul>
             </li> {% endcomment %}
             
+            
             {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"CREATE_ALL_INVOICES" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
             <li><a><i class="fa fa-edit"></i> سند فروش <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -59,6 +60,19 @@
                     </ul>
                 </li>
             {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_ROLES_LIST" or permissions|has_permission:"CREATE_ALL_ROLES" %}
+                <li><a><i class="fa fa-lock"></i> گروه ها و سطوح دسترسی <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        {% if permissions|has_permission:"CREATE_ALL_ROLES" %}
+                            <li><a href="/roles/create/">ایجاد گروه</a></li>
+                        {% endif %}
+                        {% if permissions|has_permission:"VIEW_ALL_ROLES_LIST" %}
+                            <li><a href="/roles/">لیست گروه ها</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            
         </ul>
     </div>
     

@@ -54,6 +54,8 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.GET("/roles/:id", roleHandler.GetRole)
 		api.PUT("/roles/:id", roleHandler.UpdateRole)
 		api.DELETE("/roles/:id", roleHandler.DeleteRole)
+		api.POST("/roles/:id/permission/:permission_id", rolePermissionHandler.AddRolePermission)
+		api.DELETE("/roles/:id/permission/:permission_id", rolePermissionHandler.RemoveRolePermission)
 
 		api.POST("/permissions", permissionHandler.CreatePermission)
 		api.GET("/permissions", permissionHandler.GetPermissions)
@@ -75,5 +77,6 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.GET("/roles/:id/permissions", rolePermissionHandler.GetRolePermissionsByRoleID)
 		api.PUT("/role-permissions/:id", rolePermissionHandler.UpdateRolePermission)
 		api.DELETE("/role-permissions/:id", rolePermissionHandler.DeleteRolePermission)
+		
 	}
 }
