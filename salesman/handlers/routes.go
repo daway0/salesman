@@ -15,6 +15,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 	salesLedgerHandler := &SalesLedgerHandler{DB: db}
 	userRoleHandler := &UserRoleHandler{DB: db}
 	rolePermissionHandler := &RolePermissionHandler{DB: db}
+	dashboardHandler := &DashboardHandler{DB: db}
 
 	api := r.Group("/api")
 	{
@@ -77,6 +78,10 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.GET("/roles/:id/permissions", rolePermissionHandler.GetRolePermissionsByRoleID)
 		api.PUT("/role-permissions/:id", rolePermissionHandler.UpdateRolePermission)
 		api.DELETE("/role-permissions/:id", rolePermissionHandler.DeleteRolePermission)
+
+		//dashboard
+		api.GET("/dashboard", dashboardHandler.GetDashboard)
+
 		
 	}
 }

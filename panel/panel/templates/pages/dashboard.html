@@ -1,4 +1,378 @@
 {% extends "layouts/base.html" %}
+{% load custom_tags %}
+
 
 {% block content %}
+<div class="right_col" role="main">
+    
+    <div class="">
+        {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+        <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="count" id="total-approved-sales-count"></div>
+                    <h3>تعداد فروش امروز</h3>
+                    <p>فاکتور هایی که امروز تایید شدند</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-money"></i></div>
+                    <div class="count" id="total-approved-sales-amount"></div>
+                    <h3>مبلغ فروش امروز</h3>
+                    <p>جمع فروش فاکتور هایی که امروز تایید شدند</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-clock-o"></i></div>
+                    <div class="count" id="total-unapproved-sales-count"></div>
+                    <h3>فاکتور های تایید نشده</h3>
+                    <p> فاکتور هایی که در انتظار بررسی مالی یا اپراتور هستند</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-star"></i></div>
+                    <div class="count" id="today-mvp-sales-operator"></div>
+                    <h3>اپراتور برتر روز</h3>
+                    <p id="today-mvp-description"></p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="count" id="user-approved-sales-count"></div>
+                    <h3>تعداد فروش امروز شما</h3>
+                    <p>فاکتور هایی که امروز تایید شدند</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-money"></i></div>
+                    <div class="count" id="user-approved-sales-amount"></div>
+                    <h3>مبلغ فروش امروز شما</h3>
+                    <p>جمع فروش فاکتور هایی که امروز تایید شدند</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-clock-o"></i></div>
+                    <div class="count" id="user-unapproved-sales-count"></div>
+                    <h3>فاکتور های تایید نشده شما</h3>
+                    <p> فاکتور هایی که در انتظار بررسی مالی یا شما هستند</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>خلاصه فروش
+                            <small>هفته اخیر</small>
+                        </h2>
+                        {% comment %} <div class="filter">
+                            <div id="reportrange" class="pull-left"
+                                style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                <span>اسفند 29, 1394 - فروردین 28, 1395</span> <b class="caret"></b>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="col-md-9 col-sm-12 col-xs-12">
+                            <div class="demo-container" style="height:280px">
+                                <div id="chart_plot_02" class="demo-placeholder"></div>
+                            </div>
+                            <div class="tiles">
+                                <div class="col-md-4 tile">
+                                    <span>تعداد فاکتور ها</span>
+                                    <h2 id="total-approved-sales-count-in-range"></h2>
+                                    <span class="sparkline11 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                </div>
+                                <div class="col-md-4 tile">
+                                    <span>درآمد کل</span>
+                                    <h2 id="total-approved-sales-amount-in-range"></h2>
+                                    <span class="sparkline22 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+
+                                </div>
+                                <div class="col-md-4 tile">
+                                    <span>تعداد فاکتور ها</span>
+                                    <h2>125,000</h2>
+                                    <span class="sparkline11 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                            <div>
+                                <div class="x_title">
+                                    <h2>اپراتور های برتر</h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <ul class="list-unstyled timeline" id="sales-mvp-list">
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>خلاصه فروش شما
+                            <small>هفته اخیر</small>
+                        </h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="demo-container" style="height:280px">
+                                <div id="chart_plot_02" class="demo-placeholder"></div>
+                            </div>
+                            <div class="tiles">
+                                <div class="col-md-4 tile">
+                                    <span>تعداد فاکتور ها</span>
+                                    <h2 id="total-approved-sales-count-in-range"></h2>
+                                    <span class="sparkline11 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                </div>
+                                <div class="col-md-4 tile">
+                                    <span>درآمد کل</span>
+                                    <h2 id="total-approved-sales-amount-in-range"></h2>
+                                    <span class="sparkline22 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+
+                                </div>
+                                <div class="col-md-4 tile">
+                                    <span>تعداد فاکتور ها</span>
+                                    <h2>125,000</h2>
+                                    <span class="sparkline11 graph" style="height: 160px;">
+                                        <canvas width="200" height="60"
+                                            style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>وضعیت هوای امروز
+                            <small>کرمان</small>
+                        </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div id="ww_9b0db72931906" v='1.3' loc='id'
+                            a='{"t":"horizontal","lang":"fa","sl_lpl":1,"ids":["wl10248"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#FFFFFF","cl_font":"#000000","cl_cloud":"#d4d4d4","cl_persp":"#2196F3","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
+                            <a href="https://weatherwidget.org/" id="ww_9b0db72931906_u" target="_blank">Widget
+                                weather</a></div>
+                        <script async src="https://app3.weatherwidget.org/js/?id=ww_9b0db72931906"></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function dateToTimestamp(dateStr) {
+        return new Date(dateStr).getTime();
+    }
+
+    function renderDashboardChart(chartData) {
+        chartData = chartData || [];
+        var chart_plot_02_data = chartData.map(function (item) {
+            return [dateToTimestamp(item.date), item.sales_amount]
+        });
+        var chart_plot_02_settings = {
+            grid: {
+                show: true,
+                aboveData: true,
+                color: "#3f3f3f",
+                labelMargin: 10,
+                axisMargin: 0,
+                borderWidth: 0,
+                borderColor: null,
+                minBorderMargin: 5,
+                clickable: true,
+                hoverable: true,
+                autoHighlight: true,
+                mouseActiveRadius: 100
+            },
+            series: {
+                lines: {
+                    show: true,
+                    fill: true,
+                    lineWidth: 2,
+                    steps: false
+                },
+                points: {
+                    show: true,
+                    radius: 4.5,
+                    symbol: "circle",
+                    lineWidth: 3.0
+                }
+            },
+            legend: {
+                position: "ne",
+                margin: [0, -25],
+                noColumns: 0,
+                labelBoxBorderColor: null,
+                labelFormatter: function (label, series) {
+                    return label + '&nbsp;&nbsp;';
+                },
+                width: 40,
+                height: 1
+            },
+            colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+            shadowSize: 0,
+            tooltip: true,
+            tooltipOpts: {
+                content: "%s: %y.0",
+                xDateFormat: "%d/%m",
+                shifts: {
+                    x: -30,
+                    y: -50
+                },
+                defaultTheme: false
+            },
+            yaxis: {
+                min: 0
+            },
+            xaxis: {
+                mode: "time",
+                minTickSize: [1, "day"],
+                timeformat: "%d/%m/%y",
+                min: chart_plot_02_data.length ? chart_plot_02_data[0][0] : null,
+                max: chart_plot_02_data.length > 20 ? chart_plot_02_data[20][0] : (chart_plot_02_data.length ? chart_plot_02_data[chart_plot_02_data.length - 1][0] : null)
+            }
+        };
+
+        if ($("#chart_plot_02").length) {
+            $.plot($("#chart_plot_02"),
+                [{
+                    label: "مبلغ فروش (ریال)",
+                    data: chart_plot_02_data,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff"
+                    }
+                }], chart_plot_02_settings);
+        }
+    }
+
+    function renderSalesMVP(mvpList) {
+        var $list = $("#sales-mvp-list");
+        $list.empty();
+        if (!mvpList || !mvpList.length) {
+            $list.append('<li class="media event"><div class="media-body"><p>داده‌ای وجود ندارد</p></div></li>');
+            return;
+        }
+        mvpList.forEach(function (mvp, idx) {
+            var colorClass = ["green", "blue", "aero", "purple", "red"][idx % 5];
+            var html = `
+                <li class="media event">
+                    <a class="pull-left border-${colorClass} profile_thumb">
+                        <i class="fa fa-user ${colorClass}"></i>
+                    </a>
+                    <div class="media-body">
+                        <a class="title" href="#">${mvp.firstname} ${mvp.lastname}</a>
+                        <p><strong>${mvp.sales_amount.toLocaleString()} </strong> ریال  </p>
+                        <p>
+                            <small>تعداد فاکتور: ${mvp.sales_count}</small>
+                        </p>
+                    </div>
+                </li>
+            `;
+            $list.append(html);
+        });
+    }
+
+    function renderTodayMVP(todayMVP) {
+        var fullName = todayMVP.firstname + " " + todayMVP.lastname;
+        var displayName = truncateName(fullName, 18);
+        $("#today-mvp-sales-operator")
+            .text(displayName)
+            .attr('title', fullName);
+        $("#today-mvp-description").text(`تعداد فاکتور: ${todayMVP.sales_count} - مبلغ فروش: ${todayMVP.sales_amount.toLocaleString()} ریال`);
+
+    }
+
+    function truncateName(name, maxLength) {
+        if (name.length > maxLength) {
+            return name.substring(0, maxLength - 3) + '...';
+        }
+        return name;
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/salesman/dashboard',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                renderDashboardChart(data.chart_data_all);
+                $("#total-approved-sales-count").text(data.total_approved_sales_count);
+                $("#total-approved-sales-amount").text(data.total_approved_sales_amount.toLocaleString());
+                $("#total-unapproved-sales-count").text(data.total_unapproved_sales_count);
+                $("#user-approved-sales-count").text(data.user_approved_sales_count);
+                $("#user-approved-sales-amount").text(data.user_approved_sales_amount.toLocaleString());
+                $("#user-unapproved-sales-count").text(data.user_unapproved_sales_count);
+                renderSalesMVP(data.sales_mvp);
+                renderTodayMVP(data.today_mvp);
+                $("#total-approved-sales-count-in-range").text(data.total_approved_sales_count_in_range.toLocaleString());
+                $("#total-approved-sales-amount-in-range").text(data.total_approved_sales_amount_in_range.toLocaleString());
+            },
+            error: function (xhr, status, error) {
+                new PNotify({
+                    title: 'خطا در بارگذاری داشبورد',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}
