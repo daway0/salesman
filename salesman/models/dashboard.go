@@ -27,7 +27,7 @@ type Dashboard struct {
 	SalesMVP []SalesMVP `json:"sales_mvp"`
 
 	// chart
-	ChartData []ChartData `json:"chart_data"`
+	ChartDataUser []ChartData `json:"chart_data_user"`
 
 	// chart for all users
 	ChartDataAll []ChartData `json:"chart_data_all"`

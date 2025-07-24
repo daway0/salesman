@@ -26,6 +26,15 @@ type SalesLedger struct {
 	CreatedAt       time.Time        `json:"created_at" db:"created_at"`
 	UpdatedAt       *time.Time       `json:"updated_at" db:"updated_at"`
 	DeletedAt       *time.Time       `json:"deleted_at" db:"deleted_at"`
+
+	ServiceTitle    string `json:"service_title"`
+	CompanyTitle    string `json:"company_title"`
+	CustomerFirstName    string `json:"customer_first_name"`
+	CustomerLastName    string `json:"customer_last_name"`
+	CreatedByName       string `json:"created_by_name"`
+	CreatedByLastName   string `json:"created_by_last_name"`
+	RefererName         string `json:"referer_name"`
+	RefererLastName     string `json:"referer_last_name"`
 }
 
 type Workflow struct {
@@ -33,12 +42,13 @@ type Workflow struct {
 	ActionAt time.Time `json:"action_at"`
 	Comment  string    `json:"comment"`
 	ActorId  uuid.UUID `json:"actor_id"`
+	ActorName string `json:"actor_name"`
 }
 
 type SalesLedgerApproval struct {
 	ApproverID uuid.UUID `json:"approved_by"`
 	ApprovedAt time.Time `json:"approved_at"`
-	TRN        string    `json:"trn"`
+	TRN        *string    `json:"trn"`
 	Comment    string    `json:"comment"`
 }
 

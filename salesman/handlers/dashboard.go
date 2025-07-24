@@ -15,8 +15,7 @@ type DashboardHandler struct {
 }
 
 func (h *DashboardHandler) GetDashboard(c *gin.Context) {
-	// In production, get the username from the session/context
-	username := "00000000-0000-0000-0000-000000000036"
+	username := "d8f19eb6-8596-483a-8104-f350c8c1c9a2"
 
 	var dashboard models.Dashboard
 
@@ -81,8 +80,6 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 		return
 	}
 
-	// approved sales count and amount in range (last 30 days)
-	// Define date range
 	startDate := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
 	endDate := time.Now().Format("2006-01-02")
 
@@ -130,15 +127,14 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 
 	rows, err := h.DB.Query(`
 		SELECT u.first_name, u.last_name, rs.total_sales_price, rs.count_sales
-		FROM (
-			SELECT created_by, SUM(sales_price) AS total_sales_price, COUNT(sales_price) AS count_sales
+		FROM (SELECT created_by, SUM(sales_price) AS total_sales_price, COUNT(sales_price) AS count_sales
 			FROM salesledger
 			WHERE status = 'APPROVED'
 			GROUP BY created_by
 			ORDER BY SUM(sales_price) DESC
-			LIMIT 5
-		) rs
-		INNER JOIN users u ON u.id = rs.created_by
+			LIMIT 5) rs
+				INNER JOIN users u ON u.id = rs.created_by
+		ORDER BY total_sales_price desc
 	`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get sales MVP"})
@@ -220,7 +216,7 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 		}
 		chartData = append(chartData, cd)
 	}
-	dashboard.ChartData = chartData
+	dashboard.ChartDataUser = chartData
 
 	var todayMVP models.SalesMVP
 	err = h.DB.QueryRow(`

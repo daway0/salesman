@@ -26,11 +26,18 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 	salesLedger.ID = uuid.New()
 	salesLedger.CreatedAt = time.Now()
 
+	res := h.DB.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", salesLedger.CreatedBy).Scan(&salesLedger.CreatedByName)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
+		return
+	}
+	
 	initialWorkflow := models.Workflow{
 		ActionAt: salesLedger.CreatedAt,
 		Comment:  "",
 		ActorId:  salesLedger.CreatedBy,
-		Step:     "ایجاد فاکتور و ارسال به مالی",					
+		Step:     "ایجاد فاکتور و ارسال به مالی",
+		ActorName: salesLedger.CreatedByName,
 	}
 	workflows := []models.Workflow{initialWorkflow}
 	if data, err := json.Marshal(workflows); err == nil {
@@ -103,11 +110,19 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 		}
 	}
 
+	var ApproverName string
+
+	res := h.DB.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", approval.ApproverID).Scan(&ApproverName)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
+		return
+	}
 	approvalWorkflow := models.Workflow{
 		ActionAt: approval.ApprovedAt,
 		Comment:  approval.Comment,
 		ActorId:  approval.ApproverID,
 		Step:     "تایید مالی",
+		ActorName: ApproverName,
 	}
 	workflows = append(workflows, approvalWorkflow)
 
@@ -149,11 +164,18 @@ func (h *SalesLedgerHandler) RejectSalesLedger(c *gin.Context) {
 		}
 	}
 
+	var RejectedBy string
+	res := h.DB.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", rejection.RejectedBy).Scan(&RejectedBy)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
+		return
+	}
 	rejectionWorkflow := models.Workflow{
 		ActionAt: rejection.RejectedAt,
 		Comment:  rejection.Reason,
 		ActorId:  rejection.RejectedBy,
 		Step:     "رد مالی",
+		ActorName: RejectedBy,
 	}
 	workflows = append(workflows, rejectionWorkflow)
 
@@ -214,12 +236,18 @@ func (h *SalesLedgerHandler) CancelSalesLedger(c *gin.Context) {
 		}
 	}
 
-	
-	cancellationWorkflow := models.Workflow{	
+	var CancelledBy string
+	res := h.DB.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", cancellation.CancelledBy).Scan(&CancelledBy)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
+		return
+	}
+	cancellationWorkflow := models.Workflow{
 		ActionAt: cancellation.CancelledAt,
 		Comment:  cancellation.Reason,
 		Step:     "لغو بررسی",
 		ActorId:  cancellation.CancelledBy,
+		ActorName: CancelledBy,
 	}
 	workflows = append(workflows, cancellationWorkflow)
 
@@ -230,7 +258,6 @@ func (h *SalesLedgerHandler) CancelSalesLedger(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 
 	c.JSON(http.StatusOK, gin.H{"message": "Sales ledger cancelled"})
 }
@@ -261,11 +288,18 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 			return
 		}
 	}
-	resendWorkflow := models.Workflow{	
+	var ResendBy string
+	res := h.DB.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", createdBy).Scan(&ResendBy)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
+		return
+	}
+	resendWorkflow := models.Workflow{
 		ActionAt: time.Now(),
 		Comment:  salesLedger.Comment,
 		Step:     "ارسال مجدد به مالی",
 		ActorId:  createdBy,
+		ActorName: ResendBy,
 	}
 	workflows = append(workflows, resendWorkflow)
 
@@ -276,18 +310,52 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{"message": "Sales ledger resend"})
 }
 func (h *SalesLedgerHandler) GetSalesLedger(c *gin.Context) {
 	id := c.Param("id")
 	var salesLedger models.SalesLedger
-	query := `SELECT id, customer_id, service_id, created_by, referer_id, price, sales_price, sales_discount, trn, workflow_history, approved_by, approved_at, cancelled_by, cancelled_at, created_at, status, updated_at, deleted_at
-              FROM SalesLedger WHERE id = $1 AND deleted_at IS NULL`
+	query := `SELECT sl.id,
+			sl.customer_id,
+			sl.service_id,
+			sl.created_by,
+			sl.referer_id,
+			sl.price,
+			sl.sales_price,
+			sl.sales_discount,
+			sl.trn,
+			sl.workflow_history,
+			sl.approved_by,
+			sl.approved_at,
+			sl.cancelled_by,
+			sl.cancelled_at,
+			sl.created_at,
+			sl.status,
+			sl.updated_at,
+			sl.deleted_at,
+			s.title,
+			c.title,
+			u.first_name,
+			u.last_name,
+			u2.first_name as created_by_name,
+			u2.last_name as created_by_last_name,
+			u3.first_name as referer_name,
+			u3.last_name as referer_last_name
+	FROM SalesLedger sl
+	INNER JOIN services s on sl.service_id = s.id
+	INNER JOIN companies c on c.id = s.company_id
+	INNER JOIN users u on sl.customer_id = u.id
+	INNER JOIN users u2 on sl.created_by = u2.id
+	INNER JOIN users u3 on sl.referer_id = u3.id
+	WHERE sl.id = $1
+  AND sl.deleted_at IS NULL`
 	err := h.DB.QueryRow(query, id).Scan(&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
 		&salesLedger.Price, &salesLedger.SalesPrice, &salesLedger.SalesDiscount, &salesLedger.TRN,
 		&salesLedger.WorkflowHistory, &salesLedger.ApprovedBy,
-		&salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt, &salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt)
+		&salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt, &salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt,
+		&salesLedger.ServiceTitle, &salesLedger.CompanyTitle, &salesLedger.CustomerFirstName, &salesLedger.CustomerLastName,
+		&salesLedger.CreatedByName, &salesLedger.CreatedByLastName, &salesLedger.RefererName, &salesLedger.RefererLastName)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Sales ledger entry not found"})
 		return
@@ -300,8 +368,35 @@ func (h *SalesLedgerHandler) GetSalesLedger(c *gin.Context) {
 }
 
 func (h *SalesLedgerHandler) GetSalesLedgers(c *gin.Context) {
-	rows, err := h.DB.Query(`SELECT id, customer_id, service_id, created_by, referer_id, price, sales_price, sales_discount, trn, workflow_history, approved_by, approved_at, cancelled_by, cancelled_at, created_at, status, updated_at, deleted_at 
-                             FROM SalesLedger WHERE deleted_at IS NULL ORDER BY updated_at DESC`)
+	createdByParam := c.Query("created_by")
+	var rows *sql.Rows
+	var err error
+
+	if createdByParam != "" {
+		createdBy, err := uuid.Parse(createdByParam)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid created_by parameter"})
+			return
+		}
+		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.sales_price, sl.sales_discount, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
+       s.title, c.title, u.first_name, u.last_name
+FROM SalesLedger sl
+INNER JOIN services s ON sl.service_id = s.id
+INNER JOIN companies c ON c.id = s.company_id
+INNER JOIN users u ON sl.customer_id = u.id
+WHERE sl.deleted_at IS NULL
+AND sl.created_by = $1
+ORDER BY sl.updated_at DESC`, createdBy)
+	} else {
+		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.sales_price, sl.sales_discount, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
+       s.title, c.title, u.first_name, u.last_name
+FROM SalesLedger sl
+INNER JOIN services s ON sl.service_id = s.id
+INNER JOIN companies c ON c.id = s.company_id
+INNER JOIN users u ON sl.customer_id = u.id
+WHERE sl.deleted_at IS NULL
+ORDER BY sl.updated_at DESC`)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -311,9 +406,13 @@ func (h *SalesLedgerHandler) GetSalesLedgers(c *gin.Context) {
 	var salesLedgers []models.SalesLedger
 	for rows.Next() {
 		var salesLedger models.SalesLedger
-		err := rows.Scan(&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
+		err := rows.Scan(
+			&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
 			&salesLedger.Price, &salesLedger.SalesPrice, &salesLedger.SalesDiscount, &salesLedger.TRN,
-			&salesLedger.WorkflowHistory, &salesLedger.ApprovedBy, &salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt, &salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt)
+			&salesLedger.WorkflowHistory, &salesLedger.ApprovedBy, &salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt,
+			&salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt,
+			&salesLedger.ServiceTitle, &salesLedger.CompanyTitle, &salesLedger.CustomerFirstName, &salesLedger.CustomerLastName,
+		)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

@@ -103,7 +103,7 @@
 
                             <div class="x_content">
                                 <div class="table-responsive">
-                                    <table class="table table-striped jambo_table bulk_action">
+                                    <table id="datatable" class="table table-striped jambo_table bulk_action">
                                         <thead>
                                             <tr class="headings">
                                                 <th>
@@ -198,6 +198,7 @@
                                                                 '</tr>';
                                                             tbody.append(row);
                                                         });
+                                                        $('#datatable').DataTable();
                                                     },
                                                     error: function (xhr, status, error) {
                                                         new PNotify({

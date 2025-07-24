@@ -8,86 +8,95 @@
     <div class="">
         {% if permissions|has_permission:"VIEW_DASHBOARD" %}
         <div class="row top_tiles">
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_ALL_TODAY_APPROVED_COUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="icon"><i class="fa fa-check-square-o text-primary"></i></div>
                     <div class="count" id="total-approved-sales-count"></div>
-                    <h3>تعداد فروش امروز</h3>
+                    <h3>فروش امروز</h3>
                     <p>فاکتور هایی که امروز تایید شدند</p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_ALL_TODAY_APPROVED_AMMOUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-money"></i></div>
+                    <div class="icon"><i class="fa fa-money text-success"></i></div>
                     <div class="count" id="total-approved-sales-amount"></div>
                     <h3>مبلغ فروش امروز</h3>
                     <p>جمع فروش فاکتور هایی که امروز تایید شدند</p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_ALL_TODAY_UNAPPROVED_COUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-clock-o"></i></div>
+                    <div class="icon"><i class="fa fa-clock-o text-danger"></i></div>
                     <div class="count" id="total-unapproved-sales-count"></div>
                     <h3>فاکتور های تایید نشده</h3>
                     <p> فاکتور هایی که در انتظار بررسی مالی یا اپراتور هستند</p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_TODAY_MVP_OPERATOR" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-star"></i></div>
+                    <div class="icon"><i class="fa fa-star text-warning"></i></div>
                     <div class="count" id="today-mvp-sales-operator"></div>
                     <h3>اپراتور برتر روز</h3>
                     <p id="today-mvp-description"></p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_COUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="icon"><i class="fa fa-check-square-o text-primary"></i></div>
                     <div class="count" id="user-approved-sales-count"></div>
-                    <h3>تعداد فروش امروز شما</h3>
+                    <h3>فروش امروز</h3>
                     <p>فاکتور هایی که امروز تایید شدند</p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_AMMOUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-money"></i></div>
+                    <div class="icon"><i class="fa fa-money text-success"></i></div>
                     <div class="count" id="user-approved-sales-amount"></div>
-                    <h3>مبلغ فروش امروز شما</h3>
+                    <h3>مبلغ فروش امروز </h3>
                     <p>جمع فروش فاکتور هایی که امروز تایید شدند</p>
                 </div>
             </div>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD_CARD_USER_TODAY_UNAPPROVED_COUNT" %}
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
-                    <div class="icon"><i class="fa fa-clock-o"></i></div>
+                    <div class="icon"><i class="fa fa-clock-o text-danger"></i></div>
                     <div class="count" id="user-unapproved-sales-count"></div>
-                    <h3>فاکتور های تایید نشده شما</h3>
+                    <h3>فاکتور های تایید نشده </h3>
                     <p> فاکتور هایی که در انتظار بررسی مالی یا شما هستند</p>
                 </div>
             </div>
+            {% endif %}
         </div>
         {% endif %}
 
-        {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+        {% if permissions|has_permission:"VIEW_ALL_SALES_HISTORY" or permissions|has_permission:"VIEW_SALES_MVP_LIST" %}
         <div class="row">
             <div class="col-md-12">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>خلاصه فروش
-                            <small>هفته اخیر</small>
+                            <small>ماه اخیر</small>
                         </h2>
-                        {% comment %} <div class="filter">
-                            <div id="reportrange" class="pull-left"
-                                style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                <span>اسفند 29, 1394 - فروردین 28, 1395</span> <b class="caret"></b>
-                            </div>
-                        </div> {% endcomment %}
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <div class="col-md-9 col-sm-12 col-xs-12">
+                        {% if permissions|has_permission:"VIEW_ALL_SALES_HISTORY" %}
+                        <div class="
+                        {% if permissions|has_permission:"VIEW_ALL_SALES_HISTORY" and not permissions|has_permission:"VIEW_SALES_MVP_LIST" %} col-md-12 {% else %} col-md-9 {% endif %} col-sm-12 col-xs-12">
                             <div class="demo-container" style="height:280px">
-                                <div id="chart_plot_02" class="demo-placeholder"></div>
+                                <div id="all-sales-history-chart" class="demo-placeholder"></div>
                             </div>
                             <div class="tiles">
                                 <div class="col-md-4 tile">
@@ -118,8 +127,10 @@
                             </div>
 
                         </div>
+                        {% endif %}
 
-                        <div class="col-md-3 col-sm-12 col-xs-12">
+                        {% if permissions|has_permission:"VIEW_SALES_MVP_LIST" %}
+                        <div class="{% if not permissions|has_permission:"VIEW_ALL_SALES_HISTORY" and  permissions|has_permission:"VIEW_SALES_MVP_LIST" %} col-md-12 {% else %} col-md-3 {% endif %} col-sm-12 col-xs-12">
                             <div>
                                 <div class="x_title">
                                     <h2>اپراتور های برتر</h2>
@@ -129,6 +140,7 @@
                                 </ul>
                             </div>
                         </div>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -136,7 +148,7 @@
         </div>
         {% endif %}
 
-        {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+        {% if permissions|has_permission:"VIEW_DASHBOARD" and permissions|has_permission:"VIEW_USER_SALES_HISTORY" %}
         <div class="row">
             <div class="col-md-12">
                 <div class="x_panel">
@@ -149,12 +161,12 @@
                     <div class="x_content">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="demo-container" style="height:280px">
-                                <div id="chart_plot_02" class="demo-placeholder"></div>
+                                <div id="user-sales-history-chart" class="demo-placeholder"></div>
                             </div>
                             <div class="tiles">
                                 <div class="col-md-4 tile">
                                     <span>تعداد فاکتور ها</span>
-                                    <h2 id="total-approved-sales-count-in-range"></h2>
+                                    <h2 id="user-approved-sales-count-in-range"></h2>
                                     <span class="sparkline11 graph" style="height: 160px;">
                                         <canvas width="200" height="60"
                                             style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
@@ -162,7 +174,7 @@
                                 </div>
                                 <div class="col-md-4 tile">
                                     <span>درآمد کل</span>
-                                    <h2 id="total-approved-sales-amount-in-range"></h2>
+                                    <h2 id="user-approved-sales-amount-in-range"></h2>
                                     <span class="sparkline22 graph" style="height: 160px;">
                                         <canvas width="200" height="60"
                                             style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
@@ -218,12 +230,12 @@
         return new Date(dateStr).getTime();
     }
 
-    function renderDashboardChart(chartData) {
+    function renderDashboardChart(chartData, chartId) {
         chartData = chartData || [];
-        var chart_plot_02_data = chartData.map(function (item) {
+        var chart_data = chartData.map(function (item) {
             return [dateToTimestamp(item.date), item.sales_amount]
         });
-        var chart_plot_02_settings = {
+        var chart_settings = {
             grid: {
                 show: true,
                 aboveData: true,
@@ -282,23 +294,23 @@
                 mode: "time",
                 minTickSize: [1, "day"],
                 timeformat: "%d/%m/%y",
-                min: chart_plot_02_data.length ? chart_plot_02_data[0][0] : null,
-                max: chart_plot_02_data.length > 20 ? chart_plot_02_data[20][0] : (chart_plot_02_data.length ? chart_plot_02_data[chart_plot_02_data.length - 1][0] : null)
+                min: chart_data.length ? chart_data[0][0] : null,
+                max: chart_data.length > 20 ? chart_data[20][0] : (chart_data.length ? chart_data[chart_data.length - 1][0] : null)
             }
         };
 
-        if ($("#chart_plot_02").length) {
-            $.plot($("#chart_plot_02"),
+        if ($(`#${chartId}`).length) {
+            $.plot($(`#${chartId}`),
                 [{
                     label: "مبلغ فروش (ریال)",
-                    data: chart_plot_02_data,
+                    data: chart_data,
                     lines: {
                         fillColor: "rgba(150, 202, 89, 0.12)"
                     },
                     points: {
                         fillColor: "#fff"
                     }
-                }], chart_plot_02_settings);
+                }], chart_settings);
         }
     }
 
@@ -352,7 +364,8 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                renderDashboardChart(data.chart_data_all);
+                renderDashboardChart(data.chart_data_all, "all-sales-history-chart");
+                renderDashboardChart(data.chart_data_user, "user-sales-history-chart");
                 $("#total-approved-sales-count").text(data.total_approved_sales_count);
                 $("#total-approved-sales-amount").text(data.total_approved_sales_amount.toLocaleString());
                 $("#total-unapproved-sales-count").text(data.total_unapproved_sales_count);
@@ -363,6 +376,8 @@
                 renderTodayMVP(data.today_mvp);
                 $("#total-approved-sales-count-in-range").text(data.total_approved_sales_count_in_range.toLocaleString());
                 $("#total-approved-sales-amount-in-range").text(data.total_approved_sales_amount_in_range.toLocaleString());
+                $("#user-approved-sales-count-in-range").text(data.user_approved_sales_count_in_range.toLocaleString());
+                $("#user-approved-sales-amount-in-range").text(data.user_approved_sales_amount_in_range.toLocaleString());
             },
             error: function (xhr, status, error) {
                 new PNotify({

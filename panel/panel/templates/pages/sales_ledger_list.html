@@ -1,54 +1,64 @@
 {% extends "layouts/base.html" %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="right_col" role="main">
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>لیست اسناد فروش</h3>
+                <h3>لیست فاکتورهای فروش</h3>
             </div>
+            {% if permissions|has_permission:"CREATE_INVOICE" %}
             <div class="title_right">
-                <a href="/sales-ledger/create/" class="btn btn-primary pull-left">ایجاد سند فروش جدید</a>
+                <a href="/sales-ledger/create/" class="btn btn-primary pull-left">ایجاد فاکتور فروش جدید</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>فاکتورهای فروش</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table id="datatable" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>شناسه فاکتور</th>
+                                <th>خدمت - شرکت</th>
+                                <th>مشتری</th>
+                                <th>قیمت پایه</th>
+                                <th>قیمت فروش</th>
+                                <th>تخفیف فروش</th>
+                                <th>شماره تراکنش</th>
+                                <th>تاریخ تایید</th>
+                                <th>تاریخ ثبت</th>
+                                <th>تاریخ به روز رسانی</th>
+                                <th>وضعیت</th>
+                                {% if   permissions|has_permission:"VIEW_OWN_INVOICES" or permissions|has_permission:"VIEW_ALL_INVOICES" or permissions|has_permission:"DELETE_OWN_INVOICES" or permissions|has_permission:"DELETE_ALL_INVOICES" or permissions|has_permission:"APPROVE_ALL_INVOICES" or permissions|has_permission:"REJECT_ALL_INVOICES" or permissions|has_permission:"CANCEL_OWN_INVOICES" or permissions|has_permission:"CANCEL_ALL_INVOICES" %}
+                                <th>عملیات</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody id="sales-ledger-tbody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="clearfix"></div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>اسناد فروش سیستم</h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <table id="datatable" class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>خدمت</th>
-                                    <th>مشتری</th>
-                                    <th>قیمت پایه</th>
-                                    <th>قیمت فروش</th>
-                                    <th>تخفیف فروش</th>
-                                    <th>شماره تراکنش</th>
-                                    <th>تاریخ تایید</th>
-                                    <th>تاریخ ثبت</th>
-                                    <th>تاریخ به روز رسانی</th>
-                                    <th>وضعیت</th>
-                                    <th>عملیات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sales-ledger-tbody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
+        {% endif %}
     </div>
+</div>
 </div>
 <script>
     function getStatusLabel(status) {
@@ -66,8 +76,13 @@
         }
     }
     $(document).ready(function () {
+        {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
         $.ajax({
+            {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" %}
             url: '/api/salesman/sales-ledger/',
+            {% else %}
+            url: '/api/salesman/sales-ledger/?created_by={{ current_user }}',
+            {% endif %}
             type: 'GET',
             dataType: 'json',
             success: function (salesLedgers) {
@@ -75,32 +90,40 @@
                 tbody.empty();
                 salesLedgers.forEach(function (ledger) {
                     var row = '<tr>' +
-                        '<td>' + (ledger.service_id || '') + '</td>' +
-                        '<td>' + (ledger.customer_id || '') + '</td>' +
+                        '<td>' + (ledger.id || '') + '</td>' +   
+                        '<td>' + (ledger.service_title || '') + ' - ' + (ledger.company_title || '') + '</td>' +
+                        '<td>' + (ledger.customer_first_name || '') + ' ' + (ledger.customer_last_name || '') + '</td>' +
                         '<td>' + (ledger.price || '') + '</td>' +
                         '<td>' + (ledger.sales_price || '') + '</td>' +
-                        '<td>' + (ledger.sales_discount || '')  + '</td>' +
+                        '<td>' + (ledger.sales_discount || '') + '</td>' +
                         '<td>' + (ledger.trn || '') + '</td>' +
                         '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.created_at ? new Date(ledger.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.updated_at ? new Date(ledger.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + getStatusLabel(ledger.status) + '</td>' +
-                        '<td>' +
-                        '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">مشاهده</a>' +
-                        '</td>' +
+                        {% if   permissions|has_permission:"VIEW_OWN_INVOICES" or permissions|has_permission:"VIEW_ALL_INVOICES" or permissions|has_permission:"DELETE_OWN_INVOICES" or permissions|has_permission:"DELETE_ALL_INVOICES" or permissions|has_permission:"APPROVE_ALL_INVOICES" or permissions|has_permission:"REJECT_ALL_INVOICES" or permissions|has_permission:"CANCEL_OWN_INVOICES" or permissions|has_permission:"CANCEL_ALL_INVOICES" %}
+                            '<td>' +
+                            '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">مشاهده</a>' +
+                            '</td>' +
+                        {% endif %}
                         '</tr>';
                     tbody.append(row);
                 });
-            },
-            error: function (xhr, status, error) {
-                new PNotify({
-                    title: 'خطا در بارگذاری اسناد فروش',
-                    text: xhr.responseText,
-                    type: 'error',
-                    styling: 'bootstrap3'
-                });
-            }
+                $('#datatable').DataTable(
+                    {order: [[9, 'desc']]}
+                );
+        
+    },
+        error: function (xhr, status, error) {
+            new PNotify({
+                title: 'خطا در بارگذاری فاکتورهای فروش',
+                text: xhr.responseText,
+                type: 'error',
+                styling: 'bootstrap3'
+            });
+        }
         });
+        {% endif %}
     });
 </script>
-{% endblock %} 
+{% endblock %}

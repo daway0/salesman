@@ -4,27 +4,25 @@
         <h3>عمومی</h3>
         <ul class="nav side-menu">
             
-            {% comment %} <li><a><i class="fa fa-home"></i> خانه <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                        <li><a href="/">داشبورد</a></li>                    
-                </ul>
-            </li> {% endcomment %}
+            {% if permissions|has_permission:"VIEW_DASHBOARD" %}
+            <li><a href="/dashboard/"><i class="fa fa-dashboard"></i> داشبورد </a>
+            </li> 
+            {% endif %}
             
-            
-            {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"CREATE_ALL_INVOICES" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
-            <li><a><i class="fa fa-edit"></i> سند فروش <span class="fa fa-chevron-down"></span></a>
+            {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"CREATE_INVOICE" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
+            <li><a><i class="fa fa-shopping-cart"></i> فروش <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     {% if permissions|has_permission:"CREATE_INVOICE" %}
-                        <li><a href="/sales-ledger/create/">ایجاد فاکتور فروش</a></li>
+                        <li><a href="/sales-ledger/create/">ایجاد فاکتور </a></li>
                     {% endif %}
-                    {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" %}
-                        <li><a href="/sales-ledger/">لیست فاکتورهای فروش</a></li>
+                    {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
+                        <li><a href="/sales-ledger/">لیست فاکتورها </a></li>
                     {% endif %}
                 </ul>
             </li>
             {% endif %}
             {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" or permissions|has_permission:"CREATE_ALL_COMPANIES" %}
-            <li><a><i class="fa fa-desktop"></i>شرکت ها <span
+            <li><a><i class="fa fa-building"></i>شرکت ها <span
                     class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     {% if permissions|has_permission:"CREATE_ALL_COMPANIES" %}
@@ -37,7 +35,7 @@
             </li>
             {% endif %}
             {% if permissions|has_permission:"VIEW_ALL_SERVICES_LIST" or permissions|has_permission:"CREATE_ALL_SERVICES" %}
-                <li><a><i class="fa fa-table"></i> سرویس ها <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-cogs"></i> سرویس ها <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         {% if permissions|has_permission:"CREATE_ALL_SERVICES" %}
                             <li><a href="/services/create/">ایجاد سرویس</a></li>
@@ -49,7 +47,7 @@
                 </li>
             {% endif %}
             {% if permissions|has_permission:"VIEW_ALL_USERS_LIST" or permissions|has_permission:"CREATE_ALL_USERS" %}
-                <li><a><i class="fa fa-bar-chart-o"></i> کاربران <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-users"></i> کاربران <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         {% if permissions|has_permission:"CREATE_ALL_USERS" %}
                             <li><a href="/users/create/">ایجاد کاربر</a></li>

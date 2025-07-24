@@ -28,7 +28,7 @@ urlpatterns = [
     path('roles/', views.roles_list, name='roles_list'),
 
     # Dashboard
-    path('', views.dashboard, name='dashboard'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 
     # Login
     path('login/', views.login, name='login'),

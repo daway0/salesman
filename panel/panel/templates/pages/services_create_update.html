@@ -6,7 +6,7 @@
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>ایجاد و ویرایش خدمت</h3>
+                <h3>ایجاد و ویرایش سرویس</h3>
             </div>
         </div>
         <div class="clearfix"></div>
@@ -15,7 +15,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>اطلاعات خدمت</h2>
+                        <h2>اطلاعات سرویس</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -32,13 +32,13 @@
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
                                         disabled
                                     {% endif %}    
-                                    id="company-id" required>
+                                    id="company-id" required style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">عنوان خدمت <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">عنوان سرویس <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="title" required="required" class="form-control col-md-7 col-xs-12"
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
@@ -98,7 +98,7 @@
                                             <button type="button" class="btn btn-danger pull-left" onclick="deleteService()">حذف سرویس</button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_SERVICES" %}
-                                            <a class="btn btn-primary pull-left" href="/services/create/">ایجاد خدمت جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/services/create/">ایجاد سرویس جدید</a>
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -123,7 +123,10 @@
         };
     }
     function setServiceFormData(data) {
-        $('#company-id').val(data.company_id || '');
+        if (data.company_id) {
+            var option = new Option(data.company_title || '', data.company_id, true, true);
+            $('#company-id').append(option).trigger('change');
+        }
         $('#title').val(data.title || '');
         $('#description').val(data.description || '');
         $('#price').val(data.price || '');
@@ -137,11 +140,6 @@
                 }
             }
         });
-
-        var isEdit = "{{ edit }}" == "True";
-        var serviceId = "{{ service_id|default:'' }}";
-        var serviceData = null;
-        var companiesLoaded = false;
 
         $.ajax({
             url: '/api/salesman/companies/',
@@ -159,16 +157,27 @@
                         })
                     );
                 });
-                companiesLoaded = true;
                 if (isEdit && serviceData) {
                     setServiceFormData(serviceData);
                 }
+                $select.select2({
+                    dir: 'rtl',
+                    language: 'fa',
+                    placeholder: 'انتخاب شرکت',
+                    minimumInputLength: 0,
+                    allowClear: true
+                });
             },
             error: function () {
                 $('#company-id').html('<option value="">خطا در بارگذاری شرکت‌ها</option>');
-                companiesLoaded = true;
             }
         });
+        
+
+        var isEdit = "{{ edit }}" == "True";
+        var serviceId = "{{ service_id|default:'' }}";
+        var serviceData = null;
+        var companiesLoaded = false;
 
         if (isEdit && serviceId) {
             $.ajax({
@@ -177,13 +186,11 @@
                 dataType: 'json',
                 success: function (response) {
                     serviceData = response;
-                    if (companiesLoaded) {
-                        setServiceFormData(serviceData);
-                    }
+                    setServiceFormData(serviceData);
                 },
                 error: function (xhr) {
                     new PNotify({
-                        title: 'خطا در بارگذاری اطلاعات خدمت',
+                        title: 'خطا در بارگذاری اطلاعات سرویس',
                         text: xhr.responseText,
                         type: 'error',
                         styling: 'bootstrap3'
@@ -202,16 +209,15 @@
                     data: JSON.stringify(data),
                     success: function (response) {
                         new PNotify({
-                            title: 'خدمت با موفقیت ویرایش شد.',
-                            text: 'خدمت با موفقیت ویرایش شد.',
+                            title: 'سرویس با موفقیت ویرایش شد.',
+                            text: 'سرویس با موفقیت ویرایش شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
-                        window.location.href = '/services/';
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در ویرایش خدمت',
+                            title: 'خطا در ویرایش سرویس',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'
@@ -226,8 +232,8 @@
                     data: JSON.stringify(data),
                     success: function (response) {
                         new PNotify({
-                            title: 'خدمت جدید با موفقیت ایجاد شد.',
-                            text: 'خدمت جدید با موفقیت ایجاد شد.',
+                            title: 'سرویس جدید با موفقیت ایجاد شد.',
+                            text: 'سرویس جدید با موفقیت ایجاد شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
@@ -235,7 +241,7 @@
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در ایجاد خدمت',
+                            title: 'خطا در ایجاد سرویس',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'
@@ -247,21 +253,21 @@
         window.deleteService = function () {
             if (!isEdit || !serviceId) {
                 new PNotify({
-                    title: 'خدمتی برای حذف انتخاب نشده است.',
-                    text: 'خدمتی برای حذف انتخاب نشده است.',
+                    title: 'سرویسی برای حذف انتخاب نشده است.',
+                    text: 'سرویسی برای حذف انتخاب نشده است.',
                     type: 'error',
                     styling: 'bootstrap3'
                 });
                 return;
             }
-            if (confirm('آیا مطمئن هستید که می‌خواهید این خدمت را حذف کنید؟')) {
+            if (confirm('آیا مطمئن هستید که می‌خواهید این سرویس را حذف کنید؟')) {
                 $.ajax({
                     url: '/api/salesman/services/' + serviceId,
                     type: 'DELETE',
                     success: function (response) {
                         new PNotify({
-                            title: 'خدمت با موفقیت حذف شد.',
-                            text: 'خدمت با موفقیت حذف شد.',
+                            title: 'سرویس با موفقیت حذف شد.',
+                            text: 'سرویس با موفقیت حذف شد.',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
@@ -269,7 +275,7 @@
                     },
                     error: function (xhr) {
                         new PNotify({
-                            title: 'خطا در حذف خدمت',
+                            title: 'خطا در حذف سرویس',
                             text: xhr.responseText,
                             type: 'error',
                             styling: 'bootstrap3'

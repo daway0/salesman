@@ -197,7 +197,7 @@
                             type: 'success',
                             styling: 'bootstrap3'
                         });
-                        window.location.href = '/companies/edit/' + response.id + '/';
+                        {% comment %} window.location.href = '/companies/edit/' + response.id + '/'; {% endcomment %}
                     },
                     error: function (xhr) {
                         new PNotify({

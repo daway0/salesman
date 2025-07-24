@@ -38,10 +38,10 @@ func (h *ServiceHandler) CreateService(c *gin.Context) {
 func (h *ServiceHandler) GetService(c *gin.Context) {
 	id := c.Param("id")
 	var service models.Service
-	query := `SELECT id, company_id, title, description, price, image_url, created_at, updated_at, deleted_at
-              FROM Services WHERE id = $1 AND deleted_at IS NULL`
+	query := `SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.created_at, s.updated_at, s.deleted_at, c.title
+              FROM Services s INNER JOIN Companies c ON s.company_id = c.id WHERE s.id = $1 AND s.deleted_at IS NULL`
 	err := h.DB.QueryRow(query, id).Scan(&service.ID, &service.CompanyID, &service.Title,
-		&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt)
+		&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Service not found"})
 		return
@@ -54,8 +54,8 @@ func (h *ServiceHandler) GetService(c *gin.Context) {
 }
 
 func (h *ServiceHandler) GetServices(c *gin.Context) {
-	rows, err := h.DB.Query(`SELECT id, company_id, title, description, price, image_url, created_at, updated_at, deleted_at 
-                             FROM Services WHERE deleted_at IS NULL`)
+	rows, err := h.DB.Query(`SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.created_at, s.updated_at, s.deleted_at, c.title
+                             FROM Services s INNER JOIN Companies c ON s.company_id = c.id WHERE s.deleted_at IS NULL`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +66,7 @@ func (h *ServiceHandler) GetServices(c *gin.Context) {
 	for rows.Next() {
 		var service models.Service
 		err := rows.Scan(&service.ID, &service.CompanyID, &service.Title,
-			&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt)
+			&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

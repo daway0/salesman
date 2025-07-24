@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import requests
 
-
+CURRENT_USER_ID = "00000000-0000-0000-0000-000000000036"
 ADMIN_PERMISSIONS = [
         'CREATE_INVOICE',
         'VIEW_OWN_INVOICES',
@@ -28,7 +28,7 @@ ADMIN_PERMISSIONS = [
         'VIEW_ALL_SERVICES_LIST',
         'VIEW_ALL_SERVICES',
         'CREATE_ALL_SERVICES',
-        'UPDATE_ALL_SERVICES',
+        # 'UPDATE_ALL_SERVICES',
         'DELETE_ALL_SERVICES',
         
         'VIEW_ALL_COMPANIES_LIST',
@@ -57,17 +57,25 @@ ADMIN_PERMISSIONS = [
         'VIEW_DASHBOARD_CARD_USER_TODAY_UNAPPROVED_COUNT',
         'VIEW_TODAY_MVP_OPERATOR',
         'VIEW_SALES_MVP_LIST',
-        'VIEW_SALES_HISTORY'
+        'VIEW_ALL_SALES_HISTORY',
+        'VIEW_USER_SALES_HISTORY'
 ]
 
 OPERATOR_PERMISSIONS = [
         'CREATE_INVOICE',
         'VIEW_OWN_INVOICES',
         'VIEW_OWN_INVOICES_LIST',
+        'VIEW_ALL_INVOICES_LIST',
         'DELETE_OWN_INVOICES',
         'CANCEL_OWN_INVOICES',
         'VIEW_ALL_SERVICES_LIST',
-        'VIEW_ALL_COMPANIES_LIST'
+        'VIEW_ALL_COMPANIES_LIST',
+        'VIEW_DASHBOARD',
+        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_COUNT',
+        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_AMMOUNT',
+        'VIEW_DASHBOARD_CARD_USER_TODAY_UNAPPROVED_COUNT',
+        'VIEW_TODAY_MVP_OPERATOR',
+        'VIEW_USER_SALES_HISTORY'
 ]
 FINANANCE_PERMISSIONS = [
         'VIEW_ALL_INVOICES_LIST',
@@ -203,7 +211,7 @@ def sales_ledger_create_update(request, id=None):
     context = {
         "edit": False,
         "sales_ledger_id": None,
-        "current_user": "00000000-0000-0000-0000-000000000036",
+        "current_user": CURRENT_USER_ID,
         "permissions": USER_PERMISSIONS,
     }
     if id:
@@ -213,7 +221,7 @@ def sales_ledger_create_update(request, id=None):
 
 def sales_ledger_list(request):
     context = {
-        "current_user": None,
+        "current_user": CURRENT_USER_ID,
         "permissions": USER_PERMISSIONS,
     }
     return render(request, 'pages/sales_ledger_list.html', context)

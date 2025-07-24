@@ -30,55 +30,57 @@
                                     <span class="fa fa-barcode form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب مشتری <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="customer-id" required >
+                                    <select class="form-control" id="customer-id" required disabled style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب خدمت <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="service-id" required >
+                                    <select class="form-control" id="service-id" required disabled style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="created-by">ایجاد کننده فاکتور <span class="required">*</span></label>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">ایجاد کننده فاکتور <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="created-by" type="text" class="form-control" readonly="readonly"  value="{{ current_user }}">
-                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                    <select class="form-control" id="created-by" required disabled style="width: 100%">
+                                        <option value="">در حال بارگذاری...</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="referer-id">معرف</label>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">معرف</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="referer-id" type="text" class="form-control" value="{{ current_user }}">
-                                    <span class="fa fa-star form-control-feedback left" aria-hidden="true"></span>
+                                    <select class="form-control" id="referer-id" disabled style="width: 100%">
+                                        <option value="">در حال بارگذاری...</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت پایه <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" >
+                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-price">قیمت فروش <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="sales-price" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="sales-price" required="required" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-discount">تخفیف فروش</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="sales-discount" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="sales-discount" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-percent form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
@@ -149,13 +151,12 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                    <button id="create-btn" type="submit" class="btn btn-success" >ایجاد فاکتور و ارسال به مالی</button>
+                                    <button id="create-btn" type="submit" class="btn btn-success hidden disabled" >ایجاد فاکتور و ارسال به مالی</button>
                                     <button id="save-btn" type="button" class="btn btn-success hidden" onclick="saveAndReSendalesLedger()" disabled>ذخیره و ارسال مجدد به مالی</button>
                                     <button id="approve-btn" type="button" class="btn btn-success hidden" onclick="approveSalesLedger()" disabled>تایید و ثبت</button>
-                                    <button id="reject-btn" type="button" class="btn btn-danger pull-left hidden" onclick="rejectSalesLedger()" disabled>بازگشت به اپراتور</button>
+                                    <button id="reject-btn" type="button" class="btn btn-danger pull-left hidden" onclick="rejectSalesLedger()" disabled>ارجاع به اپراتور</button>
                                     <button id="delete-btn" type="button" class="btn btn-danger pull-left hidden" onclick="deleteSalesLedger()" disabled>حذف سند فروش</button>
                                     <button id="cancel-btn" type="button" class="btn btn-danger pull-left hidden" onclick="cancelSalesLedger()" disabled>لغو بررسی</button>
-                                    <button id="discard-btn" type="button" class="btn btn-primary" onclick="discardSalesLedger()">انصراف</button>
                                 </div>
                             </div>
                         </form>
@@ -224,10 +225,22 @@
         };
     }
     function setSalesLedgerFormData(data) {
-        $('#customer-id').val(data.customer_id || '');
-        $('#service-id').val(data.service_id || '');
-        $('#created-by').val(data.created_by || '');
-        $('#referer-id').val(data.referer_id || '');
+        if (data.customer_id) {
+            var option = new Option(data.customer_first_name + ' ' + data.customer_last_name, data.customer_id, true, true);
+            $('#customer-id').append(option).trigger('change');
+        }
+        if (data.service_id) {
+            var option = new Option(data.service_title, data.service_id, true, true);
+            $('#service-id').append(option).trigger('change');
+        }
+        if (data.created_by) {
+            var option = new Option(data.created_by_name || data.created_by, data.created_by, true, true);
+            $('#created-by').append(option).trigger('change');
+        }
+        if (data.referer_id) {
+            var option = new Option(data.referer_name || data.referer_id, data.referer_id, true, true);
+            $('#referer-id').append(option).trigger('change');
+        }
         $('#price').val(data.price || '');
         $('#sales-price').val(data.sales_price || '');
         $('#sales-discount').val(data.sales_discount || '');
@@ -257,7 +270,7 @@
         }
         if (!Array.isArray(workflows)) return;
         workflows.forEach(function (item, idx) {
-            var actor = item.actor_id || '';
+            var actor = item.actor_name || '';
             var step = item.step || '';
             var comment = item.comment || '';
             var actionAt = item.action_at ? new Date(item.action_at).toLocaleString('fa-IR') : '';
@@ -272,88 +285,86 @@
         });
     }
 
+    function commonUpdateUIByStatus() {
+        $('#sales-ledger-id-panel').removeClass('hidden');
+        $('#customer-id').parents('.form-group').removeClass('hidden');
+        $('#service-id').parents('.form-group').removeClass('hidden');
+        $('#created-by').parents('.form-group').removeClass('hidden');
+        $('#referer-id').parents('.form-group').removeClass('hidden');
+        $('#price').parents('.form-group').removeClass('hidden');
+        $('#sales-price').parents('.form-group').removeClass('hidden');
+        $('#sales-discount').parents('.form-group').removeClass('hidden');
+        $('#status-panel').removeClass('hidden');
+        $('#workflow-panel').removeClass('hidden');
+    }
+
     function updateUIByStatus(status) {
-        var userRole = "{{ user_role }}";
-        
-        // common
+        var userRole = "operator";
+        var permissions = {{ permissions|safe }};
+
         if (
-            (userRole == 'operator' && (status == 'PENDING' || status == 'APPROVED' || status == 'CANCELLED')) || 
-            (userRole == 'admin' && (status == 'APPROVED' || status == 'CANCELLED' || status == 'REJECTED'))
+            status == 'INITIATE' &&
+            permissions.includes('CREATE_INVOICE')
         ) {
-            $('#sales-ledger-id-panel').removeClass('hidden');
-            $('#customer-id').prop('disabled', true);
-            $('#service-id').prop('disabled', true);
-            $('#created-by').prop('disabled', true);
-            $('#referer-id').prop('disabled', true);
-            $('#price').prop('disabled', true);
-            $('#sales-price').prop('disabled', true);
-            $('#sales-discount').prop('disabled', true);
-            $('#create-btn').addClass('hidden').prop('disabled', true);
-            $('#save-btn').addClass('hidden').prop('disabled', true);
-            $('#approve-btn').addClass('hidden').prop('disabled', true);
-            $('#reject-btn').addClass('hidden').prop('disabled', true);
-            $('#discard-btn').addClass('hidden').prop('disabled', true);
-            $('#cancel-btn').addClass('hidden').prop('disabled', true);
-            $('#delete-btn').addClass('hidden').prop('disabled', true);
-            $('#status-panel').removeClass('hidden');
-            $('#workflow-panel').removeClass('hidden');
-        } 
-        if (userRole == 'operator' && status == 'REJECTED') {
-            $('#sales-ledger-id-panel').removeClass('hidden');
-            $('#customer-id').prop('disabled', true);
-            $('#service-id').prop('disabled', true);
-            $('#referer-id').prop('disabled', true);
-            $('#price').prop('disabled', true);
-            $('#comment-panel').removeClass('hidden');
-            $('#approve-btn').addClass('hidden').prop('disabled', true);
-            $('#reject-btn').addClass('hidden').prop('disabled', true);
-            $('#create-btn').addClass('hidden').prop('disabled', true);
-            $('#save-btn').removeClass('hidden').prop('disabled', false);
-            $('#discard-btn').removeClass('hidden').prop('disabled', false);
-            $('#cancel-btn').removeClass('hidden').prop('disabled', false);
-            $('#delete-btn').addClass('hidden').prop('disabled', true);
-            $('#status-panel').removeClass('hidden');
-            $('#workflow-panel').removeClass('hidden');
+            $('#customer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#service-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#created-by').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#referer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#sales-price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#sales-discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#create-btn').removeClass('hidden disabled').prop('disabled', false);
+            return;
         }
-        if (userRole == 'admin' && status == 'PENDING') {
-            $('#sales-ledger-id-panel').removeClass('hidden');
-            $('#customer-id').prop('disabled', true);
-            $('#service-id').prop('disabled', true);
-            $('#created-by').prop('disabled', true);
-            $('#referer-id').prop('disabled', true);
-            $('#trn-panel').removeClass('hidden');
-            $('#trn').prop('disabled', false).removeAttr('readonly');
-            $('#price').prop('disabled', true);
-            $('#sales-price').prop('disabled', true);
-            $('#sales-discount').prop('disabled', true);
-            $('#create-btn').addClass('hidden').prop('disabled', true);
-            $('#save-btn').addClass('hidden').prop('disabled', true);
-            $('#approve-btn').removeClass('hidden').prop('disabled', false);
-            $('#reject-btn').removeClass('hidden').prop('disabled', false);
-            $('#discard-btn').removeClass('hidden').prop('disabled', false);
-            $('#cancel-btn').removeClass('hidden').prop('disabled', false);
-            $('#delete-btn').addClass('hidden').prop('disabled', true);
-            $('#comment-panel').removeClass('hidden');
-            $('#status-panel').removeClass('hidden');
-            $('#workflow-panel').removeClass('hidden');
-        }
+        if (permissions.includes('VIEW_ALL_INVOICES') || permissions.includes('VIEW_OWN_INVOICES')){
+            if (status == 'PENDING') {
+                
+                commonUpdateUIByStatus();
+                $('#status-label-pending').removeClass('hidden');
 
-        if (userRole == 'admin' && (status == 'REJECTED' || status == 'CANCELLED' || status == 'APPROVED')) {
-            $('#trn-panel').removeClass('hidden');
+                if (permissions.includes('APPROVE_ALL_INVOICES')) {
+                    $('#approve-btn').removeClass('hidden disabled').prop('disabled', false);
+                    $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+                    $('#comment-panel').removeClass('hidden');
+                } 
+                
+                if (permissions.includes('REJECT_ALL_INVOICES')) {
+                    $('#reject-btn').removeClass('hidden disabled').prop('disabled', false);
+                    $('#comment-panel').removeClass('hidden');
+                } 
+                if (permissions.includes('CANCEL_ALL_INVOICES')) {
+                    $('#cancel-btn').removeClass('hidden disabled').prop('disabled', false);
+                    $('#comment-panel').removeClass('hidden');
+                }
+                return;
+            }
+            if (status == 'APPROVED') {
+                commonUpdateUIByStatus();
+                $('#status-label-approved').removeClass('hidden');
+                return;
+            }
+            if (status == 'REJECTED') {
+                commonUpdateUIByStatus(); 
+                $('#status-label-rejected').removeClass('hidden');
+                
+                if (permissions.includes('CREATE_INVOICE')) {
+                    $('#price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+                    $('#sales-price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+                    $('#sales-discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+                    $('#comment-panel').removeClass('hidden');
+                    $('#save-btn').removeClass('hidden disabled').prop('disabled', false);
+                }
+                if (permissions.includes('DELETE_ALL_INVOICES') || permissions.includes('DELETE_OWN_INVOICES')) {
+                    $('#cancel-btn').removeClass('hidden disabled').prop('disabled', false);
+                }
+                return;
+            }
+            if (status == 'CANCELLED') {
+                commonUpdateUIByStatus();
+                $('#status-label-cancelled').removeClass('hidden');
+                return;
+            }
         }
-        if (status == 'APPROVED') {
-            $('#status-label-approved').removeClass('hidden');
-        }
-        if (status == 'PENDING') {
-            $('#status-label-pending').removeClass('hidden');
-        }
-        if (status == 'REJECTED') {
-            $('#status-label-rejected').removeClass('hidden');
-        }
-        if (status == 'CANCELLED') {
-            $('#status-label-cancelled').removeClass('hidden');
-        }
-
         
     }
     $(document).ready(function () {
@@ -364,12 +375,58 @@
                 }
             }
         });
-        var isInitiate = "{{ initiate }}" == "True";
+        var isInitiate = "{{ edit }}" != "True";
         var salesLedgerId = "{{ sales_ledger_id|default:'' }}";
         var salesLedgerData = null;
         var servicesLoaded = false;
         var usersLoaded = false;
+        if (isInitiate) {
+            updateUIByStatus('INITIATE');
+        }
         
+        // Load all users for customer, referer, and created_by selects
+        $.ajax({
+            url: '/api/salesman/users/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (users) {
+                var $customer = $('#customer-id');
+                var $referer = $('#referer-id');
+                var $createdBy = $('#created-by');
+                $customer.empty();
+                $referer.empty();
+                $createdBy.empty();
+                $customer.append('<option value="">انتخاب مشتری</option>');
+                $referer.append('<option value="">انتخاب معرف</option>');
+                $createdBy.append('<option value="">انتخاب ایجادکننده</option>');
+                users.forEach(function (user) {
+                    var fullName = user.first_name + ' ' + user.last_name;
+                    $customer.append($('<option>', { value: user.id, text: fullName }));
+                    $referer.append($('<option>', { value: user.id, text: fullName }));
+                    $createdBy.append($('<option>', { value: user.id, text: fullName }));
+                });
+                $customer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب مشتری', minimumInputLength: 0, allowClear: true });
+                $referer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب معرف', minimumInputLength: 0, allowClear: true });
+                $createdBy.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب ایجادکننده', minimumInputLength: 0, allowClear: true });
+                usersLoaded = true;
+                if (!isInitiate && salesLedgerData && servicesLoaded) {
+                    setSalesLedgerFormData(salesLedgerData);
+                }
+            },
+            error: function () {
+                $('#customer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
+                $('#referer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
+                $('#created-by').html('<option value="">خطا در بارگذاری کاربران</option>');
+                usersLoaded = true;
+                new PNotify({
+                    title: 'خطا در بارگذاری کاربران',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        });
+        // Load all services for service select
         $.ajax({
             url: '/api/salesman/services/',
             type: 'GET',
@@ -386,6 +443,7 @@
                         })
                     );
                 });
+                $select.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب خدمت', minimumInputLength: 0, allowClear: true });
                 servicesLoaded = true;
                 if (!isInitiate && salesLedgerData && usersLoaded) {
                     setSalesLedgerFormData(salesLedgerData);
@@ -402,38 +460,6 @@
                 });
             }
         });
-        $.ajax({
-            url: '/api/salesman/users/',
-            type: 'GET',
-            dataType: 'json',
-            success: function (users) {
-                var $select = $('#customer-id');
-                $select.empty();
-                $select.append('<option value="">انتخاب مشتری</option>');
-                users.forEach(function (user) {
-                    $select.append(
-                        $('<option>', {
-                            value: user.id,
-                            text: user.first_name + ' ' + user.last_name
-                        })
-                    );
-                });
-                usersLoaded = true;
-                if (!isInitiate && salesLedgerData && servicesLoaded) {
-                    setSalesLedgerFormData(salesLedgerData);
-                }
-            },
-            error: function () {
-                $('#customer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
-                usersLoaded = true;
-                new PNotify({
-                    title: 'خطا در بارگذاری کاربران',
-                    text: xhr.responseText,
-                    type: 'error',
-                    styling: 'bootstrap3'
-                });
-            }
-        });
         if (!isInitiate && salesLedgerId) {
             $.ajax({
                 url: '/api/salesman/sales-ledger/' + salesLedgerId,
@@ -443,7 +469,6 @@
                     salesLedgerData = response;
                     if (servicesLoaded && usersLoaded) {
                         setSalesLedgerFormData(salesLedgerData);
-                        
                     }
                 },
                 error: function (xhr) {
@@ -581,8 +606,8 @@
         window.rejectSalesLedger = function () {
             if (isInitiate || !salesLedgerId) {
                 new PNotify({
-                    title: 'فاکتور فروشی برای بازگشت انتخاب نشده است.',
-                    text: 'فاکتور فروشی برای بازگشت انتخاب نشده است.',
+                    title: 'فاکتور فروشی برای ارجاع انتخاب نشده است.',
+                    text: 'فاکتور فروشی برای ارجاع انتخاب نشده است.',
                     type: 'error',
                     styling: 'bootstrap3'
                 });
@@ -603,7 +628,7 @@
                 },
                 error: function (xhr) {
                     new PNotify({
-                        title: 'خطا در بازگشت فاکتور فروش',
+                        title: 'خطا در ارجاع فاکتور فروش',
                         text: xhr.responseText,
                         type: 'error',
                         styling: 'bootstrap3'
@@ -648,9 +673,6 @@
                     });
                 }
             });
-        };
-        window.discardSalesLedger = function () {
-            window.location.href = '/sales-ledger/';
         };
         window.cancelSalesLedger = function () {
             if (isInitiate || !salesLedgerId) {
