@@ -41,20 +41,19 @@
     <link href="{% static 'vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
 
-    
-
     <!-- PNotify -->
     <link href="{% static 'vendors/pnotify/dist/pnotify.css' %}" rel="stylesheet">
     <link href="{% static 'vendors/pnotify/dist/pnotify.buttons.css' %}" rel="stylesheet">
     <link href="{% static 'vendors/pnotify/dist/pnotify.nonblock.css' %}" rel="stylesheet">
 
-
     <!-- Custom Theme Style -->
     <link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet">
 
+    <!--Persian Date Picker-->
+    <link href="{% static 'vendors/persian-date-picker/persian-datepicker.css' %}" rel="stylesheet">
+
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
-
 </head>
 <!-- /header content -->
 <body class="nav-md .">
@@ -80,7 +79,7 @@
                     <a data-toggle="tooltip" data-placement="top" title="قفل" class="lock_btn">
                         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
                     </a>
-                    <a data-toggle="tooltip" data-placement="top" title="خروج" href="login.html">
+                    <a data-toggle="tooltip" data-placement="top" title="خروج" id="logout-link-side">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                     </a>
                 </div>
@@ -187,9 +186,22 @@
 <script src="{% static 'vendors/pdfmake/build/pdfmake.min.js' %}"></script>
 <script src="{% static 'vendors/pdfmake/build/vfs_fonts.js' %}"></script>
 
+<!--Persian Date Picker-->
+<script src="{% static 'vendors/persian-date-picker/persian-date.js' %}"></script>
+<script src="{% static 'vendors/persian-date-picker/persian-datepicker.min.js' %}"></script>
+
 <!-- Custom Theme Scripts -->
 <script src="{% static 'build/js/custom.js' %}"></script>
-
+<script>
+    $(document).ready(function() {
+        $('#logout-link-side').on('click', function(e) {
+            e.preventDefault();
+            document.cookie = "access=; path=/; SameSite=Strict; Secure";
+            document.cookie = "refresh=; path=/; SameSite=Strict; Secure";
+            window.location.href = '/login/';
+        });
+    });
+</script>
 
 
 </body>

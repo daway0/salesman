@@ -21,6 +21,40 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
+                        <div id='approved-of' class="alert alert-success alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>فاکتور با موفقیت توسط مالی تایید شد.</strong>
+                        </div>
+                        <div id='pending-init-o' class="alert alert-info alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>در انتظار بررسی مالی!</strong>
+                            فاکتور با موفقیت ایجاد و برای بررسی بیشتر به دپارتمان مالی ارسال شد.
+                        </div>
+                        <div id='rejected-f' class="alert alert-info alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>در انتظار بررسی مجدد اپراتور!</strong>
+                            فاکتور برای بررسی مجدد به اپراتور ارجاع داده شد.
+                        </div>
+                        <div id='rejected-o' class="alert alert-danger alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>فاکتور توسط مالی رد شد!</strong>
+                            لطفا پس از بررسی مجدد و اعمال تغییرات مورد نیاز فاکتور را برای مالی ارسال کنید.
+                        </div>
+                        <div id='pending-edit-o' class="alert alert-info alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>در انتظار بررسی مجدد مالی!</strong>
+                            فاکتور برای بررسی مجدد به مالی ارجاع داده شد.
+                        </div>
+                        <div id='cancelled-of' class="alert alert-warning alert-dismissible fade in hidden" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                            </button>
+                            <strong>بررسی فاکتور لغو شده است</strong>
+                        </div>
                         <br />
                         <form id="sales-ledger-form" data-parsley-validate class="form-horizontal form-label-left">
                             <div id="sales-ledger-id-panel" class="form-group hidden">
@@ -321,6 +355,7 @@
                 
                 commonUpdateUIByStatus();
                 $('#status-label-pending').removeClass('hidden');
+                $('#pending-init-o').removeClass('hidden');
 
                 if (permissions.includes('APPROVE_ALL_INVOICES')) {
                     $('#approve-btn').removeClass('hidden disabled').prop('disabled', false);
@@ -341,6 +376,7 @@
             if (status == 'APPROVED') {
                 commonUpdateUIByStatus();
                 $('#status-label-approved').removeClass('hidden');
+                $('#approved-of').removeClass('hidden');
                 return;
             }
             if (status == 'REJECTED') {
@@ -353,15 +389,20 @@
                     $('#sales-discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
                     $('#comment-panel').removeClass('hidden');
                     $('#save-btn').removeClass('hidden disabled').prop('disabled', false);
+                    $('#rejected-o').removeClass('hidden');
                 }
-                if (permissions.includes('DELETE_ALL_INVOICES') || permissions.includes('DELETE_OWN_INVOICES')) {
+                if (permissions.includes('CANCEL_ALL_INVOICES') || permissions.includes('CANCEL_OWN_INVOICES')) {
                     $('#cancel-btn').removeClass('hidden disabled').prop('disabled', false);
+                }
+                if (permissions.includes('APPROVE_ALL_INVOICES') || permissions.includes('REJECT_ALL_INVOICES')) {
+                    $('#rejected-f').removeClass('hidden');
                 }
                 return;
             }
             if (status == 'CANCELLED') {
                 commonUpdateUIByStatus();
                 $('#status-label-cancelled').removeClass('hidden');
+                $('#cancelled-of').removeClass('hidden');
                 return;
             }
         }

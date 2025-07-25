@@ -73,7 +73,7 @@
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input id="birthdate" class="date-picker form-control col-md-7 col-xs-12"
+                                    <input id="birthdate" class="datePicker form-control col-md-7 col-xs-12"
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_USERS" %}
                                         readonly="readonly"
                                     {% endif %}    
@@ -300,12 +300,23 @@
 </div>
 
 <script>
+    
+    datePickerConfig = {
+        format: 'YYYY/MM/DD',
+        onSelect: function (unixDate) {
+            const selectedDate = new Date(unixDate);
+
+            const isoFormattedDate = selectedDate.toISOString();
+            $('#birthdate').attr('date-iso', isoFormattedDate);
+        }
+    }
+
     function getUserFormData() {
         return {
             first_name: $('#first-name').val(),
             last_name: $('#last-name').val(),
             nsid: $('#nsid').val(),
-            birthdate: $('#birthdate').val(),
+            birthdate: $('#birthdate').attr('date-iso'),
             email: $('#email').val(),
             password: $('#password').val()
         };
@@ -315,7 +326,7 @@
         $('#first-name').val(data.first_name || '');
         $('#last-name').val(data.last_name || '');
         $('#nsid').val(data.nsid || '');
-        $('#birthdate').val(data.birthdate || '');
+        $('#birthdate').attr('value', data.birthdate || '');
         $('#email').val(data.email || '');
     }
     $(document).ready(function () {
@@ -327,6 +338,8 @@
             }
         });
 
+        $('.datePicker').pDatepicker(datePickerConfig);
+
         var isEdit = "{{ edit }}" == "True";
         var userId = "{{ user_id|default:'' }}";
 
@@ -337,6 +350,8 @@
                 dataType: 'json',
                 success: function (response) {
                     setUserFormData(response);
+                    $('.datePicker').pDatepicker(datePickerConfig);
+
                 },
                 error: function (xhr) {
                     new PNotify({

@@ -39,15 +39,13 @@
                                         <th>کد ملی</th>
                                         <th>تاریخ تولد</th>
                                         <th>ایمیل</th>
-                                        <th>تاریخ ثبت نام</th>
+                                        <th>تاریخ ایجاد</th>
                                         <th>تاریخ آخرین ورود</th>
                                         {% if permissions|has_permission:"UPDATE_ALL_USERS" or permissions|has_permission:"DELETE_ALL_USERS" %}
                                             <th>عملیات</th>
                                         {% endif %}
                                     </tr>
                                 </thead>
-
-
                                 <tbody id="users-tbody">
                                 </tbody>
                             </table>
@@ -76,10 +74,10 @@
                         '<td>' + (user.first_name || '') + '</td>' +
                         '<td>' + (user.last_name || '') + '</td>' +
                         '<td>' + (user.nsid || '') + '</td>' +
-                        '<td>' + (user.birthdate ? user.birthdate.split("T")[0] : '') + '</td>' +
+                        '<td>' + (user.birthdate ? new Date(user.birthdate).toLocaleString('fa-IR').split(",")[0] : '') + '</td>' +
                         '<td>' + (user.email || '') + '</td>' +
-                        '<td>' + (user.created_at ? user.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (user.last_login_at ? user.last_login_at.Time.split("T")[0] : '') + '</td>' +
+                        '<td>' + (user.created_at ? new Date(user.created_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (user.last_login_at ? new Date(user.last_login_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_USERS" or permissions|has_permission:"DELETE_ALL_USERS" or permissions|has_permission:"ADD_USER_ROLE" or permissions|has_permission:"DELETE_USER_ROLE" or permissions|has_permission:"VIEW_USER_ROLES" or permissions|has_permission:"VIEW_ALL_USERS" %}
                             '<td>' +
                             '<a href="/users/edit/' + user.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +

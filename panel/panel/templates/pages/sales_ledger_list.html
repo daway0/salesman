@@ -93,9 +93,9 @@
                         '<td>' + (ledger.id || '') + '</td>' +   
                         '<td>' + (ledger.service_title || '') + ' - ' + (ledger.company_title || '') + '</td>' +
                         '<td>' + (ledger.customer_first_name || '') + ' ' + (ledger.customer_last_name || '') + '</td>' +
-                        '<td>' + (ledger.price || '') + '</td>' +
-                        '<td>' + (ledger.sales_price || '') + '</td>' +
-                        '<td>' + (ledger.sales_discount || '') + '</td>' +
+                        '<td>' + (ledger.price ? ledger.price.toLocaleString() : '') + '</td>' +
+                        '<td>' + (ledger.sales_price ? ledger.sales_price.toLocaleString() : '') + '</td>' +
+                        '<td>' + (ledger.sales_discount ? ledger.sales_discount.toLocaleString() : '') + '</td>' +
                         '<td>' + (ledger.trn || '') + '</td>' +
                         '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.created_at ? new Date(ledger.created_at).toLocaleString('fa-IR') : '') + '</td>' +

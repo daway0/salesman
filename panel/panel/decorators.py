@@ -23,7 +23,7 @@ def jwt_required(view_func):
                 user_uuid = payload.get("user_id")
                 user = User.objects.get(user_uuid=user_uuid)
                 request.user = user
-                request.permissions = payload.get("permissions", [])
+                request.permissions = payload.get("permissions") or []
             except (InvalidToken, User.DoesNotExist, ExpiredTokenError):
                 return redirect('/login/')
         else:

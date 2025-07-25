@@ -70,8 +70,8 @@
                         '<td>' + (company.cid || '') + '</td>' +
                         '<td>' + (company.description || '') + '</td>' +
                         '<td>' + (company.image_url || '') + '</td>' +
-                        '<td>' + (company.created_at ? company.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (company.updated_at ? company.updated_at.split("T")[0] : '') + '</td>' +
+                        '<td>' + (company.created_at ? new Date(company.created_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (company.updated_at ? new Date(company.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_COMPANIES" or permissions|has_permission:"DELETE_ALL_COMPANIES" or permissions|has_permission:"VIEW_ALL_COMPANIES" %}
                             '<td>' +
                             '<a href="/companies/edit/' + company.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +

@@ -71,8 +71,8 @@
                         '<td>' + (service.description && service.description.String ? service.description.String : '') + '</td>' +
                         '<td>' + (service.price || '') + '</td>' +
                         '<td>' + (service.image_url && service.image_url.String ? service.image_url.String : '') + '</td>' +
-                        '<td>' + (service.created_at ? service.created_at.split("T")[0] : '') + '</td>' +
-                        '<td>' + (service.updated_at && service.updated_at.Valid ? service.updated_at.Time.split("T")[0] : '') + '</td>' +
+                        '<td>' + (service.created_at ? new Date(service.created_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (service.updated_at ? new Date(service.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_SERVICES" or permissions|has_permission:"DELETE_ALL_SERVICES" or permissions|has_permission:"VIEW_ALL_SERVICES" %}
                             '<td>' +
                             '<a href="/services/edit/' + service.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
