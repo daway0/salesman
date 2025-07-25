@@ -33,8 +33,8 @@ type SalesLedger struct {
 	CustomerLastName    string `json:"customer_last_name"`
 	CreatedByName       string `json:"created_by_name"`
 	CreatedByLastName   string `json:"created_by_last_name"`
-	RefererName         string `json:"referer_name"`
-	RefererLastName     string `json:"referer_last_name"`
+	RefererName         *string `json:"referer_name"`
+	RefererLastName     *string `json:"referer_last_name"`
 }
 
 type Workflow struct {

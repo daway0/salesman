@@ -22,6 +22,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.POST("/users", userHandler.CreateUser)
 		api.GET("/users", userHandler.GetUsers)
 		api.GET("/users/:id", userHandler.GetUser)
+		api.GET("/users/:id/permissions", userHandler.GetUserPermissions)
 		api.PUT("/users/:id", userHandler.UpdateUser)
 		api.DELETE("/users/:id", userHandler.DeleteUser)
 		api.POST("/users/:id/role/:role_id", userHandler.AddUserRole)
@@ -48,6 +49,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.POST("/sales-ledger/:id/reject", salesLedgerHandler.RejectSalesLedger)
 		api.POST("/sales-ledger/:id/cancel", salesLedgerHandler.CancelSalesLedger)
 		api.POST("/sales-ledger/:id/resend", salesLedgerHandler.ResendSalesLedger)
+		api.GET("/sales-ledger/new", salesLedgerHandler.GetNewSalesLedgers)
 		
 		// rbac
 		api.POST("/roles", roleHandler.CreateRole)

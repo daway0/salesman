@@ -149,7 +149,6 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted"})
 }
 
-
 func (h *UserHandler) AddUserRole(c *gin.Context) {
 	userID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -182,10 +181,42 @@ func (h *UserHandler) RemoveUserRole(c *gin.Context) {
 		return
 	}
 	query := `UPDATE UserRoles SET deleted_at = $1 WHERE user_id = $2 AND role_id = $3 AND deleted_at IS NULL`
-	_, err = h.DB.Exec(query, time.Now(), userID, roleID)	
+	_, err = h.DB.Exec(query, time.Now(), userID, roleID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "User role removed"})
+}
+
+func (h *UserHandler) GetUserPermissions(c *gin.Context) {
+	id := c.Param("id")
+	query := `SELECT DISTINCT p.action FROM Users u
+		INNER JOIN UserRoles ur ON ur.user_id = u.id AND ur.deleted_at IS NULL
+		INNER JOIN RolePermissions rp ON rp.role_id = ur.role_id AND rp.deleted_at IS NULL
+		INNER JOIN Permissions p ON rp.permission_id = p.id
+		WHERE u.id = $1`
+
+	rows, err := h.DB.Query(query, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var permissions []string
+	for rows.Next() {
+		var action string
+		if err := rows.Scan(&action); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		permissions = append(permissions, action)
+	}
+	if err := rows.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"permissions": permissions})
 }

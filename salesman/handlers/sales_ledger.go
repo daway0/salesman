@@ -6,10 +6,12 @@ import (
 	"log"
 	"net/http"
 	"salesman/models"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type SalesLedgerHandler struct {
@@ -31,12 +33,12 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error()})
 		return
 	}
-	
+
 	initialWorkflow := models.Workflow{
-		ActionAt: salesLedger.CreatedAt,
-		Comment:  "",
-		ActorId:  salesLedger.CreatedBy,
-		Step:     "ایجاد فاکتور و ارسال به مالی",
+		ActionAt:  salesLedger.CreatedAt,
+		Comment:   "",
+		ActorId:   salesLedger.CreatedBy,
+		Step:      "ایجاد فاکتور و ارسال به مالی",
 		ActorName: salesLedger.CreatedByName,
 	}
 	workflows := []models.Workflow{initialWorkflow}
@@ -118,10 +120,10 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 		return
 	}
 	approvalWorkflow := models.Workflow{
-		ActionAt: approval.ApprovedAt,
-		Comment:  approval.Comment,
-		ActorId:  approval.ApproverID,
-		Step:     "تایید مالی",
+		ActionAt:  approval.ApprovedAt,
+		Comment:   approval.Comment,
+		ActorId:   approval.ApproverID,
+		Step:      "تایید مالی",
 		ActorName: ApproverName,
 	}
 	workflows = append(workflows, approvalWorkflow)
@@ -171,10 +173,10 @@ func (h *SalesLedgerHandler) RejectSalesLedger(c *gin.Context) {
 		return
 	}
 	rejectionWorkflow := models.Workflow{
-		ActionAt: rejection.RejectedAt,
-		Comment:  rejection.Reason,
-		ActorId:  rejection.RejectedBy,
-		Step:     "رد مالی",
+		ActionAt:  rejection.RejectedAt,
+		Comment:   rejection.Reason,
+		ActorId:   rejection.RejectedBy,
+		Step:      "رد مالی",
 		ActorName: RejectedBy,
 	}
 	workflows = append(workflows, rejectionWorkflow)
@@ -243,10 +245,10 @@ func (h *SalesLedgerHandler) CancelSalesLedger(c *gin.Context) {
 		return
 	}
 	cancellationWorkflow := models.Workflow{
-		ActionAt: cancellation.CancelledAt,
-		Comment:  cancellation.Reason,
-		Step:     "لغو بررسی",
-		ActorId:  cancellation.CancelledBy,
+		ActionAt:  cancellation.CancelledAt,
+		Comment:   cancellation.Reason,
+		Step:      "لغو بررسی",
+		ActorId:   cancellation.CancelledBy,
 		ActorName: CancelledBy,
 	}
 	workflows = append(workflows, cancellationWorkflow)
@@ -295,10 +297,10 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 		return
 	}
 	resendWorkflow := models.Workflow{
-		ActionAt: time.Now(),
-		Comment:  salesLedger.Comment,
-		Step:     "ارسال مجدد به مالی",
-		ActorId:  createdBy,
+		ActionAt:  time.Now(),
+		Comment:   salesLedger.Comment,
+		Step:      "ارسال مجدد به مالی",
+		ActorId:   createdBy,
 		ActorName: ResendBy,
 	}
 	workflows = append(workflows, resendWorkflow)
@@ -347,7 +349,7 @@ func (h *SalesLedgerHandler) GetSalesLedger(c *gin.Context) {
 	INNER JOIN companies c on c.id = s.company_id
 	INNER JOIN users u on sl.customer_id = u.id
 	INNER JOIN users u2 on sl.created_by = u2.id
-	INNER JOIN users u3 on sl.referer_id = u3.id
+	LEFT JOIN users u3 on sl.referer_id = u3.id
 	WHERE sl.id = $1
   AND sl.deleted_at IS NULL`
 	err := h.DB.QueryRow(query, id).Scan(&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
@@ -424,6 +426,34 @@ ORDER BY sl.updated_at DESC`)
 		return
 	}
 	c.JSON(http.StatusOK, salesLedgers)
+}
+
+func (h *SalesLedgerHandler) GetNewSalesLedgers(c *gin.Context) {
+	statusParam := c.Query("status")
+	operatorId := c.Query("operator_id")
+
+	statuses := []string{}
+	if statusParam != "" {
+		statuses = strings.Split(statusParam, ",")
+	}
+
+	var count int
+	var err error
+
+	if operatorId != "" {
+		query := `SELECT COUNT(*) FROM SalesLedger WHERE status = ANY($1) AND created_by = $2 AND deleted_at IS NULL`
+		err = h.DB.QueryRow(query, pq.Array(statuses), operatorId).Scan(&count)
+	} else {
+		query := `SELECT COUNT(*) FROM SalesLedger WHERE status = ANY($1) AND deleted_at IS NULL`
+		err = h.DB.QueryRow(query, pq.Array(statuses)).Scan(&count)
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count})
 }
 
 func (h *SalesLedgerHandler) UpdateSalesLedger(c *gin.Context) {

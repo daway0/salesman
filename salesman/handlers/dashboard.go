@@ -15,7 +15,7 @@ type DashboardHandler struct {
 }
 
 func (h *DashboardHandler) GetDashboard(c *gin.Context) {
-	username := "d8f19eb6-8596-483a-8104-f350c8c1c9a2"
+	username := c.Query("user_id")
 
 	var dashboard models.Dashboard
 

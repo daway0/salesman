@@ -10,11 +10,11 @@
                 <li class="">
                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        <img src="{% static 'build/images/img.jpg' %}" alt="">مرتضی کریمی
+                        <img src="{% static 'build/images/img.jpg' %}" alt="">{{ request.user.first_name }} {{ request.user.last_name }}
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                        <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> خروج</a></li>
+                        <li><a id="logout-link"><i class="fa fa-sign-out pull-right"></i> خروج</a></li>
                     </ul>
                 </li>
 
@@ -22,4 +22,12 @@
             </ul>
         </nav>
     </div>
+    <script>
+        $('#logout-link').on('click', function(e) {
+          e.preventDefault();
+          document.cookie = "access=; path=/; SameSite=Strict; Secure";
+          document.cookie = "refresh=; path=/; SameSite=Strict; Secure";
+          window.location.href = '/login/';
+        });
+    </script>
 </div>

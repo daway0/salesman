@@ -1,97 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import requests
+from .decorators import jwt_required
 
-CURRENT_USER_ID = "00000000-0000-0000-0000-000000000036"
-ADMIN_PERMISSIONS = [
-        'CREATE_INVOICE',
-        'VIEW_OWN_INVOICES',
-        'VIEW_OWN_INVOICES_LIST',
-        'VIEW_ALL_INVOICES',
-        'VIEW_ALL_INVOICES_LIST',
-        'DELETE_OWN_INVOICES',
-        'DELETE_ALL_INVOICES',
-        'APPROVE_ALL_INVOICES',
-        'REJECT_ALL_INVOICES',
-        'CANCEL_OWN_INVOICES',
-        'CANCEL_ALL_INVOICES',
-        
-        'VIEW_ALL_USERS_LIST',
-        'VIEW_ALL_USERS',
-        'CREATE_ALL_USERS',
-        'UPDATE_ALL_USERS',
-        'DELETE_ALL_USERS',
-        'VIEW_USER_ROLES',
-        'ADD_USER_ROLE',
-        'DELETE_USER_ROLE',
-        
-        'VIEW_ALL_SERVICES_LIST',
-        'VIEW_ALL_SERVICES',
-        'CREATE_ALL_SERVICES',
-        # 'UPDATE_ALL_SERVICES',
-        'DELETE_ALL_SERVICES',
-        
-        'VIEW_ALL_COMPANIES_LIST',
-        'VIEW_ALL_COMPANIES',
-        'CREATE_ALL_COMPANIES',
-        'UPDATE_ALL_COMPANIES',
-        'DELETE_ALL_COMPANIES',
-        
-        'VIEW_ALL_ROLES_LIST',
-        'VIEW_ALL_ROLES',
-        'CREATE_ALL_ROLES',
-        'UPDATE_ALL_ROLES',
-        'DELETE_ALL_ROLES',
-        'VIEW_ROLE_PERMISSIONS',
-        'ADD_ROLE_PERMISSION',
-        'DELETE_ROLE_PERMISSION',
-        
-        'VIEW_ALL_LOGS',
 
-        'VIEW_DASHBOARD',
-        'VIEW_DASHBOARD_CARD_ALL_TODAY_APPROVED_COUNT',
-        'VIEW_DASHBOARD_CARD_ALL_TODAY_APPROVED_AMMOUNT',
-        'VIEW_DASHBOARD_CARD_ALL_TODAY_UNAPPROVED_COUNT',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_COUNT',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_AMMOUNT',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_UNAPPROVED_COUNT',
-        'VIEW_TODAY_MVP_OPERATOR',
-        'VIEW_SALES_MVP_LIST',
-        'VIEW_ALL_SALES_HISTORY',
-        'VIEW_USER_SALES_HISTORY'
-]
 
-OPERATOR_PERMISSIONS = [
-        'CREATE_INVOICE',
-        'VIEW_OWN_INVOICES',
-        'VIEW_OWN_INVOICES_LIST',
-        'VIEW_ALL_INVOICES_LIST',
-        'DELETE_OWN_INVOICES',
-        'CANCEL_OWN_INVOICES',
-        'VIEW_ALL_SERVICES_LIST',
-        'VIEW_ALL_COMPANIES_LIST',
-        'VIEW_DASHBOARD',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_COUNT',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_APPROVED_AMMOUNT',
-        'VIEW_DASHBOARD_CARD_USER_TODAY_UNAPPROVED_COUNT',
-        'VIEW_TODAY_MVP_OPERATOR',
-        'VIEW_USER_SALES_HISTORY'
-]
-FINANANCE_PERMISSIONS = [
-        'VIEW_ALL_INVOICES_LIST',
-
-        'VIEW_ALL_INVOICES',
-        'DELETE_ALL_INVOICES',
-        'APPROVE_ALL_INVOICES',
-        'REJECT_ALL_INVOICES',
-        'CANCEL_ALL_INVOICES',
-        'VIEW_ALL_SERVICES_LIST',
-        'VIEW_ALL_COMPANIES_LIST'
-]
-
-USER_PERMISSIONS = ADMIN_PERMISSIONS
-
-# proxy to salesman service
+@jwt_required
 def salesman_gateway(request, path):
     SALESMAN_BASE_URL = "http://salesman:8080/api"
 
@@ -122,13 +36,13 @@ def salesman_gateway(request, path):
     except requests.RequestException as e:
         return JsonResponse({"error": f"Error forwarding request: {e}"}, status=502, safe=False)
 
-# users
+@jwt_required
 def users_create_update(request, id=None):
     context = {
         "edit": False,
         "user_id": None,
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     if id:
         context["edit"] = True
@@ -136,21 +50,22 @@ def users_create_update(request, id=None):
     return render(request, 'pages/users_create_update.html', context)
 
 
+@jwt_required
 def users_list(request):
     context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/users_list.html', context)
 
 
-# roles
+@jwt_required
 def roles_create_update(request, id=None):
     context = {
         "edit": False,
         "role_id": None,
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     if id:
         context["edit"] = True
@@ -158,86 +73,87 @@ def roles_create_update(request, id=None):
     return render(request, 'pages/roles_create_update.html', context)
 
 
+@jwt_required
 def roles_list(request):
     context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/roles_list.html', context)
 
 
-# companies
+@jwt_required
 def companies_create_update(request, id=None):
     context = {
         "edit": False,
         "company_id": None,
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     if id:
         context["edit"] = True
         context["company_id"] = id
     return render(request, 'pages/companies_create_update.html', context)
 
+@jwt_required
 def companies_list(request):
     context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/companies_list.html', context)
 
-# services
+@jwt_required
 def services_create_update(request, id=None):
     context = {
         "edit": False,
         "service_id": None,
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     if id:
         context["edit"] = True
         context["service_id"] = id
     return render(request, 'pages/services_create_update.html', context)
 
+@jwt_required
 def services_list(request):
     context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/services_list.html', context)
 
-# sales ledgers
+@jwt_required
 def sales_ledger_create_update(request, id=None):
     context = {
         "edit": False,
         "sales_ledger_id": None,
-        "current_user": CURRENT_USER_ID,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     if id:
         context["edit"] = True
         context["sales_ledger_id"] = id
     return render(request, 'pages/sales_ledger_create_update.html', context)    
 
+@jwt_required
 def sales_ledger_list(request):
     context = {
-        "current_user": CURRENT_USER_ID,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/sales_ledger_list.html', context)
 
-# dashboard
+
+@jwt_required
 def dashboard(request):
     context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
     }
     return render(request, 'pages/dashboard.html', context)
 
 
 def login(request):
-    context = {
-        "current_user": None,
-        "permissions": USER_PERMISSIONS,
-    }
-    return render(request, 'pages/login.html', context)
+    return render(request, 'pages/login.html')

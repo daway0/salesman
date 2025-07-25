@@ -20,6 +20,44 @@ ALTER TABLE Users
 ALTER TABLE Users
     ADD UNIQUE (email);
 
+CREATE OR REPLACE FUNCTION after_insert_users()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO panel_customuser (
+        password,
+        is_superuser,
+        username,
+        user_uuid,
+        first_name,
+        last_name,
+        email,
+        is_staff,
+        is_active,
+        date_joined
+    )
+    VALUES (
+        'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=',
+        false,
+        NEW.email,
+        NEW.id,
+        NEW.first_name,
+        NEW.last_name,
+        NEW.email,
+        false,
+        true,
+        NOW()
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_after_insert_users
+AFTER INSERT ON users
+FOR EACH ROW
+EXECUTE FUNCTION after_insert_users();
+
+
 
 CREATE TABLE Companies 
 (

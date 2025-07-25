@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN pip install --upgrade pip && pip install django requests
+RUN pip install --upgrade pip && pip install django requests djangorestframework djangorestframework-simplejwt psycopg2-binary
 
 COPY panel/ /app/
 

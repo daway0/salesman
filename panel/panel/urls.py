@@ -32,6 +32,7 @@ urlpatterns = [
 
     # Login
     path('login/', views.login, name='login'),
+    
     # API Gateway
     re_path(r'^api/salesman/(?P<path>.*)$', views.salesman_gateway, name='salesman_gateway'),
 ]

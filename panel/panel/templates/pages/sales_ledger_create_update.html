@@ -308,7 +308,7 @@
         ) {
             $('#customer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
             $('#service-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
-            $('#created-by').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#created-by').parents('.form-group').removeClass('hidden');
             $('#referer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
             $('#price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
             $('#sales-price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
@@ -384,7 +384,6 @@
             updateUIByStatus('INITIATE');
         }
         
-        // Load all users for customer, referer, and created_by selects
         $.ajax({
             url: '/api/salesman/users/',
             type: 'GET',
@@ -408,6 +407,13 @@
                 $customer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب مشتری', minimumInputLength: 0, allowClear: true });
                 $referer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب معرف', minimumInputLength: 0, allowClear: true });
                 $createdBy.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب ایجادکننده', minimumInputLength: 0, allowClear: true });
+
+                var currentUserId = '{{ current_user }}';
+                if (currentUserId) {
+                    $referer.val(currentUserId).trigger('change');
+                    $createdBy.val(currentUserId).trigger('change');
+                }
+
                 usersLoaded = true;
                 if (!isInitiate && salesLedgerData && servicesLoaded) {
                     setSalesLedgerFormData(salesLedgerData);
@@ -426,7 +432,6 @@
                 });
             }
         });
-        // Load all services for service select
         $.ajax({
             url: '/api/salesman/services/',
             type: 'GET',

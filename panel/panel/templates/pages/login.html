@@ -2,83 +2,135 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>ورود به سیستم</title>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
-    <link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'vendors/bootstrap-rtl/dist/css/bootstrap-rtl.min.css' %}" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="{% static 'vendors/nprogress/nprogress.css' %}" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="{% static 'vendors/animate.css/animate.min.css' %}" rel="stylesheet">
-    <!-- Custom Theme Style -->
-    <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
-    <style>
-      body.login {
-        background: #f7f7f7;
-      }
-      .login-panel {
-        max-width: 400px;
-        margin: 60px auto;
-        padding: 30px 30px 20px 30px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      }
-      .login-logo {
-        display: block;
-        margin: 0 auto 20px auto;
-        width: 64px;
-        height: 64px;
-      }
-      .show-password {
-        cursor: pointer;
-        position: absolute;
-        right: 15px;
-        top: 8px;
-        color: #888;
-      }
-      .form-group {
-        position: relative;
-      }
-      .forgot-link {
-        float: left;
-        font-size: 13px;
-      }
-    </style>
-  </head>
+  <title>ورود به سیستم</title>
 
-  <body class="login">
-    <div class="container">
-      <div class="login-panel">
-        <img src="{% static 'dev_static/img/hiweb.png' %}" alt="Logo" class="login-logo" onerror="this.style.display='none'">
-        <h2 class="text-center" style="margin-bottom: 25px;">ورود به سیستم</h2>
-        <form method="post" autocomplete="off">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="username">نام کاربری</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="نام کاربری" required autofocus>
-          </div>
-          <div class="form-group" style="margin-bottom: 10px;">
-            <label for="password">رمز ورود</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="رمز ورود" required>
-          </div>
-          <div class="clearfix" style="margin-bottom: 15px;">
-            <a href="#" class="forgot-link">رمز عبور را فراموش کرده‌اید؟</a>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">ورود</button>
-          <div id="login-message" class="text-danger text-center" style="margin-top: 15px; display: none;"></div>
-        </form>
-      </div>
+  <!-- Bootstrap -->
+  <link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendors/bootstrap-rtl/dist/css/bootstrap-rtl.min.css' %}" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="{% static 'vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="{% static 'vendors/animate.css/animate.min.css' %}" rel="stylesheet">
+
+
+  <!-- PNotify -->
+  <link href="{% static 'vendors/pnotify/dist/pnotify.css' %}" rel="stylesheet">
+  <link href="{% static 'vendors/pnotify/dist/pnotify.buttons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendors/pnotify/dist/pnotify.nonblock.css' %}" rel="stylesheet">
+
+
+
+  <!-- Custom Theme Style -->
+  <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
+  <style>
+    body.login {
+      background: #f7f7f7;
+    }
+
+    .login-panel {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 30px 30px 20px 30px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 64px;
+      height: 64px;
+    }
+
+    .show-password {
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      top: 8px;
+      color: #888;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .forgot-link {
+      float: left;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body class="login">
+  <div class="container">
+    <div class="login-panel">
+      <img src="{% static 'dev_static/img/hiweb.png' %}" alt="Logo" class="login-logo"
+        onerror="this.style.display='none'">
+      <h2 class="text-center" style="margin-bottom: 25px;">ورود به سیستم</h2>
+      <form id="login-form" method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">نام کاربری</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="نام کاربری" required
+            autofocus>
+        </div>
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label for="password">رمز ورود</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="رمز ورود" required>
+        </div>
+        <div class="clearfix" style="margin-bottom: 15px;">
+          <a href="#" class="forgot-link">رمز عبور را فراموش کرده‌اید؟</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">ورود</button>
+        <div id="login-message" class="text-danger text-center" style="margin-top: 15px; display: none;"></div>
+      </form>
     </div>
-  </body>
+  </div>
+  <!-- PNotify -->
+  <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'vendors/pnotify/dist/pnotify.js' %}"></script>
+  <script src="{% static 'vendors/pnotify/dist/pnotify.buttons.js' %}"></script>
+  <script src="{% static 'vendors/pnotify/dist/pnotify.nonblock.js' %}"></script>
+  <script>
+    $(function () {
+      $('#login-form').on('submit', function (e) {
+        e.preventDefault();
+        var username = $('#username').val();
+        var password = $('#password').val();
+        $.ajax({
+          url: '/api/token/',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ email: username, password: password }),
+          success: function (data) {
+            document.cookie = "access=" + encodeURIComponent(data.access) + "; path=/; SameSite=Strict; Secure";
+            document.cookie = "refresh=" + encodeURIComponent(data.refresh) + "; path=/; SameSite=Strict; Secure";
+            window.location.href = '/dashboard/';
+          },
+          error: function (xhr) {
+            new PNotify({
+              title: 'خطا در ورود',
+              text: xhr.responseText,
+              type: 'error',
+              styling: 'bootstrap3'
+            });
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+
 </html>

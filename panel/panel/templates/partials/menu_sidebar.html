@@ -10,7 +10,7 @@
             {% endif %}
             
             {% if permissions|has_permission:"VIEW_ALL_INVOICES_LIST" or permissions|has_permission:"CREATE_INVOICE" or permissions|has_permission:"VIEW_OWN_INVOICES_LIST" %}
-            <li><a><i class="fa fa-shopping-cart"></i> فروش <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-shopping-cart"></i> فروش <span class="badge bg-green hidden" id="new-sales-ledger-count">0</span><span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     {% if permissions|has_permission:"CREATE_INVOICE" %}
                         <li><a href="/sales-ledger/create/">ایجاد فاکتور </a></li>
@@ -73,6 +73,32 @@
             
         </ul>
     </div>
-    
-
 </div>
+
+<script>
+    $(document).ready(function () {
+        var url = '/api/salesman/sales-ledger/new';
+        $.ajax({
+            type: 'GET',
+            {% if permissions|has_permission:"CREATE_INVOICE" and permissions|has_permission:"VIEW_OWN_INVOICES_LIST" and permissions|has_permission:"VIEW_ALL_INVOICES_LIST" %}
+            url: url + '?status=PENDING,REJECTED',
+            {% elif permissions|has_permission:"VIEW_ALL_INVOICES_LIST" and not permissions|has_permission:"CREATE_INVOICE" %}
+            url: url + '?status=PENDING',
+            {% elif permissions|has_permission:"VIEW_OWN_INVOICES_LIST" and permissions|has_permission:"CREATE_INVOICE" %}
+            url: url + '?status=REJECTED&operator_id={{ current_user }}',
+            {% endif %}
+            dataType: 'json',
+            success: function (data) {
+                if (data.count > 0) {
+                    $('#new-sales-ledger-count').text(data.count);
+                    $('#new-sales-ledger-count').removeClass('hidden');
+                } else {
+                    $('#new-sales-ledger-count').addClass('hidden');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        });
+    });
+</script>

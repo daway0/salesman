@@ -342,6 +342,7 @@
     }
 
     function renderTodayMVP(todayMVP) {
+        if (!todayMVP.firstname && !todayMVP.lastname) $("#today-mvp-sales-operator").parents(".animated").hide();
         var fullName = todayMVP.firstname + " " + todayMVP.lastname;
         var displayName = truncateName(fullName, 18);
         $("#today-mvp-sales-operator")
@@ -360,7 +361,7 @@
 
     $(document).ready(function () {
         $.ajax({
-            url: '/api/salesman/dashboard',
+            url: '/api/salesman/dashboard?user_id={{ current_user }}',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
