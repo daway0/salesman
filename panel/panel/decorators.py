@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, ExpiredTokenError
 from rest_framework_simplejwt.backends import TokenBackend
+import requests
+
 
 User = get_user_model()
 
@@ -23,7 +25,13 @@ def jwt_required(view_func):
                 user_uuid = payload.get("user_id")
                 user = User.objects.get(user_uuid=user_uuid)
                 request.user = user
-                request.permissions = payload.get("permissions") or []
+
+                response = requests.get(f"http://salesman:8080/api/users/{user.user_uuid}/permissions")
+                if response.status_code == 200:
+                    request.permissions = response.json().get('permissions', [])
+                else:
+                    request.permissions = []
+
             except (InvalidToken, User.DoesNotExist, ExpiredTokenError):
                 return redirect('/login/')
         else:
