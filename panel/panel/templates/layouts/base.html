@@ -196,8 +196,8 @@
     $(document).ready(function() {
         $('#logout-link-side').on('click', function(e) {
             e.preventDefault();
-            document.cookie = "access=; path=/; SameSite=Strict; Secure";
-            document.cookie = "refresh=; path=/; SameSite=Strict; Secure";
+            document.cookie = "access=; path=/; SameSite=Strict;";
+            document.cookie = "refresh=; path=/; SameSite=Strict;";
             window.location.href = '/login/';
         });
     });

@@ -114,8 +114,8 @@
           contentType: 'application/json',
           data: JSON.stringify({ email: username, password: password }),
           success: function (data) {
-            document.cookie = "access=" + encodeURIComponent(data.access) + "; path=/; SameSite=Strict; Secure";
-            document.cookie = "refresh=" + encodeURIComponent(data.refresh) + "; path=/; SameSite=Strict; Secure";
+            document.cookie = "access=" + encodeURIComponent(data.access) + "; path=/; SameSite=Strict;";
+            document.cookie = "refresh=" + encodeURIComponent(data.refresh) + "; path=/; SameSite=Strict;";
             window.location.href = '/dashboard/';
           },
           error: function (xhr) {
