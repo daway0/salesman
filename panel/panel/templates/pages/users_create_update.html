@@ -337,7 +337,8 @@
                 }
             }
         });
-
+        var now = new Date();
+        $('#birthdate').attr('date-iso', now.toISOString());
         $('.datePicker').pDatepicker(datePickerConfig);
 
         var isEdit = "{{ edit }}" == "True";

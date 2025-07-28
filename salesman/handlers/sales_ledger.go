@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
 	"salesman/models"
 	"strings"
@@ -51,10 +50,10 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 	}
 	salesLedger.Status = "PENDING"
 
-	query := `INSERT INTO SalesLedger (id, customer_id, service_id, created_by, referer_id, price, sales_price, sales_discount, trn, workflow_history, status, approved_by, approved_at, cancelled_by, cancelled_at, created_at, updated_at)
+	query := `INSERT INTO SalesLedger (id, customer_id, service_id, created_by, referer_id, price, discount, payment_method, trn, workflow_history, status, approved_by, approved_at, cancelled_by, cancelled_at, created_at, updated_at)
               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id`
 	err := h.DB.QueryRow(query, salesLedger.ID, salesLedger.CustomerID, salesLedger.ServiceID, salesLedger.CreatedBy, salesLedger.RefererID,
-		salesLedger.Price, salesLedger.SalesPrice, salesLedger.SalesDiscount, salesLedger.TRN,
+		salesLedger.Price, salesLedger.Discount, salesLedger.PaymentMethod, salesLedger.TRN,
 		salesLedger.WorkflowHistory, salesLedger.Status, nil, nil, nil, nil, salesLedger.CreatedAt, salesLedger.CreatedAt).Scan(&salesLedger.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -73,17 +72,14 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 	recordUpdatedAt := time.Now()
 	id := c.Param("id")
 
-	log.Println(approval.TRN)
-
 	query := `
-	UPDATE SalesLedger SET status = 'APPROVED', approved_by = $1, approved_at = $2, trn = $3, updated_at = $5
+	UPDATE SalesLedger SET status = 'APPROVED', approved_by = $1, approved_at = $2, updated_at = $3
 	WHERE id = $4 AND
 	deleted_at IS NULL AND
 	status = 'PENDING' AND
-	trn IS NULL AND
 	approved_by IS NULL AND
 	approved_at IS NULL`
-	result, err := h.DB.Exec(query, approval.ApproverID, approval.ApprovedAt, approval.TRN, id, recordUpdatedAt)
+	result, err := h.DB.Exec(query, approval.ApproverID, approval.ApprovedAt, recordUpdatedAt, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -187,7 +183,7 @@ func (h *SalesLedgerHandler) RejectSalesLedger(c *gin.Context) {
 		return
 	}
 
-	query := `UPDATE SalesLedger SET status = 'REJECTED', workflow_history = $1, updated_at = $2 WHERE id = $3 AND deleted_at IS NULL AND status = 'PENDING' AND trn IS NULL AND approved_by IS NULL AND approved_at IS NULL`
+	query := `UPDATE SalesLedger SET status = 'REJECTED', workflow_history = $1, updated_at = $2 WHERE id = $3 AND deleted_at IS NULL AND status = 'PENDING' AND approved_by IS NULL AND approved_at IS NULL`
 	result, err := h.DB.Exec(query, updatedWorkflowHistory, recordUpdatedAt, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -306,8 +302,8 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 	workflows = append(workflows, resendWorkflow)
 
 	updatedWorkflowHistory, _ := json.Marshal(workflows)
-	wf_update_query := `UPDATE SalesLedger SET  workflow_history = $1, status = 'PENDING', price = $2, sales_price = $3, sales_discount = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL AND status = 'REJECTED'`
-	_, err = h.DB.Exec(wf_update_query, updatedWorkflowHistory, salesLedger.Price, salesLedger.SalesPrice, salesLedger.SalesDiscount, recordUpdatedAt, id)
+	wf_update_query := `UPDATE SalesLedger SET  workflow_history = $1, status = 'PENDING', price = $2, discount = $3, payment_method = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL AND status = 'REJECTED'`
+	_, err = h.DB.Exec(wf_update_query, updatedWorkflowHistory, salesLedger.Price, salesLedger.Discount, salesLedger.PaymentMethod, recordUpdatedAt, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -324,8 +320,8 @@ func (h *SalesLedgerHandler) GetSalesLedger(c *gin.Context) {
 			sl.created_by,
 			sl.referer_id,
 			sl.price,
-			sl.sales_price,
-			sl.sales_discount,
+			sl.discount,
+			sl.payment_method,
 			sl.trn,
 			sl.workflow_history,
 			sl.approved_by,
@@ -353,7 +349,7 @@ func (h *SalesLedgerHandler) GetSalesLedger(c *gin.Context) {
 	WHERE sl.id = $1
   AND sl.deleted_at IS NULL`
 	err := h.DB.QueryRow(query, id).Scan(&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
-		&salesLedger.Price, &salesLedger.SalesPrice, &salesLedger.SalesDiscount, &salesLedger.TRN,
+		&salesLedger.Price, &salesLedger.Discount, &salesLedger.PaymentMethod, &salesLedger.TRN,
 		&salesLedger.WorkflowHistory, &salesLedger.ApprovedBy,
 		&salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt, &salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt,
 		&salesLedger.ServiceTitle, &salesLedger.CompanyTitle, &salesLedger.CustomerFirstName, &salesLedger.CustomerLastName,
@@ -380,7 +376,7 @@ func (h *SalesLedgerHandler) GetSalesLedgers(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid created_by parameter"})
 			return
 		}
-		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.sales_price, sl.sales_discount, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
+		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.discount, sl.payment_method, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
        s.title, c.title, u.first_name, u.last_name
 FROM SalesLedger sl
 INNER JOIN services s ON sl.service_id = s.id
@@ -390,7 +386,7 @@ WHERE sl.deleted_at IS NULL
 AND sl.created_by = $1
 ORDER BY sl.updated_at DESC`, createdBy)
 	} else {
-		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.sales_price, sl.sales_discount, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
+		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_id, sl.service_id, sl.created_by, sl.referer_id, sl.price, sl.discount, sl.payment_method, sl.trn, sl.workflow_history, sl.approved_by, sl.approved_at, sl.cancelled_by, sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
        s.title, c.title, u.first_name, u.last_name
 FROM SalesLedger sl
 INNER JOIN services s ON sl.service_id = s.id
@@ -410,7 +406,7 @@ ORDER BY sl.updated_at DESC`)
 		var salesLedger models.SalesLedger
 		err := rows.Scan(
 			&salesLedger.ID, &salesLedger.CustomerID, &salesLedger.ServiceID, &salesLedger.CreatedBy, &salesLedger.RefererID,
-			&salesLedger.Price, &salesLedger.SalesPrice, &salesLedger.SalesDiscount, &salesLedger.TRN,
+			&salesLedger.Price, &salesLedger.Discount, &salesLedger.PaymentMethod, &salesLedger.TRN,
 			&salesLedger.WorkflowHistory, &salesLedger.ApprovedBy, &salesLedger.ApprovedAt, &salesLedger.CancelledBy, &salesLedger.CancelledAt,
 			&salesLedger.CreatedAt, &salesLedger.Status, &salesLedger.UpdatedAt, &salesLedger.DeletedAt,
 			&salesLedger.ServiceTitle, &salesLedger.CompanyTitle, &salesLedger.CustomerFirstName, &salesLedger.CustomerLastName,
@@ -475,10 +471,10 @@ func (h *SalesLedgerHandler) UpdateSalesLedger(c *gin.Context) {
 	now := time.Now()
 	salesLedger.UpdatedAt = &now
 
-	query := `UPDATE SalesLedger SET customer_id = $1, service_id = $2, created_by = $3, referer_id = $4, price = $5, sales_price = $6, sales_discount = $7, trn = $8, approved_by = $9, approved_at = $10, updated_at = $11
+	query := `UPDATE SalesLedger SET customer_id = $1, service_id = $2, created_by = $3, referer_id = $4, price = $5, discount = $6, payment_method = $7, trn = $8, approved_by = $9, approved_at = $10, updated_at = $11
               WHERE id = $12 AND deleted_at IS NULL`
 	result, err := h.DB.Exec(query, salesLedger.CustomerID, salesLedger.ServiceID, salesLedger.CreatedBy, salesLedger.RefererID,
-		salesLedger.Price, salesLedger.SalesPrice, salesLedger.SalesDiscount, salesLedger.TRN,
+		salesLedger.Price, salesLedger.Discount, salesLedger.PaymentMethod, salesLedger.TRN,
 		salesLedger.ApprovedBy, salesLedger.ApprovedAt, now, salesLedger.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

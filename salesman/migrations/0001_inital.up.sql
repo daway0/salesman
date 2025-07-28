@@ -94,6 +94,7 @@ CREATE INDEX ON Services
     (company_id);
 
 CREATE TYPE Status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED');
+CREATE TYPE PaymentMethod AS ENUM ('POS', 'C2C');   -- C2C: CARD TO CARD :)
 CREATE TABLE SalesLedger 
 (
     id               uuid PRIMARY KEY,
@@ -105,9 +106,9 @@ CREATE TABLE SalesLedger
     cancelled_by     uuid REFERENCES Users (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     status           Status                   NOT NULL,
     price            numeric                  NOT NULL,
-    sales_price      numeric                  NOT NULL,
-    sales_discount   numeric,
-    TRN              varchar,
+    discount         numeric,
+    payment_method   PaymentMethod            NOT NULL,
+    trn              varchar                  NOT NULL,
     workflow_history json,
     approved_at      timestamp with time zone,
     cancelled_at     timestamp with time zone,
@@ -117,7 +118,7 @@ CREATE TABLE SalesLedger
 );
 
 ALTER TABLE SalesLedger
-    ADD UNIQUE (TRN);
+    ADD UNIQUE (trn);
 
 CREATE INDEX ON SalesLedger
     (service_id);

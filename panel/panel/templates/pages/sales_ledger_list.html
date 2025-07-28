@@ -36,10 +36,10 @@
                                 <th>شناسه فاکتور</th>
                                 <th>خدمت - شرکت</th>
                                 <th>مشتری</th>
-                                <th>قیمت پایه</th>
-                                <th>قیمت فروش</th>
+                                <th>قیمت</th>
+                                <th>روش پرداخت</th>
                                 <th>تخفیف فروش</th>
-                                <th>شماره تراکنش</th>
+                                <th>شناسه پرداخت مشترک</th>
                                 <th>تاریخ تایید</th>
                                 <th>تاریخ ثبت</th>
                                 <th>تاریخ به روز رسانی</th>
@@ -94,8 +94,8 @@
                         '<td>' + (ledger.service_title || '') + ' - ' + (ledger.company_title || '') + '</td>' +
                         '<td>' + (ledger.customer_first_name || '') + ' ' + (ledger.customer_last_name || '') + '</td>' +
                         '<td>' + (ledger.price ? ledger.price.toLocaleString() : '') + '</td>' +
-                        '<td>' + (ledger.sales_price ? ledger.sales_price.toLocaleString() : '') + '</td>' +
-                        '<td>' + (ledger.sales_discount ? ledger.sales_discount.toLocaleString() : '') + '</td>' +
+                        '<td>' + (ledger.payment_method == 'C2C' ? 'کارت به کارت' : 'دستگاه پرداخت') + '</td>' +
+                        '<td>' + (ledger.discount ? ledger.discount.toLocaleString() : '') + '</td>' +
                         '<td>' + (ledger.trn || '') + '</td>' +
                         '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.created_at ? new Date(ledger.created_at).toLocaleString('fa-IR') : '') + '</td>' +

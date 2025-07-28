@@ -98,31 +98,33 @@
                                 </div>
                             </div>
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت پایه <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-price">قیمت فروش <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="discount">تخفیف فروش</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="sales-price" required="required" class="form-control col-md-7 col-xs-12" readonly="readonly">
-                                    <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sales-discount">تخفیف فروش</label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="sales-discount" class="form-control col-md-7 col-xs-12" readonly="readonly">
+                                    <input type="text" id="discount" class="form-control col-md-7 col-xs-12" readonly="readonly">
                                     <span class="fa fa-percent form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div id="trn-panel" class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شماره پیگیری تراکنش <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شناسه پرداخت مشترک<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="trn" class="form-control col-md-7 col-xs-12" readonly="readonly" required>
                                     <span class="fa fa-barcode form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">روش پرداخت<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="payment-method" required disabled>
+                                        <option value="C2C">کارت به کارت</option>
+                                        <option value="POS">دستگاه پرداخت</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group hidden">
@@ -249,13 +251,13 @@
             created_by: $('#created-by').val(),
             referer_id: $('#referer-id').val(),
             price: parseFloat($('#price').val()),
-            sales_price: parseFloat($('#sales-price').val()),
-            sales_discount: parseFloat($('#sales-discount').val()),
+            discount: parseFloat($('#discount').val()),
             trn: $('#trn').val() || null,
             approved_by: $('#approved-by').val() || null,
             approved_at: $('#approved-at').val()|| null,
             cancelled_by: $('#cancelled-by').val() || null,
             cancelled_at: $('#cancelled-at').val() || null,
+            payment_method: $('#payment-method').val() || null,
         };
     }
     function setSalesLedgerFormData(data) {
@@ -276,8 +278,7 @@
             $('#referer-id').append(option).trigger('change');
         }
         $('#price').val(data.price || '');
-        $('#sales-price').val(data.sales_price || '');
-        $('#sales-discount').val(data.sales_discount || '');
+        $('#discount').val(data.discount || '');
         $('#trn').val(data.trn || '');
         $('#approved-by').val(data.approved_by || '');
         $('#approved-at').val(data.approved_at || '');
@@ -286,6 +287,7 @@
         $('#created-at').val(data.created_at || '');
         $('#updated-at').val(data.updated_at || '');
         $('#id').val(data.id || '');
+        $('#payment-method').val(data.payment_method || '');
         renderWorkflowHistory(data.workflow_history);
         updateUIByStatus(data.status);
     }
@@ -326,8 +328,9 @@
         $('#created-by').parents('.form-group').removeClass('hidden');
         $('#referer-id').parents('.form-group').removeClass('hidden');
         $('#price').parents('.form-group').removeClass('hidden');
-        $('#sales-price').parents('.form-group').removeClass('hidden');
-        $('#sales-discount').parents('.form-group').removeClass('hidden');
+        $('#discount').parents('.form-group').removeClass('hidden');
+        $('#payment-method').parents('.form-group').removeClass('hidden');
+        $('#trn').parents('.form-group').removeClass('hidden');
         $('#status-panel').removeClass('hidden');
         $('#workflow-panel').removeClass('hidden');
     }
@@ -344,9 +347,10 @@
             $('#service-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
             $('#created-by').parents('.form-group').removeClass('hidden');
             $('#referer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
-            $('#price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
-            $('#sales-price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
-            $('#sales-discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#price').parents('.form-group').removeClass('hidden');
+            $('#discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#payment-method').removeAttr('disabled').parents('.form-group').removeClass('hidden');
+            $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
             $('#create-btn').removeClass('hidden disabled').prop('disabled', false);
             return;
         }
@@ -359,7 +363,6 @@
 
                 if (permissions.includes('APPROVE_ALL_INVOICES')) {
                     $('#approve-btn').removeClass('hidden disabled').prop('disabled', false);
-                    $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
                     $('#comment-panel').removeClass('hidden');
                 } 
                 
@@ -384,9 +387,10 @@
                 $('#status-label-rejected').removeClass('hidden');
                 
                 if (permissions.includes('CREATE_INVOICE')) {
-                    $('#price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
-                    $('#sales-price').removeAttr('readonly').parents('.form-group').removeClass('hidden');
-                    $('#sales-discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+                    $('#price').parents('.form-group').removeClass('hidden');
+                    $('#discount').parents('.form-group').removeClass('hidden');
+                    $('#payment-method').removeAttr('disabled').parents('.form-group').removeClass('hidden');
+                    $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
                     $('#comment-panel').removeClass('hidden');
                     $('#save-btn').removeClass('hidden disabled').prop('disabled', false);
                     $('#rejected-o').removeClass('hidden');
@@ -473,11 +477,13 @@
                 });
             }
         });
+        var allServices = [];
         $.ajax({
             url: '/api/salesman/services/',
             type: 'GET',
             dataType: 'json',
             success: function (services) {
+                allServices = services;
                 var $select = $('#service-id');
                 $select.empty();
                 $select.append('<option value="">انتخاب خدمت</option>');
@@ -504,6 +510,17 @@
                     type: 'error',
                     styling: 'bootstrap3'
                 });
+            }
+        });
+        $('#service-id').on('change', function () {
+            var selectedServiceId = $(this).val();
+            var selectedService = allServices.find(function (service) {
+                return service.id == selectedServiceId;
+            });
+            if (selectedService) {
+                $('#price').val(selectedService.price.toLocaleString() || '');
+            } else {
+                $('#price').val('');
             }
         });
         if (!isInitiate && salesLedgerId) {
@@ -625,7 +642,7 @@
                 return;
             }
             var approvedBy = '{{ current_user }}';
-            var trn = $('#trn').val() || null;
+            var trn = $('#trn').val().trim() || null;
             var comment = $('#comment').val() || null;
             $.ajax({
                 url: '/api/salesman/sales-ledger/' + salesLedgerId + '/approve',    
@@ -693,13 +710,13 @@
                 return;
             }
             var price = parseFloat($('#price').val()) || null;
-            var salesPrice = parseFloat($('#sales-price').val()) || null;
-            var salesDiscount = parseFloat($('#sales-discount').val()) || null;
+            var discount = parseFloat($('#discount').val()) || null;
+            var payment_method = $('#payment-method').val() || null;
             var comment = $('#comment').val() || null;
             var data = {
                 price: price,
-                sales_price: salesPrice,
-                sales_discount: salesDiscount,
+                payment_method: payment_method,
+                discount: discount,
                 comment: comment
             };
             $.ajax({
