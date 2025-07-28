@@ -36,7 +36,7 @@ BEGIN
         date_joined
     )
     VALUES (
-        'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=',
+        NEW.password,
         false,
         NEW.email,
         NEW.id,

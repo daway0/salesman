@@ -336,15 +336,15 @@ INSERT INTO Services (id, company_id, title, price, created_at, type) VALUES
         (SERVICE_4, COMPANY_4, 'Service 4', 400, now(), 'PREMIUM');
 
 INSERT INTO Users (id, first_name,last_name, NSID, birthdate, email, password, created_at) VALUES 
-        (ADMINISTRATOR_USER, 'Administrator', 'User', '1234567890', '2000-01-01', 'admin@example.com', 'password1', now()),
-        (OPERATOR_USER, 'Operator', 'User', '1234567891', '2000-01-01', 'operator@example.com', 'password2', now()),
-        (OPERATOR2_USER, 'Operator2', 'User', '1234567894', '2000-01-01', 'operator2@example.com', 'password2', now()),
-        (OPERATOR3_USER, 'Operator3', 'User', '1234567895', '2000-01-01', 'operator3@example.com', 'password2', now()),
-        (OPERATOR4_USER, 'Operator4', 'User', '1234567896', '2000-01-01', 'operator4@example.com', 'password2', now()),
-        (OPERATOR5_USER, 'Operator5', 'User', '1234567897', '2000-01-01', 'operator5@example.com', 'password2', now()),
-        (FINANCE_USER, 'Finance', 'User', '1234567892', '2000-01-01', 'finance@example.com', 'password3', now()),
-        (USER_1, 'User', 'User', '1234567893', '2000-01-01', 'user@example.com', 'password4', now()),
-        (CUSTOMER_1, 'Customer', 'User', '1234564213', '2000-01-01', 'customer@example.com', 'password4', now());
+        (ADMINISTRATOR_USER, 'Administrator', 'User', '1234567890', '2000-01-01', 'admin@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (OPERATOR_USER, 'Operator', 'User', '1234567891', '2000-01-01', 'operator@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (OPERATOR2_USER, 'Operator2', 'User', '1234567894', '2000-01-01', 'operator2@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (OPERATOR3_USER, 'Operator3', 'User', '1234567895', '2000-01-01', 'operator3@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (OPERATOR4_USER, 'Operator4', 'User', '1234567896', '2000-01-01', 'operator4@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (OPERATOR5_USER, 'Operator5', 'User', '1234567897', '2000-01-01', 'operator5@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (FINANCE_USER, 'Finance', 'User', '1234567892', '2000-01-01', 'finance@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (USER_1, 'User', 'User', '1234567893', '2000-01-01', 'user@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (CUSTOMER_1, 'Customer', 'User', '1234564213', '2000-01-01', 'customer@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now());
 
 INSERT INTO UserRoles (id, user_id, role_id, created_at) VALUES 
         (uuid_generate_v4(), ADMINISTRATOR_USER, ADMINISTRATOR, now()),

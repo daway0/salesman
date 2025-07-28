@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"salesman/models"
+	"salesman/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -44,7 +45,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	user.ID = uuid.New()
 	user.CreatedAt = time.Now()
-
+	user.Password, err = utils.HashPasswordForDjango(user.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password: " + err.Error()})
+		return
+	}
 	query := `INSERT INTO Users (id, first_name, last_name, NSID, birthdate, email, password, created_at)
               VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
 	err = h.DB.QueryRow(query, user.ID, user.FirstName, user.LastName, user.NSID, user.Birthdate, user.Email, user.Password, user.CreatedAt).Scan(&user.ID)

@@ -12,8 +12,8 @@ import (
 
 const (
 	djangoPBKDF2Iterations = 1000000
-	djangoPBKDF2KeyLength = 64
-	djangoPBKDF2SaltLength = 12
+	djangoPBKDF2KeyLength  = 32
+	djangoPBKDF2SaltLength = 22
 	alphanumericChars      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
@@ -37,14 +37,13 @@ func HashPasswordForDjango(rawPassword string) (string, error) {
 
 	hashBytes := pbkdf2.Key(
 		[]byte(rawPassword),
-		[]byte(salt), 
+		[]byte(salt),
 		djangoPBKDF2Iterations,
 		djangoPBKDF2KeyLength,
-		sha256.New, 
+		sha256.New,
 	)
 
 	encodedHash := base64.StdEncoding.EncodeToString(hashBytes)
 
 	return fmt.Sprintf("pbkdf2_sha256$%d$%s$%s", djangoPBKDF2Iterations, salt, encodedHash), nil
 }
-
