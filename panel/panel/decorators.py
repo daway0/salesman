@@ -28,7 +28,7 @@ def jwt_required(view_func):
 
                 response = requests.get(f"http://salesman:8080/api/users/{user.user_uuid}/permissions")
                 if response.status_code == 200:
-                    request.permissions = response.json().get('permissions', [])
+                    request.permissions = response.json().get('permissions', []) or []
                 else:
                     request.permissions = []
 
