@@ -329,11 +329,11 @@ INSERT INTO Companies (id, title, created_at) VALUES
         (COMPANY_3, 'Company 3', now()),
         (COMPANY_4, 'Company 4', now());
 
-INSERT INTO Services (id, company_id, title, price, created_at) VALUES 
-        (SERVICE_1, COMPANY_1, 'Service 1', 100, now()),
-        (SERVICE_2, COMPANY_2, 'Service 2', 200, now()),
-        (SERVICE_3, COMPANY_3, 'Service 3', 300, now()),
-        (SERVICE_4, COMPANY_4, 'Service 4', 400, now());
+INSERT INTO Services (id, company_id, title, price, created_at, type) VALUES 
+        (SERVICE_1, COMPANY_1, 'Service 1', 100, now(), 'NORMAL'),
+        (SERVICE_2, COMPANY_2, 'Service 2', 200, now(), 'NORMAL'),
+        (SERVICE_3, COMPANY_3, 'Service 3', 300, now(), 'NORMAL'),
+        (SERVICE_4, COMPANY_4, 'Service 4', 400, now(), 'PREMIUM');
 
 INSERT INTO Users (id, first_name,last_name, NSID, birthdate, email, password, created_at) VALUES 
         (ADMINISTRATOR_USER, 'Administrator', 'User', '1234567890', '2000-01-01', 'admin@example.com', 'password1', now()),

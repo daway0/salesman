@@ -24,10 +24,10 @@ func (h *ServiceHandler) CreateService(c *gin.Context) {
 	service.ID = uuid.New()
 	service.CreatedAt = time.Now()
 
-	query := `INSERT INTO Services (id, company_id, title, description, price, image_url, created_at)
-              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	query := `INSERT INTO Services (id, company_id, title, description, price, image_url, type, created_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
 	err := h.DB.QueryRow(query, service.ID, service.CompanyID, service.Title,
-		service.Description, service.Price, service.ImageURL, service.CreatedAt).Scan(&service.ID)
+		service.Description, service.Price, service.ImageURL, service.Type, service.CreatedAt).Scan(&service.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -38,10 +38,10 @@ func (h *ServiceHandler) CreateService(c *gin.Context) {
 func (h *ServiceHandler) GetService(c *gin.Context) {
 	id := c.Param("id")
 	var service models.Service
-	query := `SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.created_at, s.updated_at, s.deleted_at, c.title
+	query := `SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.type, s.created_at, s.updated_at, s.deleted_at, c.title
               FROM Services s INNER JOIN Companies c ON s.company_id = c.id WHERE s.id = $1 AND s.deleted_at IS NULL`
 	err := h.DB.QueryRow(query, id).Scan(&service.ID, &service.CompanyID, &service.Title,
-		&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
+		&service.Description, &service.Price, &service.ImageURL, &service.Type, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Service not found"})
 		return
@@ -54,7 +54,7 @@ func (h *ServiceHandler) GetService(c *gin.Context) {
 }
 
 func (h *ServiceHandler) GetServices(c *gin.Context) {
-	rows, err := h.DB.Query(`SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.created_at, s.updated_at, s.deleted_at, c.title
+	rows, err := h.DB.Query(`SELECT s.id, s.company_id, s.title, s.description, s.price, s.image_url, s.type, s.created_at, s.updated_at, s.deleted_at, c.title
                              FROM Services s INNER JOIN Companies c ON s.company_id = c.id WHERE s.deleted_at IS NULL`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -66,7 +66,7 @@ func (h *ServiceHandler) GetServices(c *gin.Context) {
 	for rows.Next() {
 		var service models.Service
 		err := rows.Scan(&service.ID, &service.CompanyID, &service.Title,
-			&service.Description, &service.Price, &service.ImageURL, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
+			&service.Description, &service.Price, &service.ImageURL, &service.Type, &service.CreatedAt, &service.UpdatedAt, &service.DeletedAt, &service.CompanyTitle)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -99,10 +99,10 @@ func (h *ServiceHandler) UpdateService(c *gin.Context) {
 	now := time.Now()
 	service.UpdatedAt = &now
 
-	query := `UPDATE Services SET company_id = $1, title = $2, description = $3, price = $4, image_url = $5, updated_at = $6
-              WHERE id = $7 AND deleted_at IS NULL`
+	query := `UPDATE Services SET company_id = $1, title = $2, description = $3, price = $4, image_url = $5, type = $6, updated_at = $7
+              WHERE id = $8 AND deleted_at IS NULL`
 	result, err := h.DB.Exec(query, service.CompanyID, service.Title,
-		service.Description, service.Price, service.ImageURL, &now, service.ID)
+		service.Description, service.Price, service.ImageURL, service.Type, &now, service.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

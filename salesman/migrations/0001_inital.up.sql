@@ -75,7 +75,7 @@ CREATE TABLE Companies
 ALTER TABLE Companies
     ADD UNIQUE (CID);
 
-
+CREATE TYPE ServiceType AS ENUM ('NORMAL', 'PREMIUM');
 CREATE TABLE Services 
 (
     id          uuid PRIMARY KEY,
@@ -84,6 +84,7 @@ CREATE TABLE Services
     description text,
     price       numeric                  NOT NULL,
     image_url   varchar(255),
+    type        ServiceType              NOT NULL DEFAULT 'NORMAL',
     created_at  timestamp with time zone NOT NULL,
     updated_at  timestamp with time zone,
     deleted_at  timestamp with time zone

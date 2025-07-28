@@ -26,7 +26,7 @@
                         <br />
                         <form id="service-form" data-parsley-validate class="form-horizontal form-label-left">
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب شرکت</label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب شرکت<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select class="form-control" 
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
@@ -49,17 +49,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <textarea id="description" class="form-control col-md-7 col-xs-12"
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
-                                        readonly="readonly"
-                                    {% endif %}    
-                                    ></textarea>
-                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12"
@@ -68,6 +57,30 @@
                                     {% endif %}    
                                     >
                                     <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">نوع سرویس<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="type" required 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
+                                        disabled
+                                    {% endif %}  
+                                    >
+                                        <option value="NORMAL"> معمولی</option>
+                                        <option value="PREMIUM"> ویژه</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea id="description" class="form-control col-md-7 col-xs-12"
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
+                                        readonly="readonly"
+                                    {% endif %}    
+                                    ></textarea>
+                                    <span class="fa fa-info-circle form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -119,7 +132,8 @@
             title: $('#title').val(),
             description: $('#description').val(),
             price: parseFloat($('#price').val()),
-            image_url: $('#image-url').val()
+            image_url: $('#image-url').val(),
+            type: $('#type').val()
         };
     }
     function setServiceFormData(data) {
@@ -131,6 +145,7 @@
         $('#description').val(data.description || '');
         $('#price').val(data.price || '');
         $('#image-url').val(data.image_url || '');
+        $('#type').val(data.type || 'NORMAL');
     }
     $(document).ready(function () {
         $.ajaxSetup({

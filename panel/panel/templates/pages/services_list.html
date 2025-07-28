@@ -34,8 +34,9 @@
                                 <tr>
                                     <th>عنوان سرویس</th>
                                     <th>شرکت</th>
-                                    <th>توضیحات</th>
                                     <th>قیمت</th>
+                                    <th>نوع سرویس</th>
+                                    <th>توضیحات</th>
                                     <th>آدرس تصویر</th>
                                     <th>تاریخ ثبت</th>
                                     <th>تاریخ ویرایش</th>
@@ -68,8 +69,9 @@
                     var row = '<tr>' +
                         '<td>' + (service.title || '') + '</td>' +
                         '<td>' + (service.company_title || '') + '</td>' +
-                        '<td>' + (service.description && service.description.String ? service.description.String : '') + '</td>' +
                         '<td>' + (service.price || '') + '</td>' +
+                        '<td>' + (service.type == 'NORMAL' ? 'معمولی' : 'ویژه') + '</td>' +
+                        '<td>' + (service.description && service.description.String ? service.description.String : '') + '</td>' +
                         '<td>' + (service.image_url && service.image_url.String ? service.image_url.String : '') + '</td>' +
                         '<td>' + (service.created_at ? new Date(service.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (service.updated_at ? new Date(service.updated_at).toLocaleString('fa-IR') : '') + '</td>' +

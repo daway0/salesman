@@ -13,6 +13,7 @@ type Service struct {
 	Description *string    `json:"description" db:"description"`
 	Price       float64    `json:"price" db:"price"`
 	ImageURL    *string    `json:"image_url" db:"image_url"`
+	Type        string     `json:"type" db:"type"`
 	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
 	UpdatedAt   *time.Time `json:"updated_at" db:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at" db:"deleted_at"`
