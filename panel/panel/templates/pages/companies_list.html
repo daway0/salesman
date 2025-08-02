@@ -32,10 +32,6 @@
                             <thead>
                                 <tr>
                                     <th>نام شرکت</th>
-                                    <th>برند</th>
-                                    <th>کد شرکت</th>
-                                    <th>توضیحات</th>
-                                    <th>آدرس تصویر</th>
                                     <th>تاریخ ثبت</th>
                                     <th>تاریخ ویرایش</th>
                                     {% if permissions|has_permission:"UPDATE_ALL_COMPANIES" or permissions|has_permission:"DELETE_ALL_COMPANIES" or permissions|has_permission:"VIEW_ALL_COMPANIES" %}
@@ -66,10 +62,6 @@
                 companies.forEach(function (company) {
                     var row = '<tr>' +
                         '<td>' + (company.title || '') + '</td>' +
-                        '<td>' + (company.brand_name || '') + '</td>' +
-                        '<td>' + (company.cid || '') + '</td>' +
-                        '<td>' + (company.description || '') + '</td>' +
-                        '<td>' + (company.image_url || '') + '</td>' +
                         '<td>' + (company.created_at ? new Date(company.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (company.updated_at ? new Date(company.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_COMPANIES" or permissions|has_permission:"DELETE_ALL_COMPANIES" or permissions|has_permission:"VIEW_ALL_COMPANIES" %}

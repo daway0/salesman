@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>لیست مشترکین</h3>
+            </div>
+            {% if permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+                <div class="title_right">
+                    <a href="/customers/create/" class="btn btn-primary pull-left">ایجاد مشترک جدید</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_CUSTOMERS_LIST" %}
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>مشترکین سیستم
+                            </h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <table id="datatable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>نام خانوادگی</th>
+                                        <th>کد ملی</th>
+                                        <th>محصول</th>
+                                        <th>شماره اشتراک</th>
+                                        <th>شماره</th>
+                                        <th>تاریخ ایجاد</th>
+                                        <th>وضعیت</th>
+                                        {% if permissions|has_permission:"UPDATE_ALL_CUSTOMERS" or permissions|has_permission:"DELETE_ALL_CUSTOMERS" %}
+                                            <th>عملیات</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody id="customers-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="clearfix"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/salesman/customers/company-product/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (customers) {
+                var tbody = $('#customers-tbody');
+                tbody.empty();
+                customers.forEach(function (customer) {
+                    var row = '<tr>' +
+                        '<td>' + (customer.first_name || '') + '</td>' +
+                        '<td>' + (customer.last_name || '') + '</td>' +
+                        '<td>' + (customer.nsid || '') + '</td>' +
+                        '<td>' + (customer.product_company_title || '') + '</td>' +
+                        '<td>' + (customer.subscription_no || '') + '</td>' +
+                        '<td>' + (customer.number || '') + '</td>' +
+                        '<td>' + (customer.created_at ? new Date(customer.created_at).toLocaleString('fa-IR') : '') + '</td>' +
+                        '<td>' + (customer.is_active ? '<span class="label label-success">فعال</span>' : '<span class="label label-danger">غیر فعال</span>') + '</td>' +
+                        {% if permissions|has_permission:"UPDATE_ALL_CUSTOMERS" or permissions|has_permission:"DELETE_ALL_CUSTOMERS" %}
+                            '<td>' +
+                            '<a href="/customers/edit/' + customer.user_id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/sales-ledger/create/?cid=' + customer.id + '" class="btn btn-success btn-xs"><i class="fa fa-shopping-cart"></i> فاکتور</a>' +
+                            '</td>' +
+                        {% endif %}
+                        '</tr>';
+                    tbody.append(row);
+                });
+                $('#datatable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                new PNotify({
+                    title: 'خطا در بارگذاری مشترکین',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

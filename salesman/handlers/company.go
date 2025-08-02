@@ -24,10 +24,9 @@ func (h *CompanyHandler) CreateCompany(c *gin.Context) {
 	company.ID = uuid.New()
 	company.CreatedAt = time.Now()
 
-	query := `INSERT INTO Companies (id, title, brand_name, cid, description, image_url, created_at)
-              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
-	err := h.DB.QueryRow(query, company.ID, company.Title, company.BrandName, company.CID,
-		company.Description, company.ImageURL, company.CreatedAt).Scan(&company.ID)
+	query := `INSERT INTO Companies (id, title, created_at)
+              VALUES ($1, $2, $3) RETURNING id`
+	err := h.DB.QueryRow(query, company.ID, company.Title, company.CreatedAt).Scan(&company.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -38,10 +37,9 @@ func (h *CompanyHandler) CreateCompany(c *gin.Context) {
 func (h *CompanyHandler) GetCompany(c *gin.Context) {
 	id := c.Param("id")
 	var company models.Company
-	query := `SELECT id, title, brand_name, cid, description, image_url, created_at, updated_at, deleted_at
+	query := `SELECT id, title, created_at, updated_at, deleted_at
               FROM Companies WHERE id = $1 AND deleted_at IS NULL`
-	err := h.DB.QueryRow(query, id).Scan(&company.ID, &company.Title, &company.BrandName, &company.CID,
-		&company.Description, &company.ImageURL, &company.CreatedAt, &company.UpdatedAt, &company.DeletedAt)
+	err := h.DB.QueryRow(query, id).Scan(&company.ID, &company.Title, &company.CreatedAt, &company.UpdatedAt, &company.DeletedAt)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Company not found"})
 		return
@@ -54,7 +52,7 @@ func (h *CompanyHandler) GetCompany(c *gin.Context) {
 }
 
 func (h *CompanyHandler) GetCompanies(c *gin.Context) {
-	rows, err := h.DB.Query(`SELECT id, title, brand_name, cid, description, image_url, created_at, updated_at, deleted_at 
+	rows, err := h.DB.Query(`SELECT id, title, created_at, updated_at, deleted_at
                              FROM Companies WHERE deleted_at IS NULL`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -65,8 +63,7 @@ func (h *CompanyHandler) GetCompanies(c *gin.Context) {
 	var companies []models.Company
 	for rows.Next() {
 		var company models.Company
-		err := rows.Scan(&company.ID, &company.Title, &company.BrandName, &company.CID,
-			&company.Description, &company.ImageURL, &company.CreatedAt, &company.UpdatedAt, &company.DeletedAt)
+		err := rows.Scan(&company.ID, &company.Title, &company.CreatedAt, &company.UpdatedAt, &company.DeletedAt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -99,10 +96,9 @@ func (h *CompanyHandler) UpdateCompany(c *gin.Context) {
 	now := time.Now()
 	company.UpdatedAt = &now
 
-	query := `UPDATE Companies SET title = $1, brand_name = $2, cid = $3, description = $4, image_url = $5, updated_at = $6
-              WHERE id = $7 AND deleted_at IS NULL`
-	result, err := h.DB.Exec(query, company.Title, company.BrandName, company.CID,
-		company.Description, company.ImageURL, &now, company.ID)
+	query := `UPDATE Companies SET title = $1, updated_at = $2
+              WHERE id = $3 AND deleted_at IS NULL`
+	result, err := h.DB.Exec(query, company.Title, &now, company.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -131,3 +127,5 @@ func (h *CompanyHandler) DeleteCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted"})
 }
+
+

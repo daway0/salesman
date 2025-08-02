@@ -1,18 +1,15 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
+	"time"
 )
 
-type Service struct {
+type Product struct {
 	ID uuid.UUID `json:"id" db:"id"`
 
-	ProductID     uuid.UUID `json:"product_id" db:"product_id"`
+	CompanyID     uuid.UUID `json:"company_id" db:"company_id"`
 	Title         string    `json:"title" db:"title"`
-	Description   *string   `json:"description" db:"description"`
-	Price         float64   `json:"price" db:"price"`
 	HasCommission bool      `json:"has_commission" db:"has_commission"`
 
 	CreatedAt time.Time  `json:"created_at" db:"created_at"`
@@ -20,7 +17,7 @@ type Service struct {
 	DeletedAt *time.Time `json:"deleted_at" db:"deleted_at"`
 }
 
-type ServiceWithProduct struct {
-	Service
-	ProductTitle string `json:"product_title" db:"product_title"`
+type ProductWithCompany struct {
+	Product
+	CompanyTitle string `json:"company_title" db:"company_title"`
 }

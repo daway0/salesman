@@ -32,14 +32,13 @@
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
+                                    <th>محصول</th>
                                     <th>عنوان سرویس</th>
-                                    <th>شرکت</th>
-                                    <th>قیمت</th>
-                                    <th>نوع سرویس</th>
                                     <th>توضیحات</th>
-                                    <th>آدرس تصویر</th>
-                                    <th>تاریخ ثبت</th>
-                                    <th>تاریخ ویرایش</th>
+                                    <th>قیمت</th>
+                                    <th>کمیسیون دارد؟</th>
+                                    <th>تاریخ ایجاد</th>
+                                    <th>تاریخ آخرین ویرایش</th>
                                     {% if permissions|has_permission:"UPDATE_ALL_SERVICES" or permissions|has_permission:"DELETE_ALL_SERVICES" or permissions|has_permission:"VIEW_ALL_SERVICES" %}
                                         <th>عملیات</th>
                                     {% endif %}
@@ -67,12 +66,11 @@
                 tbody.empty();
                 services.forEach(function (service) {
                     var row = '<tr>' +
+                        '<td>' + (service.product_title || '') + '</td>' +
                         '<td>' + (service.title || '') + '</td>' +
-                        '<td>' + (service.company_title || '') + '</td>' +
+                        '<td>' + (service.description || '') + '</td>' +
                         '<td>' + (service.price || '') + '</td>' +
-                        '<td>' + (service.type == 'NORMAL' ? 'معمولی' : 'ویژه') + '</td>' +
-                        '<td>' + (service.description && service.description.String ? service.description.String : '') + '</td>' +
-                        '<td>' + (service.image_url && service.image_url.String ? service.image_url.String : '') + '</td>' +
+                        '<td>' + (service.has_commission ? 'بله' : 'خیر') + '</td>' +
                         '<td>' + (service.created_at ? new Date(service.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (service.updated_at ? new Date(service.updated_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_SERVICES" or permissions|has_permission:"DELETE_ALL_SERVICES" or permissions|has_permission:"VIEW_ALL_SERVICES" %}

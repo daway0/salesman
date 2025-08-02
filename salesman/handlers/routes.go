@@ -9,6 +9,7 @@ import (
 func SetupRoutes(r *gin.Engine, db *sql.DB) {
 	userHandler := &UserHandler{DB: db}
 	companyHandler := &CompanyHandler{DB: db}
+	productHandler := &ProductHandler{DB: db}
 	serviceHandler := &ServiceHandler{DB: db}
 	roleHandler := &RoleHandler{DB: db}
 	permissionHandler := &PermissionHandler{DB: db}
@@ -16,6 +17,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 	userRoleHandler := &UserRoleHandler{DB: db}
 	rolePermissionHandler := &RolePermissionHandler{DB: db}
 	dashboardHandler := &DashboardHandler{DB: db}
+	customerHandler := &CustomerHandler{DB: db}
 
 	api := r.Group("/api")
 	{
@@ -34,11 +36,23 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.PUT("/companies/:id", companyHandler.UpdateCompany)
 		api.DELETE("/companies/:id", companyHandler.DeleteCompany)
 
+		api.POST("/products", productHandler.CreateProduct)
+		api.GET("/products", productHandler.GetProducts)
+		api.GET("/products/:id", productHandler.GetProduct)
+		api.PUT("/products/:id", productHandler.UpdateProduct)
+		api.DELETE("/products/:id", productHandler.DeleteProduct)
+		// api.GET("/companies/:company_id/products", productHandler.GetProductsByCompany)
+
 		api.POST("/services", serviceHandler.CreateService)
 		api.GET("/services", serviceHandler.GetServices)
 		api.GET("/services/:id", serviceHandler.GetService)
 		api.PUT("/services/:id", serviceHandler.UpdateService)
 		api.DELETE("/services/:id", serviceHandler.DeleteService)
+
+		api.POST("/customers", customerHandler.CreateCustomer)
+		api.POST("/customers/company-product", customerHandler.CreateCompanyCustomerProduct)
+		api.GET("/customers/company-product", customerHandler.GetCompanyUserProducts)
+		api.GET("/customers/:user_id/company-product", customerHandler.GetCompanyUserProductsByUserID)
 
 		api.POST("/sales-ledger", salesLedgerHandler.CreateSalesLedger)
 		api.GET("/sales-ledger", salesLedgerHandler.GetSalesLedgers)
@@ -50,7 +64,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.POST("/sales-ledger/:id/cancel", salesLedgerHandler.CancelSalesLedger)
 		api.POST("/sales-ledger/:id/resend", salesLedgerHandler.ResendSalesLedger)
 		api.GET("/sales-ledger/new", salesLedgerHandler.GetNewSalesLedgers)
-		
+
 		// rbac
 		api.POST("/roles", roleHandler.CreateRole)
 		api.GET("/roles", roleHandler.GetRoles)
@@ -65,7 +79,6 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		api.GET("/permissions/:id", permissionHandler.GetPermission)
 		api.PUT("/permissions/:id", permissionHandler.UpdatePermission)
 		api.DELETE("/permissions/:id", permissionHandler.DeletePermission)
-
 
 		api.POST("/user-roles", userRoleHandler.CreateUserRole)
 		api.GET("/user-roles", userRoleHandler.GetUserRoles)
@@ -84,6 +97,7 @@ func SetupRoutes(r *gin.Engine, db *sql.DB) {
 		//dashboard
 		api.GET("/dashboard", dashboardHandler.GetDashboard)
 
-		
+		api.GET("/customer-product-path", userHandler.GetCustomerProductPath)
+		api.GET("/service-path", userHandler.GetServicePath)
 	}
 }

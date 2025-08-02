@@ -26,13 +26,13 @@
                         <br />
                         <form id="service-form" data-parsley-validate class="form-horizontal form-label-left">
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب شرکت<span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب محصول<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select class="form-control" 
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
                                         disabled
                                     {% endif %}    
-                                    id="company-id" required style="width: 100%">
+                                    id="product-id" required style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
@@ -49,30 +49,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت <span class="required">*</span></label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12"
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
-                                        readonly="readonly"
-                                    {% endif %}    
-                                    >
-                                    <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">نوع سرویس<span class="required">*</span></label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="type" required 
-                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
-                                        disabled
-                                    {% endif %}  
-                                    >
-                                        <option value="NORMAL"> معمولی</option>
-                                        <option value="PREMIUM"> ویژه</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">توضیحات</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <textarea id="description" class="form-control col-md-7 col-xs-12"
@@ -84,14 +60,27 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="image-url">آدرس تصویر</label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="image-url" class="form-control col-md-7 col-xs-12"
+                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12"
                                     {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
                                         readonly="readonly"
                                     {% endif %}    
                                     >
-                                    <span class="fa fa-image form-control-feedback left" aria-hidden="true"></span>
+                                    <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">کمیسیون دارد؟<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="has_commission" required 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_SERVICES" %}
+                                        disabled
+                                    {% endif %}  
+                                    >
+                                        <option value="TRUE"> بله</option>
+                                        <option value="FALSE"> خیر</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -128,24 +117,22 @@
 <script>
     function getServiceFormData() {
         return {
-            company_id: $('#company-id').val(),
+            product_id: $('#product-id').val(),
             title: $('#title').val(),
             description: $('#description').val(),
             price: parseFloat($('#price').val()),
-            image_url: $('#image-url').val(),
-            type: $('#type').val()
+            has_commission: $('#has_commission').val() === 'TRUE'
         };
     }
     function setServiceFormData(data) {
-        if (data.company_id) {
-            var option = new Option(data.company_title || '', data.company_id, true, true);
-            $('#company-id').append(option).trigger('change');
+        if (data.product_id) {
+            var option = new Option(data.product_title || '', data.product_id, true, true);
+            $('#product-id').append(option).trigger('change');
         }
         $('#title').val(data.title || '');
         $('#description').val(data.description || '');
         $('#price').val(data.price || '');
-        $('#image-url').val(data.image_url || '');
-        $('#type').val(data.type || 'NORMAL');
+        $('#has_commission').val(data.has_commission || 'FALSE');
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -157,18 +144,18 @@
         });
 
         $.ajax({
-            url: '/api/salesman/companies/',
+            url: '/api/salesman/products/',
             type: 'GET',
             dataType: 'json',
-            success: function (companies) {
-                var $select = $('#company-id');
+            success: function (products) {
+                var $select = $('#product-id');
                 $select.empty();
-                $select.append('<option value="">انتخاب شرکت</option>');
-                companies.forEach(function (company) {
+                $select.append('<option value="">انتخاب محصول</option>');
+                products.forEach(function (product) {
                     $select.append(
                         $('<option>', {
-                            value: company.id,
-                            text: company.title
+                            value: product.id,
+                            text: product.title
                         })
                     );
                 });
@@ -178,13 +165,13 @@
                 $select.select2({
                     dir: 'rtl',
                     language: 'fa',
-                    placeholder: 'انتخاب شرکت',
+                    placeholder: 'انتخاب محصول',
                     minimumInputLength: 0,
                     allowClear: true
                 });
             },
             error: function () {
-                $('#company-id').html('<option value="">خطا در بارگذاری شرکت‌ها</option>');
+                $('#product-id').html('<option value="">خطا در بارگذاری محصول‌ها</option>');
             }
         });
         
@@ -192,7 +179,6 @@
         var isEdit = "{{ edit }}" == "True";
         var serviceId = "{{ service_id|default:'' }}";
         var serviceData = null;
-        var companiesLoaded = false;
 
         if (isEdit && serviceId) {
             $.ajax({

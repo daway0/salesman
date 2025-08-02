@@ -34,12 +34,10 @@
                         <thead>
                             <tr>
                                 <th>شناسه فاکتور</th>
-                                <th>خدمت - شرکت</th>
-                                <th>مشتری</th>
-                                <th>قیمت</th>
+                                <th>مشترک</th>
+                                <th>هزینه</th>
                                 <th>روش پرداخت</th>
-                                <th>تخفیف فروش</th>
-                                <th>شناسه پرداخت مشترک</th>
+                                <th>شناسه پرداخت</th>
                                 <th>تاریخ تایید</th>
                                 <th>تاریخ ثبت</th>
                                 <th>تاریخ به روز رسانی</th>
@@ -91,12 +89,10 @@
                 salesLedgers.forEach(function (ledger) {
                     var row = '<tr>' +
                         '<td>' + (ledger.id || '') + '</td>' +   
-                        '<td>' + (ledger.service_title || '') + ' - ' + (ledger.company_title || '') + '</td>' +
                         '<td>' + (ledger.customer_first_name || '') + ' ' + (ledger.customer_last_name || '') + '</td>' +
-                        '<td>' + (ledger.price ? ledger.price.toLocaleString() : '') + '</td>' +
-                        '<td>' + (ledger.payment_method == 'C2C' ? 'کارت به کارت' : 'دستگاه پرداخت') + '</td>' +
-                        '<td>' + (ledger.discount ? ledger.discount.toLocaleString() : '') + '</td>' +
-                        '<td>' + (ledger.trn || '') + '</td>' +
+                        '<td>' + (ledger.total_price ? ledger.total_price.toLocaleString() : '') + '</td>' +
+                        '<td>' + (ledger.payment_method == 'C2C' ? 'کارت به کارت' : 'دستگاه پرداخت')  + '</td>' +
+                        '<td>' + (ledger.TRN || '') + '</td>' +
                         '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.created_at ? new Date(ledger.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         '<td>' + (ledger.updated_at ? new Date(ledger.updated_at).toLocaleString('fa-IR') : '') + '</td>' +

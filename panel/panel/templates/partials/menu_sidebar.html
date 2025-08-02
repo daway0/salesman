@@ -21,6 +21,18 @@
                 </ul>
             </li>
             {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_CUSTOMERS_LIST" or permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+            <li><a><i class="fa fa-phone"></i> مشترکین <span class="badge bg-green hidden" id="new-sales-ledger-count">0</span><span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    {% if permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+                        <li><a href="/customers/create/">ایجاد مشترک </a></li>
+                    {% endif %}
+                    {% if permissions|has_permission:"VIEW_ALL_CUSTOMERS_LIST" %}
+                        <li><a href="/customers/">لیست مشترکین </a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
             {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" or permissions|has_permission:"CREATE_ALL_COMPANIES" %}
             <li><a><i class="fa fa-building"></i>شرکت ها <span
                     class="fa fa-chevron-down"></span></a>
@@ -30,6 +42,18 @@
                     {% endif %}
                     {% if permissions|has_permission:"VIEW_ALL_COMPANIES_LIST" %}
                         <li><a href="/companies/">لیست شرکت ها</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if permissions|has_permission:"VIEW_ALL_PRODUCTS_LIST" or permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
+            <li><a><i class="fa fa-product-hunt"></i> محصولات <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    {% if permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
+                        <li><a href="/products/create/">ایجاد محصول</a></li>
+                    {% endif %}
+                    {% if permissions|has_permission:"VIEW_ALL_PRODUCTS_LIST" %}
+                        <li><a href="/products/">لیست محصولات</a></li>
                     {% endif %}
                 </ul>
             </li>

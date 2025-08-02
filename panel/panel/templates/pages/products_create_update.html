@@ -1,0 +1,281 @@
+{% extends "layouts/base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>ایجاد و ویرایش محصول</h3>
+            </div>
+
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_PRODUCTS" %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>اطلاعات محصول</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="product-form" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">عنوان محصول
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="title" required="required" 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_PRODUCTS" %}
+                                        readonly="readonly"
+                                    {% endif %}
+                                        class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-product-hunt form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب شرکت<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_PRODUCTS" %}
+                                        disabled
+                                    {% endif %}    
+                                    id="company-id" required style="width: 100%">
+                                        <option value="">در حال بارگذاری...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">کمیسیون دارد؟<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="has-commission" required 
+                                    {% if edit == True and not permissions|has_permission:"UPDATE_ALL_PRODUCTS" %}
+                                        disabled
+                                    {% endif %}  
+                                    >
+                                        <option value="true"> بله</option>
+                                        <option value="false"> خیر</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    
+                                    {% if edit == False and permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ایجاد محصول
+                                        </button>
+                                    {% elif edit == True and permissions|has_permission:"UPDATE_ALL_PRODUCTS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ویرایش محصول
+                                        </button>
+                                    {% endif %}
+                                    
+                                    {% if edit == True %}
+                                        {% if permissions|has_permission:"DELETE_ALL_PRODUCTS" %}
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteProduct()">حذف محصول</button>
+                                        {% endif %}
+                                        {% if permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
+                                            <a class="btn btn-primary pull-left" href="/products/create/">ایجاد محصول جدید</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="clearfix"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function getProductFormData() {
+        return {
+            title: $('#title').val(),
+            company_id: $('#company-id').val(),
+            has_commission: $('#has-commission').val() === 'true',
+        };
+    }
+
+    function setProductFormData(data) {
+        if (data.company_id) {
+            var option = new Option(data.company_title || '', data.company_id, true, true);
+            $('#company-id').append(option).trigger('change');
+        }
+        $('#title').val(data.title || '');
+        $('#has-commission').val(data.has_commission ? 'true' : 'false');
+    }
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+
+        var isEdit = "{{ edit }}" == "True";
+        var productId = "{{ product_id|default:'' }}";
+        var productData = null;
+
+        $.ajax({
+            url: '/api/salesman/companies/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (companies) {
+                var $select = $('#company-id');
+                $select.empty();
+                $select.append('<option value="">انتخاب شرکت</option>');
+                companies.forEach(function (company) {
+                    $select.append(
+                        $('<option>', {
+                            value: company.id,
+                            text: company.title
+                        })
+                    );
+                });
+                
+                $select.select2({
+                    dir: 'rtl',
+                    language: 'fa',
+                    placeholder: 'انتخاب شرکت',
+                    minimumInputLength: 0,
+                    allowClear: true
+                });
+            },
+            error: function () {
+                $('#company-id').html('<option value="">خطا در بارگذاری شرکت‌ها</option>');
+            }
+        });
+
+        if (isEdit && productId) {
+            $.ajax({
+                url: '/api/salesman/products/' + productId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    productData = response;
+                    setProductFormData(productData);
+                },
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات محصول',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
+        }
+
+        $('#product-form').on('submit', function (e) {
+            e.preventDefault();
+
+            var data = getProductFormData();
+
+            if (isEdit && productId) {
+                $.ajax({
+                    url: '/api/salesman/products/' + productId,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        new PNotify({
+                            title: 'محصول با موفقیت ویرایش شد.',
+                            text: 'محصول با موفقیت ویرایش شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/products/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در ویرایش محصول',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/salesman/products/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        new PNotify({
+                            title: 'محصول جدید با موفقیت ایجاد شد.',
+                            text: 'محصول جدید با موفقیت ایجاد شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/products/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در ایجاد محصول',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            }
+        });
+
+        window.deleteProduct = function () {
+            if (!isEdit || !productId) {
+                new PNotify({
+                    title: 'محصولی برای حذف انتخاب نشده است.',
+                    text: 'محصولی برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+                return;
+            }
+            if (confirm('آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟')) {
+                $.ajax({
+                    url: '/api/salesman/products/' + productId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        new PNotify({
+                            title: 'محصول با موفقیت حذف شد.',
+                            text: 'محصول با موفقیت حذف شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/products/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در حذف محصول',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            }
+        };
+    });
+</script>
+
+{% endblock %}

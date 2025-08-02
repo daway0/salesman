@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب مشتری <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب مشترک <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select class="form-control" id="customer-id" required disabled style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
@@ -73,11 +73,29 @@
                                 </div>
                             </div>
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب خدمت <span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">خدمات <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="service-id" required disabled style="width: 100%">
-                                        <option value="">در حال بارگذاری...</option>
-                                    </select>
+                                    <div id="services-container">
+                                        <div class="service-item" data-service-index="0">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <select class="form-control service-select" required disabled style="width: 100%">
+                                                        <option value="">انتخاب خدمت...</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-service" style="display: none;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-10">
+                                        <button type="button" class="btn btn-success btn-sm" id="add-service">
+                                            <i class="fa fa-plus"></i> افزودن خدمت
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -92,27 +110,14 @@
                             <div class="form-group hidden">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">معرف</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select class="form-control" id="referer-id" disabled style="width: 100%">
+                                    <select class="form-control" id="marketer-id" disabled style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="price">قیمت<span class="required">*</span></label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" readonly="readonly">
-                                    <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="discount">تخفیف فروش</label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="discount" class="form-control col-md-7 col-xs-12" readonly="readonly">
-                                    <span class="fa fa-percent form-control-feedback left" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <div id="trn-panel" class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شناسه پرداخت مشترک<span class="required">*</span></label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="trn">شناسه پرداخت<span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="text" id="trn" class="form-control col-md-7 col-xs-12" readonly="readonly" required>
                                     <span class="fa fa-barcode form-control-feedback left" aria-hidden="true"></span>
@@ -245,51 +250,78 @@
 </div>
 <script>
     function getSalesLedgerFormData() {
+        var services = [];
+        $('.service-item').each(function() {
+            var $item = $(this);
+            var serviceId = $item.find('.service-select').val();
+            
+            if (serviceId) {
+                services.push({
+                    service_id: serviceId
+                });
+            }
+        });
+
         return {
-            customer_id: $('#customer-id').val(),
-            service_id: $('#service-id').val(),
+            customer_product_id: $('#customer-id').val(),
             created_by: $('#created-by').val(),
-            referer_id: $('#referer-id').val(),
-            price: parseFloat($('#price').val()),
-            discount: parseFloat($('#discount').val()),
+            marketer_id: $('#marketer-id').val(),
             trn: $('#trn').val() || null,
             approved_by: $('#approved-by').val() || null,
             approved_at: $('#approved-at').val()|| null,
             cancelled_by: $('#cancelled-by').val() || null,
             cancelled_at: $('#cancelled-at').val() || null,
             payment_method: $('#payment-method').val() || null,
+            services: services
         };
     }
     function setSalesLedgerFormData(data) {
-        if (data.customer_id) {
-            var option = new Option(data.customer_first_name + ' ' + data.customer_last_name, data.customer_id, true, true);
+        var salesLedger = data.sales_ledger;
+        
+        if (salesLedger.customer_product_id) {
+            var customerName = (salesLedger.customer_first_name || '') + ' ' + (salesLedger.customer_last_name || '');
+            var option = new Option(customerName, salesLedger.customer_product_id, true, true);
             $('#customer-id').append(option).trigger('change');
         }
-        if (data.service_id) {
-            var option = new Option(data.service_title, data.service_id, true, true);
-            $('#service-id').append(option).trigger('change');
+        
+        // Handle multiple services
+        if (data.service_items && data.service_items.length > 0) {
+            // Clear existing service items except the first one
+            $('.service-item:not(:first)').remove();
+            
+            data.service_items.forEach(function(serviceItem, index) {
+                if (index === 0) {
+                    // Use the first service item
+                    var $firstItem = $('.service-item:first');
+                    $firstItem.find('.service-select').val(serviceItem.service_id).trigger('change.select2');
+                } else {
+                // Add new service items
+                    addServiceItem(serviceItem.service_id);
+                }
+            });
         }
-        if (data.created_by) {
-            var option = new Option(data.created_by_name || data.created_by, data.created_by, true, true);
+        
+        if (salesLedger.created_by) {
+            var createdByName = (salesLedger.created_by_name || '') + ' ' + (salesLedger.created_by_last_name || '');
+            var option = new Option(createdByName, salesLedger.created_by, true, true);
             $('#created-by').append(option).trigger('change');
         }
-        if (data.referer_id) {
-            var option = new Option(data.referer_name || data.referer_id, data.referer_id, true, true);
-            $('#referer-id').append(option).trigger('change');
+        if (salesLedger.marketer_id) {
+            var marketerName = (salesLedger.referer_name || '') + ' ' + (salesLedger.referer_last_name || '');
+            var option = new Option(marketerName, salesLedger.marketer_id, true, true);
+            $('#marketer-id').append(option).trigger('change');
         }
-        $('#price').val(data.price || '');
-        $('#discount').val(data.discount || '');
-        $('#trn').val(data.trn || '');
-        $('#approved-by').val(data.approved_by || '');
-        $('#approved-at').val(data.approved_at || '');
-        $('#cancelled-by').val(data.cancelled_by || '');
-        $('#cancelled-at').val(data.cancelled_at || '');
-        $('#created-at').val(data.created_at || '');
-        $('#updated-at').val(data.updated_at || '');
-        $('#id').val(data.id || '');
-        $('#payment-method').val(data.payment_method || '');
-        renderWorkflowHistory(data.workflow_history);
-        updateUIByStatus(data.status);
+        $('#trn').val(salesLedger.TRN || '');
+        $('#approved-by').val(salesLedger.approved_by || '');
+        $('#approved-at').val(salesLedger.approved_at || '');
+        $('#cancelled-by').val(salesLedger.cancelled_by || '');
+        $('#cancelled-at').val(salesLedger.cancelled_at || '');
+        $('#created-at').val(salesLedger.created_at || '');
+        $('#updated-at').val(salesLedger.updated_at || '');
+        $('#id').val(salesLedger.id || '');
+        $('#payment-method').val(salesLedger.payment_method || '');
+        renderWorkflowHistory(salesLedger.workflow_history);
+        updateUIByStatus(salesLedger.status);
     }
 
     function renderWorkflowHistory(workflowHistory) {
@@ -324,17 +356,65 @@
     function commonUpdateUIByStatus() {
         $('#sales-ledger-id-panel').removeClass('hidden');
         $('#customer-id').parents('.form-group').removeClass('hidden');
-        $('#service-id').parents('.form-group').removeClass('hidden');
+        $('#services-container').parents('.form-group').removeClass('hidden');
         $('#created-by').parents('.form-group').removeClass('hidden');
-        $('#referer-id').parents('.form-group').removeClass('hidden');
-        $('#price').parents('.form-group').removeClass('hidden');
-        $('#discount').parents('.form-group').removeClass('hidden');
+        $('#marketer-id').parents('.form-group').removeClass('hidden');
         $('#payment-method').parents('.form-group').removeClass('hidden');
         $('#trn').parents('.form-group').removeClass('hidden');
         $('#status-panel').removeClass('hidden');
         $('#workflow-panel').removeClass('hidden');
     }
 
+    function addServiceItem(serviceId) {
+        var serviceIndex = $('.service-item').length;
+        var $newItem = $('<div class="service-item" data-service-index="' + serviceIndex + '">' +
+            '<div class="row">' +
+                '<div class="col-md-10">' +
+                    '<select class="form-control service-select" required disabled style="width: 100%">' +
+                        '<option value="">انتخاب خدمت...</option>' +
+                    '</select>' +
+                '</div>' +
+                '<div class="col-md-2">' +
+                    '<button type="button" class="btn btn-danger btn-sm remove-service">' +
+                        '<i class="fa fa-trash"></i>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>');
+        
+        // Populate the new select with services
+        $('.service-select:first option').each(function() {
+            $newItem.find('.service-select').append($(this).clone());
+        });
+        
+        // Initialize Select2 for the new select
+        $newItem.find('.service-select').select2({ 
+            dir: 'rtl', 
+            language: 'fa', 
+            placeholder: 'انتخاب خدمت...', 
+            minimumInputLength: 0, 
+            allowClear: true 
+        });
+        
+        // Set values if provided
+        if (serviceId) {
+            $newItem.find('.service-select').val(serviceId).trigger('change.select2');
+        }
+        
+        $('#services-container').append($newItem);
+        
+        // Enable the new item
+        $newItem.find('.service-select').prop('disabled', false);
+    }
+    
+    function removeServiceItem($item) {
+        $item.remove();
+        // Reindex remaining items
+        $('.service-item').each(function(index) {
+            $(this).attr('data-service-index', index);
+        });
+    }
+    
     function updateUIByStatus(status) {
         var userRole = "operator";
         var permissions = {{ permissions|safe }};
@@ -344,11 +424,25 @@
             permissions.includes('CREATE_INVOICE')
         ) {
             $('#customer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
-            $('#service-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
+            $('#services-container').parents('.form-group').removeClass('hidden');
+            $('.service-select').prop('disabled', false);
+            $('#add-service').prop('disabled', false);
+            
+            // Reinitialize Select2 for service selects if they were disabled
+            $('.service-select').each(function() {
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2({ 
+                        dir: 'rtl', 
+                        language: 'fa', 
+                        placeholder: 'انتخاب خدمت...', 
+                        minimumInputLength: 0, 
+                        allowClear: true 
+                    });
+                }
+            });
+            
             $('#created-by').parents('.form-group').removeClass('hidden');
-            $('#referer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
-            $('#price').parents('.form-group').removeClass('hidden');
-            $('#discount').removeAttr('readonly').parents('.form-group').removeClass('hidden');
+            $('#marketer-id').prop('disabled', false).parents('.form-group').removeClass('hidden');
             $('#payment-method').removeAttr('disabled').parents('.form-group').removeClass('hidden');
             $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
             $('#create-btn').removeClass('hidden disabled').prop('disabled', false);
@@ -386,9 +480,7 @@
                 commonUpdateUIByStatus(); 
                 $('#status-label-rejected').removeClass('hidden');
                 
-                if (permissions.includes('CREATE_INVOICE')) {
-                    $('#price').parents('.form-group').removeClass('hidden');
-                    $('#discount').parents('.form-group').removeClass('hidden');
+                if (permissions.includes('CREATE_INVOICE')) {   
                     $('#payment-method').removeAttr('disabled').parents('.form-group').removeClass('hidden');
                     $('#trn').removeAttr('readonly').parents('.form-group').removeClass('hidden');
                     $('#comment-panel').removeClass('hidden');
@@ -425,37 +517,64 @@
         var salesLedgerData = null;
         var servicesLoaded = false;
         var usersLoaded = false;
+        var customerProductPathLoaded = false;
         if (isInitiate) {
             updateUIByStatus('INITIATE');
         }
         
+
+        $.ajax({
+            url: '/api/salesman/customer-product-path/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (customerProductPath) {
+                var $customer = $('#customer-id');
+                $customer.empty();
+                $customer.append('<option value="">انتخاب مشترک</option>');
+                customerProductPath.forEach(function (item) {
+                    $customer.append($('<option>', { value: item.id, text: item.user_product_path }));
+                });
+                $customer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب مشترک', minimumInputLength: 0, allowClear: true });
+
+                customerProductPathLoaded = true;
+                if (!isInitiate && salesLedgerData && servicesLoaded && customerProductPathLoaded) {
+                    setSalesLedgerFormData(salesLedgerData);
+                }
+            },
+            error: function () {
+                $('#customer-id').html('<option value="">خطا در بارگذاری مشترک</option>');
+                usersLoaded = true;
+                new PNotify({
+                    title: 'خطا در بارگذاری مشترک',
+                    text: xhr.responseText,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        });
+
         $.ajax({
             url: '/api/salesman/users/',
             type: 'GET',
             dataType: 'json',
             success: function (users) {
-                var $customer = $('#customer-id');
-                var $referer = $('#referer-id');
+                var $marketer = $('#marketer-id');
                 var $createdBy = $('#created-by');
-                $customer.empty();
-                $referer.empty();
+                $marketer.empty();
                 $createdBy.empty();
-                $customer.append('<option value="">انتخاب مشتری</option>');
-                $referer.append('<option value="">انتخاب معرف</option>');
+                $marketer.append('<option value="">انتخاب معرف</option>');
                 $createdBy.append('<option value="">انتخاب ایجادکننده</option>');
                 users.forEach(function (user) {
                     var fullName = user.first_name + ' ' + user.last_name;
-                    $customer.append($('<option>', { value: user.id, text: fullName }));
-                    $referer.append($('<option>', { value: user.id, text: fullName }));
+                    $marketer.append($('<option>', { value: user.id, text: fullName }));
                     $createdBy.append($('<option>', { value: user.id, text: fullName }));
                 });
-                $customer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب مشتری', minimumInputLength: 0, allowClear: true });
-                $referer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب معرف', minimumInputLength: 0, allowClear: true });
+                $marketer.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب معرف', minimumInputLength: 0, allowClear: true });
                 $createdBy.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب ایجادکننده', minimumInputLength: 0, allowClear: true });
 
                 var currentUserId = '{{ current_user }}';
                 if (currentUserId) {
-                    $referer.val(currentUserId).trigger('change');
+                    $marketer.val(currentUserId).trigger('change');
                     $createdBy.val(currentUserId).trigger('change');
                 }
 
@@ -465,8 +584,7 @@
                 }
             },
             error: function () {
-                $('#customer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
-                $('#referer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
+                $('#marketer-id').html('<option value="">خطا در بارگذاری کاربران</option>');
                 $('#created-by').html('<option value="">خطا در بارگذاری کاربران</option>');
                 usersLoaded = true;
                 new PNotify({
@@ -477,32 +595,39 @@
                 });
             }
         });
-        var allServices = [];
         $.ajax({
-            url: '/api/salesman/services/',
+            url: '/api/salesman/service-path/',
             type: 'GET',
             dataType: 'json',
-            success: function (services) {
-                allServices = services;
-                var $select = $('#service-id');
-                $select.empty();
-                $select.append('<option value="">انتخاب خدمت</option>');
-                services.forEach(function (service) {
-                    $select.append(
-                        $('<option>', {
-                            value: service.id,
-                            text: service.title
-                        })
-                    );
+            success: function (servicePaths) {
+                // Populate all service selects with the same options
+                $('.service-select').each(function() {
+                    var $select = $(this);
+                    $select.empty().append('<option value="">انتخاب خدمت...</option>');
+                    servicePaths.forEach(function (service) {
+                        $select.append(
+                            $('<option>', {
+                                value: service.id,
+                                text: service.service_path
+                            })
+                        );
+                    });
+                    // Initialize Select2 for this select
+                    $select.select2({ 
+                        dir: 'rtl', 
+                        language: 'fa', 
+                        placeholder: 'انتخاب خدمت...', 
+                        minimumInputLength: 0, 
+                        allowClear: true 
+                    });
                 });
-                $select.select2({ dir: 'rtl', language: 'fa', placeholder: 'انتخاب خدمت', minimumInputLength: 0, allowClear: true });
                 servicesLoaded = true;
                 if (!isInitiate && salesLedgerData && usersLoaded) {
                     setSalesLedgerFormData(salesLedgerData);
                 }
             },
             error: function () {
-                $('#service-id').html('<option value="">خطا در بارگذاری خدمات</option>');
+                $('.service-select').html('<option value="">خطا در بارگذاری خدمات</option>');
                 servicesLoaded = true;
                 new PNotify({
                     title: 'خطا در بارگذاری خدمات',
@@ -510,17 +635,6 @@
                     type: 'error',
                     styling: 'bootstrap3'
                 });
-            }
-        });
-        $('#service-id').on('change', function () {
-            var selectedServiceId = $(this).val();
-            var selectedService = allServices.find(function (service) {
-                return service.id == selectedServiceId;
-            });
-            if (selectedService) {
-                $('#price').val(selectedService.price.toLocaleString() || '');
-            } else {
-                $('#price').val('');
             }
         });
         if (!isInitiate && salesLedgerId) {
@@ -709,15 +823,27 @@
                 });
                 return;
             }
-            var price = parseFloat($('#price').val()) || null;
-            var discount = parseFloat($('#discount').val()) || null;
+            
+            var services = [];
+            $('.service-item').each(function() {
+                var $item = $(this);
+                var serviceId = $item.find('.service-select').val();
+                
+                if (serviceId) {
+                    services.push({
+                        service_id: serviceId
+                    });
+                }
+            });
+            
             var payment_method = $('#payment-method').val() || null;
+            var trn = $('#trn').val() || null;
             var comment = $('#comment').val() || null;
             var data = {
-                price: price,
                 payment_method: payment_method,
-                discount: discount,
-                comment: comment
+                trn: trn,
+                comment: comment,
+                services: services
             };
             $.ajax({
                 url: '/api/salesman/sales-ledger/' + salesLedgerId + '/resend', 
@@ -770,6 +896,25 @@
                 }
             });
         };
+        
+        // Event handlers for service items
+        $(document).on('click', '#add-service', function() {
+            addServiceItem();
+        });
+        
+        $(document).on('click', '.remove-service', function() {
+            var $item = $(this).closest('.service-item');
+            if ($('.service-item').length > 1) {
+                removeServiceItem($item);
+            } else {
+                new PNotify({
+                    title: 'خطا',
+                    text: 'حداقل یک خدمت باید وجود داشته باشد.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        });
     });
 </script>
 {% endblock %} 

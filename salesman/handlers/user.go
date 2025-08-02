@@ -225,3 +225,46 @@ func (h *UserHandler) GetUserPermissions(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"permissions": permissions})
 }
+
+func (h *UserHandler) GetCustomerProductPath(c *gin.Context) {
+	rows, err := h.DB.Query(`SELECT id, user_product_path FROM UserProductPath`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var customerProductPaths []models.UserProductPath
+	for rows.Next() {
+		var customerProductPath models.UserProductPath
+		err := rows.Scan(&customerProductPath.ID, &customerProductPath.UserProductPath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		customerProductPaths = append(customerProductPaths, customerProductPath)
+	}
+	c.JSON(http.StatusOK, customerProductPaths)
+}
+
+
+func (h *UserHandler) GetServicePath(c *gin.Context) {
+	rows, err := h.DB.Query(`SELECT id, service_path FROM ServicePath`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var servicePaths []models.ServicePath
+	for rows.Next() {
+		var servicePath models.ServicePath
+		err := rows.Scan(&servicePath.ID, &servicePath.ServicePath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		servicePaths = append(servicePaths, servicePath)
+	}
+	c.JSON(http.StatusOK, servicePaths)
+}

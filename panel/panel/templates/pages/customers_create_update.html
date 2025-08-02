@@ -1,0 +1,472 @@
+{% extends "layouts/base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3> ایجاد و ویرایش مشترک</h3>
+            </div>
+
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            {% if permissions|has_permission:"VIEW_ALL_CUSTOMERS" %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>اطلاعات اولیه </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="customer-form" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">نام
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="first-name" required="required" 
+                                    {% if edit == True %}
+                                        readonly="readonly"
+                                    {% endif %}
+                                        class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">نام
+                                    خانوادگی <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="last-name" name="last-name" required="required"
+                                    {% if edit == True %}
+                                        readonly="readonly"
+                                    {% endif %}    
+                                    class="form-control col-md-7 col-xs-12">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nsid" class="control-label col-md-3 col-sm-3 col-xs-12">شماره ملی <span
+                                        class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input id="nsid" class="form-control col-md-7 col-xs-12" type="text"
+                                        required="required"
+                                        {% if edit == True %}
+                                            readonly="readonly"
+                                        {% endif %}
+                                    >
+                                    <span class="fa fa-id-card form-control-feedback left" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    
+                                    {% if edit == False and permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ایجاد مشترک
+                                        </button>
+                                    {% elif edit == True and permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
+                                        <a class="btn btn-primary pull-left" href="/users/edit/{{ user_id }}/">ویرایش مشترک</a>
+                                    {% endif %}
+                                    
+                                    {% if edit == True %}
+                                        {% if permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+                                            <a class="btn btn-primary pull-left" href="/customers/create/">ایجاد مشترک جدید</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="clearfix"></div>
+            {% if edit == True and permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>ایجاد محصول جدید </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="customer-product-form" data-parsley-validate class="form-horizontal form-label-left">
+                            
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">انتخاب محصول<span class="required">*</span></label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <select class="form-control" 
+                                        {% if edit == True and not permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
+                                            disabled
+                                        {% endif %}    
+                                        id="product-id" required style="width: 100%">
+                                            <option value="">در حال بارگذاری...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subscription-no" class="control-label col-md-3 col-sm-3 col-xs-12">شماره اشتراک <span
+                                            class="required">*</span></label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input id="subscription-no" class="form-control col-md-7 col-xs-12" type="text"
+                                            required="required"
+                                            {% if edit == True and not permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
+                                                readonly="readonly"
+                                            {% endif %}
+                                        >
+                                        <span class="fa fa-id-card-o form-control-feedback left" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="number" class="control-label col-md-3 col-sm-3 col-xs-12">شماره<span
+                                            class="required">*</span></label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input id="number" class="form-control col-md-7 col-xs-12" type="text"
+                                            required="required"
+                                            {% if edit == True and not permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
+                                                readonly="readonly"
+                                            {% endif %}
+                                        >
+                                        <span class="fa fa-phone form-control-feedback left" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    
+                                    {% if edit == True and permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
+                                        <button type="submit" class="btn btn-success">
+                                            ایجاد محصول
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="clearfix"></div>
+            {% if edit == True %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>محصولات</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <div class="table-responsive">
+                            <table id="datatable" class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>
+                                            <div class="icheckbox_flat-green" style="position: relative;"><input
+                                                    type="checkbox" id="check-all" class="flat"
+                                                    style="position: absolute; opacity: 0;"><ins class="iCheck-helper"
+                                                    style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                            </div>
+                                        </th>
+                                        <th class="column-title">محصول</th>
+                                        <th class="column-title">شماره اشتراک</th>
+                                        <th class="column-title">شماره</th>
+                                        <th class="column-title">تاریخ ایجاد</th>
+                                        <th class="column-title">وضعیت</th>
+                                        <th class="column-title no-link last">عملیات</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="products-tbody">
+                                </tbody>
+                                <script>
+                                    
+                                    
+                                    function loadProducts() {
+                                        $.ajax({
+                                            url: '/api/salesman/customers/{{ user_id }}/company-product/',
+                                            method: 'GET',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                var tbody = $('#products-tbody');
+                                                tbody.empty();
+                                                data.forEach(function (product) {
+                                                    var row = '<tr data-product-id="' + product.id + '">' +
+                                                        '<td class="a-center">' +
+                                                        '<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>' +
+                                                        '</td>' +
+                                                        '<td>' + product.product_company_title + '</td>' +
+                                                        '<td>' + product.subscription_no + '</td>' +
+                                                        '<td>' + product.number + '</td>' +
+                                                        '<td>' + product.created_at + '</td>' +
+                                                        '<td>' + (product.is_active ? '<span class="label label-success">فعال</span>' : '<span class="label label-danger">غیر فعال</span>') + '</td>' +
+                                                        '<td>' +
+                                                        '<a href="/sales-ledger/create/?cid=' + product.id + '" class="btn btn-success btn-xs"><i class="fa fa-shopping-cart"></i> فاکتور</a>' +
+                                                        '</td>' +
+                                                        '</tr>';
+                                                    tbody.append(row);
+                                                });
+                                                $('#datatable').DataTable();
+                                            },
+                                            error: function (xhr, status, error) {
+                                                new PNotify({
+                                                    title: 'خطا در بارگذاری محصولات',
+                                                    text: xhr.responseText,
+                                                    type: 'error',
+                                                    styling: 'bootstrap3'
+                                                });
+                                            }
+                                        });
+                                    }
+                                    $(document).ready(function () {
+                                        $.ajaxSetup({
+                                            beforeSend: function (xhr, settings) {
+                                                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                                                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                                                }
+                                            }
+                                        });
+                                        loadProducts()
+                                    });
+                                </script>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    
+    
+
+    function getCustomerFormData() {
+        return {
+            first_name: $('#first-name').val(),
+            last_name: $('#last-name').val(),
+            nsid: $('#nsid').val(),
+        };
+    }
+
+    function getCustomerProductFormData() {
+        return {
+            user_id: "{{ user_id|default:'' }}",
+            product_id: $('#product-id').val(),
+            subscription_no: $('#subscription-no').val(),
+            number: $('#number').val(),
+        };
+    }
+
+    function setCustomerFormData(data) {
+        $('#first-name').val(data.first_name || '');
+        $('#last-name').val(data.last_name || '');
+        $('#nsid').val(data.nsid || '');
+        $('#subscription-no').val(data.subscription_no || '');
+        $('#product-id').val(data.product_id || '');
+    }
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+
+        var isEdit = "{{ edit }}" == "True";
+        var userId = "{{ user_id|default:'' }}";
+
+        $.ajax({
+            url: '/api/salesman/products/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (products) {
+                var $select = $('#product-id');
+                $select.empty();
+                $select.append('<option value="">انتخاب محصول</option>');
+                products.forEach(function (product) {
+                    $select.append(
+                        $('<option>', {
+                            value: product.id,
+                            text: product.title + ' - ' + product.company_title,
+                        })
+                    );
+                });
+                $select.select2({
+                    dir: 'rtl',
+                    language: 'fa',
+                    placeholder: 'انتخاب محصول',
+                    minimumInputLength: 0,
+                    allowClear: true
+                });
+            },
+            error: function () {
+                $('#product-id').html('<option value="">خطا در بارگذاری محصول‌ها</option>');
+            }
+        });
+        
+        if (isEdit && userId) {
+            $.ajax({
+                url: '/api/salesman/users/' + userId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    setCustomerFormData(response);
+                },
+                error: function (xhr) {
+                    new PNotify({
+                        title: 'خطا در بارگذاری اطلاعات مشترک',
+                        text: xhr.responseText,
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
+        }
+
+        $('#customer-form').on('submit', function (e) {
+            e.preventDefault();
+
+            var data = getCustomerFormData();
+
+            if (isEdit && userId) {
+                $.ajax({
+                    url: '/api/salesman/customers/' + userId,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        new PNotify({
+                            title: 'مشترک با موفقیت ویرایش شد.',
+                            text: 'مشترک با موفقیت ویرایش شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/customers/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در ویرایش مشترک',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/api/salesman/customers/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        new PNotify({
+                            title: 'مشترک جدید با موفقیت ایجاد شد.',
+                            text: 'مشترک جدید با موفقیت ایجاد شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/customers/edit/' + response.id + '/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در ایجاد مشترک',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            }
+        });
+
+        $('#customer-product-form').on('submit', function (e) {
+            e.preventDefault();
+            var data = getCustomerProductFormData();
+            $.ajax({
+                url: '/api/salesman/customers/company-product/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    new PNotify({
+                        title: 'محصول با موفقیت ایجاد شد.',
+                        text: 'محصول با موفقیت ایجاد شد.',
+                        type: 'success',
+                        styling: 'bootstrap3'
+                    });
+                    window.location.href = '/customers/edit/' + data.user_id + '/';
+                }
+            });
+        });
+
+        window.deleteCustomer = function () {
+            if (!isEdit || !userId) {
+                new PNotify({
+                    title: 'مشترکی برای حذف انتخاب نشده است.',
+                    text: 'مشترکی برای حذف انتخاب نشده است.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+                return;
+            }
+            if (confirm('آیا مطمئن هستید که می‌خواهید این مشترک را حذف کنید؟')) {
+                $.ajax({
+                    url: '/api/salesman/customers/' + userId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        new PNotify({
+                            title: 'مشترک با موفقیت حذف شد.',
+                            text: 'مشترک با موفقیت حذف شد.',
+                            type: 'success',
+                            styling: 'bootstrap3'
+                        });
+                        window.location.href = '/customers/';
+                    },
+                    error: function (xhr) {
+                        new PNotify({
+                            title: 'خطا در حذف مشترک',
+                            text: xhr.responseText,
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    }
+                });
+            }
+        };
+    });
+</script>
+
+{% endblock %}

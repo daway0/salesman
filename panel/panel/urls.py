@@ -12,10 +12,20 @@ urlpatterns = [
     path('companies/edit/<uuid:id>/', views.companies_create_update, name='companies_create_update'),
     path('companies/', views.companies_list, name='companies_list'),
 
+    # Products
+    path('products/create/', views.products_create_update, name='products_create_update'),
+    path('products/edit/<uuid:id>/', views.products_create_update, name='products_create_update'),
+    path('products/', views.products_list, name='products_list'),
+
     # Services
     path('services/create/', views.services_create_update, name='services_create_update'),
     path('services/edit/<uuid:id>/', views.services_create_update, name='services_create_update'),
     path('services/', views.services_list, name='services_list'),
+
+    # Customers
+    path('customers/create/', views.customers_create_update, name='customers_create_update'),
+    path('customers/edit/<uuid:id>/', views.customers_create_update, name='customers_create_update'),
+    path('customers/', views.customers_list, name='customers_list'),
 
     # Sales Ledgers
     path('sales-ledger/create/', views.sales_ledger_create_update, name='sales_ledger_create_update'),

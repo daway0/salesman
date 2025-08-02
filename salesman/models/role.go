@@ -17,13 +17,13 @@ type Role struct {
 type UserRoleInfo struct {
 	RoleID      uuid.UUID `json:"role_id"`
 	Title       string    `json:"title"`
-	Description *string    `json:"description"`
+	Description *string   `json:"description"`
 	UserHasRole bool      `json:"user_has_role"`
 }
 
 type RolePermissionInfo struct {
-	PermissionID uuid.UUID `json:"permission_id"`
-	PermissionAction string `json:"permission_action"`
-	Description *string `json:"description"`
-	RoleHasPermission bool `json:"role_has_permission"`
+	PermissionID      uuid.UUID `json:"permission_id"`
+	PermissionAction  string    `json:"permission_action"`
+	Description       *string   `json:"description"`
+	RoleHasPermission bool      `json:"role_has_permission"`
 }

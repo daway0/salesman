@@ -41,9 +41,10 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 	}
 
 	err = h.DB.QueryRow(`
-		SELECT COALESCE(SUM(price), 0) FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at::date = CURRENT_DATE
+		SELECT COALESCE(SUM(price), 0) FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at::date = CURRENT_DATE
 	`).Scan(&dashboard.TotalApprovedSalesAmount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get total approved sales amount"})
@@ -51,10 +52,11 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 	}
 
 	err = h.DB.QueryRow(`
-		SELECT COALESCE(SUM(price), 0) FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at::date = CURRENT_DATE
-		  AND created_by = $1
+		SELECT COALESCE(SUM(price), 0) FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at::date = CURRENT_DATE
+		  AND sl.created_by = $1
 	`, username).Scan(&dashboard.UserApprovedSalesAmount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user approved sales amount"})
@@ -94,9 +96,10 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 	}
 
 	err = h.DB.QueryRow(`
-		SELECT COALESCE(SUM(price), 0) FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at::date BETWEEN $1 AND $2
+		SELECT COALESCE(SUM(price), 0) FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at::date BETWEEN $1 AND $2
 	`, startDate, endDate).Scan(&dashboard.TotalApprovedSalesAmountInRange)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get total approved sales amount in range"})
@@ -115,9 +118,10 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 	}
 
 	err = h.DB.QueryRow(`
-		SELECT COALESCE(SUM(price), 0) FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at::date BETWEEN $1 AND $2
+		SELECT COALESCE(SUM(price), 0) FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at::date BETWEEN $1 AND $2
 		  AND created_by = $3
 	`, startDate, endDate, username).Scan(&dashboard.UserApprovedSalesAmountInRange)
 	if err != nil {
@@ -127,13 +131,14 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 
 	rows, err := h.DB.Query(`
 		SELECT u.first_name, u.last_name, rs.total_price, rs.count_sales
-		FROM (SELECT created_by, SUM(price) AS total_price, COUNT(price) AS count_sales
-			FROM salesledger
-			WHERE status = 'APPROVED'
-			GROUP BY created_by
+		FROM (SELECT sl.marketer_id, SUM(price) AS total_price, COUNT(price) AS count_sales
+			FROM salesledgerprice
+			inner join salesledger sl on salesledgerprice.id = sl.id
+			WHERE sl.status = 'APPROVED'
+			GROUP BY sl.marketer_id
 			ORDER BY SUM(price) DESC
 			LIMIT 5) rs
-				INNER JOIN users u ON u.id = rs.created_by
+				INNER JOIN users u ON u.id = rs.marketer_id
 		ORDER BY total_price desc
 	`)
 	if err != nil {
@@ -169,9 +174,10 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 
 	rows, err = h.DB.Query(`
 		SELECT approved_at::date, COALESCE(SUM(price), 0)
-		FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at BETWEEN $1 AND $2
+		FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at BETWEEN $1 AND $2
 		GROUP BY approved_at::date
 		ORDER BY approved_at::date
 	`, startDate, endDate)
@@ -194,10 +200,11 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 
 	rows, err = h.DB.Query(`
 		SELECT approved_at::date, COALESCE(SUM(price), 0)
-		FROM salesledger
-		WHERE status = 'APPROVED'
-		  AND approved_at BETWEEN $1 AND $2
-		  AND created_by = $3
+		FROM salesledgerprice
+		inner join salesledger sl on salesledgerprice.id = sl.id
+		WHERE sl.status = 'APPROVED'
+		  AND sl.approved_at BETWEEN $1 AND $2
+		  AND sl.marketer_id = $3
 		GROUP BY approved_at::date
 		ORDER BY approved_at::date
 	`, startDate, endDate, username)
@@ -222,14 +229,15 @@ func (h *DashboardHandler) GetDashboard(c *gin.Context) {
 	err = h.DB.QueryRow(`
 		SELECT u.first_name, u.last_name, rs.total_price, rs.count_sales
 		FROM (
-			SELECT created_by, SUM(price) AS total_price, COUNT(price) AS count_sales
-			FROM salesledger
-			WHERE status = 'APPROVED' AND approved_at::date = CURRENT_DATE
-			GROUP BY created_by
+			SELECT sl.marketer_id, SUM(price) AS total_price, COUNT(price) AS count_sales
+			FROM salesledgerprice
+			inner join salesledger sl on salesledgerprice.id = sl.id
+			WHERE sl.status = 'APPROVED' AND sl.approved_at::date = CURRENT_DATE
+			GROUP BY sl.marketer_id
 			ORDER BY SUM(price) DESC
 			LIMIT 1
 		) rs
-		INNER JOIN users u ON u.id = rs.created_by
+		INNER JOIN users u ON u.id = rs.marketer_id
 	`).Scan(&todayMVP.Firstname, &todayMVP.Lastname, &todayMVP.SalesAmount, &todayMVP.SalesCount)
 	if err != nil && err != sql.ErrNoRows {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get today's MVP"})

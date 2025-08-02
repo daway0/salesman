@@ -103,6 +103,29 @@ def companies_list(request):
     }
     return render(request, 'pages/companies_list.html', context)
 
+
+
+@jwt_required
+def products_create_update(request, id=None):
+    context = {
+        "edit": False,
+        "product_id": None,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
+    }
+    if id:
+        context["edit"] = True
+        context["product_id"] = id
+    return render(request, 'pages/products_create_update.html', context)
+
+@jwt_required
+def products_list(request):
+    context = {
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
+    }
+    return render(request, 'pages/products_list.html', context)
+
 @jwt_required
 def services_create_update(request, id=None):
     context = {
@@ -123,6 +146,28 @@ def services_list(request):
         "permissions": request.permissions,
     }
     return render(request, 'pages/services_list.html', context)
+
+
+@jwt_required
+def customers_create_update(request, id=None):
+    context = {
+        "edit": False,
+        "user_id": None,
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
+    }
+    if id:
+        context["edit"] = True
+        context["user_id"] = id
+    return render(request, 'pages/customers_create_update.html', context)
+
+@jwt_required
+def customers_list(request):
+    context = {
+        "current_user": request.user.user_uuid,
+        "permissions": request.permissions,
+    }
+    return render(request, 'pages/customers_list.html', context)
 
 @jwt_required
 def sales_ledger_create_update(request, id=None):

@@ -24,9 +24,9 @@ func (h *PermissionHandler) CreatePermission(c *gin.Context) {
 	permission.ID = uuid.New()
 	permission.CreatedAt = time.Now()
 
-	query := `INSERT INTO Permissions (id, content_type, action_type, created_at)
-              VALUES ($1, $2, $3, $4) RETURNING id`
-	err := h.DB.QueryRow(query, permission.ID, permission.ContentType, permission.ActionType, permission.CreatedAt).Scan(&permission.ID)
+	query := `INSERT INTO Permissions (id, action, created_at)
+              VALUES ($1, $2, $3) RETURNING id`
+	err := h.DB.QueryRow(query, permission.ID, permission.Action, permission.CreatedAt).Scan(&permission.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -37,9 +37,9 @@ func (h *PermissionHandler) CreatePermission(c *gin.Context) {
 func (h *PermissionHandler) GetPermission(c *gin.Context) {
 	id := c.Param("id")
 	var permission models.Permission
-	query := `SELECT id, content_type, action_type, created_at, updated_at, deleted_at
+	query := `SELECT id, action, created_at, updated_at, deleted_at
               FROM Permissions WHERE id = $1 AND deleted_at IS NULL`
-	err := h.DB.QueryRow(query, id).Scan(&permission.ID, &permission.ContentType, &permission.ActionType,
+	err := h.DB.QueryRow(query, id).Scan(&permission.ID, &permission.Action,
 		&permission.CreatedAt, &permission.UpdatedAt, &permission.DeletedAt)
 	if err == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Permission not found"})
@@ -64,7 +64,7 @@ func (h *PermissionHandler) GetPermissions(c *gin.Context) {
 	var permissions []models.Permission
 	for rows.Next() {
 		var permission models.Permission
-		err := rows.Scan(&permission.ID, &permission.ContentType, &permission.ActionType,
+		err := rows.Scan(&permission.ID, &permission.Action,
 			&permission.CreatedAt, &permission.UpdatedAt, &permission.DeletedAt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -98,9 +98,9 @@ func (h *PermissionHandler) UpdatePermission(c *gin.Context) {
 	now := time.Now()
 	permission.UpdatedAt = &now
 
-	query := `UPDATE Permissions SET content_type = $1, action_type = $2, updated_at = $3
-              WHERE id = $4 AND deleted_at IS NULL`
-	result, err := h.DB.Exec(query, permission.ContentType, permission.ActionType, permission.UpdatedAt, permission.ID)
+	query := `UPDATE Permissions SET action = $1, updated_at = $2
+              WHERE id = $3 AND deleted_at IS NULL`
+	result, err := h.DB.Exec(query, permission.Action, permission.UpdatedAt, permission.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
