@@ -60,7 +60,7 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id`
 	err = tx.QueryRow(query, salesLedgerID, salesLedgerCreate.CustomerProductID, salesLedgerCreate.CreatedBy,
 		salesLedgerCreate.MarketerID, salesLedgerCreate.PaymentMethod, salesLedgerCreate.TRN,
-		workflowHistory, salesLedgerCreate.CommissionLevel, "PENDING", createdAt).Scan(&salesLedgerID)
+		workflowHistory, salesLedgerCreate.CommissionLevel, "PENDING", createdAt, updatedAt).Scan(&salesLedgerID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create sales ledger: " + err.Error()})
 		return
