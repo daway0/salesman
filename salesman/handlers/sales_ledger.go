@@ -24,6 +24,16 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 		return
 	}
 
+	if len(salesLedgerCreate.Services) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Services are required"})
+		return
+	}
+
+	if salesLedgerCreate.TRN == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "TRN is required"})
+		return
+	}
+
 	tx, err := h.DB.Begin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start transaction: " + err.Error()})
@@ -352,6 +362,11 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 		return
 	}
 
+	if salesLedger.TRN == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "TRN is required"})
+		return
+	}
+
 	tx, err := h.DB.Begin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start transaction: " + err.Error()})
@@ -405,12 +420,6 @@ func (h *SalesLedgerHandler) ResendSalesLedger(c *gin.Context) {
 	}
 	if rows, _ := result.RowsAffected(); rows == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Sales ledger entry not found or cannot be resent"})
-		return
-	}
-
-	_, err = tx.Exec("DELETE FROM LedgerServiceItems WHERE ledger_id = $1", id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete existing service items: " + err.Error()})
 		return
 	}
 
