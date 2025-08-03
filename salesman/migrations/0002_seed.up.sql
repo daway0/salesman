@@ -427,80 +427,80 @@ INSERT INTO RolePermissions (id, role_id, permission_id, created_at) VALUES
         (uuid_generate_v4(), FINANCE, VIEW_SALES_MVP_LIST, now()),
         (uuid_generate_v4(), FINANCE, VIEW_ALL_SALES_HISTORY, now());
 
-INSERT INTO Companies (id, title, created_at) VALUES 
-        (COMPANY_1, 'Company 1', now()),
-        (COMPANY_2, 'Company 2', now()),
-        (COMPANY_3, 'Company 3', now()),
-        (COMPANY_4, 'Company 4', now());
+-- INSERT INTO Companies (id, title, created_at) VALUES 
+--         (COMPANY_1, 'Company 1', now()),
+--         (COMPANY_2, 'Company 2', now()),
+--         (COMPANY_3, 'Company 3', now()),
+--         (COMPANY_4, 'Company 4', now());
 
-INSERT INTO Products (id, company_id, title, has_commission, created_at) VALUES 
-        (PRODUCT_1, COMPANY_1, 'Product 1', true, now()),
-        (PRODUCT_2, COMPANY_2, 'Product 2', true, now()),
-        (PRODUCT_3, COMPANY_3, 'Product 3', true, now()),
-        (PRODUCT_4, COMPANY_4, 'Product 4', false, now());
+-- INSERT INTO Products (id, company_id, title, has_commission, created_at) VALUES 
+--         (PRODUCT_1, COMPANY_1, 'Product 1', true, now()),
+--         (PRODUCT_2, COMPANY_2, 'Product 2', true, now()),
+--         (PRODUCT_3, COMPANY_3, 'Product 3', true, now()),
+--         (PRODUCT_4, COMPANY_4, 'Product 4', false, now());
 
 
-INSERT INTO Services (id, product_id, title, price, has_commission, created_at) VALUES
-        (SERVICE_1, PRODUCT_1, 'Service 1', 100, true, now()),
-        (SERVICE_2, PRODUCT_2, 'Service 2', 200, true, now()),
-        (SERVICE_3, PRODUCT_3, 'Service 3', 300, true, now()),
-        (SERVICE_4, PRODUCT_4, 'Service 4', 400, false, now());
+-- INSERT INTO Services (id, product_id, title, price, has_commission, created_at) VALUES
+--         (SERVICE_1, PRODUCT_1, 'Service 1', 100, true, now()),
+--         (SERVICE_2, PRODUCT_2, 'Service 2', 200, true, now()),
+--         (SERVICE_3, PRODUCT_3, 'Service 3', 300, true, now()),
+--         (SERVICE_4, PRODUCT_4, 'Service 4', 400, false, now());
 
 INSERT INTO Users (id, first_name,last_name, NSID, birthdate, email, password, created_at) VALUES 
-        (ADMINISTRATOR_USER, 'Administrator', 'User', '1234567890', '2000-01-01', 'admin@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (OPERATOR_USER, 'Operator', 'User', '1234567891', '2000-01-01', 'operator@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (OPERATOR2_USER, 'Operator2', 'User', '1234567894', '2000-01-01', 'operator2@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (OPERATOR3_USER, 'Operator3', 'User', '1234567895', '2000-01-01', 'operator3@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (OPERATOR4_USER, 'Operator4', 'User', '1234567896', '2000-01-01', 'operator4@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (OPERATOR5_USER, 'Operator5', 'User', '1234567897', '2000-01-01', 'operator5@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (FINANCE_USER, 'Finance', 'User', '1234567892', '2000-01-01', 'finance@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (USER_1, 'User', 'User', '1234567893', '2000-01-01', 'user@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        (ADMINISTRATOR_USER, 'admin@sailsman', '', '1234567890', '2000-08-15', 'admin@sailsman.ir', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now());
+        -- (OPERATOR_USER, 'Operator', 'User', '1234567891', '2000-01-01', 'operator@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (OPERATOR2_USER, 'Operator2', 'User', '1234567894', '2000-01-01', 'operator2@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (OPERATOR3_USER, 'Operator3', 'User', '1234567895', '2000-01-01', 'operator3@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (OPERATOR4_USER, 'Operator4', 'User', '1234567896', '2000-01-01', 'operator4@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (OPERATOR5_USER, 'Operator5', 'User', '1234567897', '2000-01-01', 'operator5@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (FINANCE_USER, 'Finance', 'User', '1234567892', '2000-01-01', 'finance@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (USER_1, 'User', 'User', '1234567893', '2000-01-01', 'user@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
         
-        (CUSTOMER_1, 'Customer 1', 'User', '1234564213', '2000-01-01', 'customer1@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (CUSTOMER_2, 'Customer 2', 'User', '1234564521', '2000-01-01', 'customer2@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (CUSTOMER_3, 'Customer 3', 'User', '1234564685', '2000-01-01', 'customer3@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
-        (CUSTOMER_4, 'Customer 4', 'User', '1234564745', '2000-01-01', 'customer4@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now());
+        -- (CUSTOMER_1, 'Customer 1', 'User', '1234564213', '2000-01-01', 'customer1@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (CUSTOMER_2, 'Customer 2', 'User', '1234564521', '2000-01-01', 'customer2@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (CUSTOMER_3, 'Customer 3', 'User', '1234564685', '2000-01-01', 'customer3@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now()),
+        -- (CUSTOMER_4, 'Customer 4', 'User', '1234564745', '2000-01-01', 'customer4@example.com', 'pbkdf2_sha256$1000000$BV8vF1TzUL8vxeSONtgHP4$zB+T8eKgL3xN/OYHVjUuQgVW3ItRVdDLVZXWY+UYkO4=', now());
 
-INSERT INTO CompanyUsers (id, company_id, user_id, subscription_no, created_at) VALUES 
-        (COMPANY_USER_1, COMPANY_1, CUSTOMER_1, '1234567890', now()),
-        (COMPANY_USER_2, COMPANY_2, CUSTOMER_2, '1234567891', now()),
-        (COMPANY_USER_3, COMPANY_3, CUSTOMER_3, '1234567892', now()),
-        (COMPANY_USER_4, COMPANY_4, CUSTOMER_4, '1234567893', now());
+-- INSERT INTO CompanyUsers (id, company_id, user_id, subscription_no, created_at) VALUES 
+--         (COMPANY_USER_1, COMPANY_1, CUSTOMER_1, '1234567890', now()),
+--         (COMPANY_USER_2, COMPANY_2, CUSTOMER_2, '1234567891', now()),
+--         (COMPANY_USER_3, COMPANY_3, CUSTOMER_3, '1234567892', now()),
+--         (COMPANY_USER_4, COMPANY_4, CUSTOMER_4, '1234567893', now());
 
-INSERT INTO CompanyUserProducts (id, company_user_id, product_id, is_active, number, created_at) VALUES 
-        (COMPANY_USER_PRODUCT_1, COMPANY_USER_1, PRODUCT_1, true, '1234567890', now()),
-        (COMPANY_USER_PRODUCT_2, COMPANY_USER_2, PRODUCT_2, true, '1234567891', now()),
-        (COMPANY_USER_PRODUCT_3, COMPANY_USER_3, PRODUCT_3, true, '1234567892', now()),
-        (COMPANY_USER_PRODUCT_4, COMPANY_USER_4, PRODUCT_4, false, '1234567893', now());
+-- INSERT INTO CompanyUserProducts (id, company_user_id, product_id, is_active, number, created_at) VALUES 
+--         (COMPANY_USER_PRODUCT_1, COMPANY_USER_1, PRODUCT_1, true, '1234567890', now()),
+--         (COMPANY_USER_PRODUCT_2, COMPANY_USER_2, PRODUCT_2, true, '1234567891', now()),
+--         (COMPANY_USER_PRODUCT_3, COMPANY_USER_3, PRODUCT_3, true, '1234567892', now()),
+--         (COMPANY_USER_PRODUCT_4, COMPANY_USER_4, PRODUCT_4, false, '1234567893', now());
 
 INSERT INTO UserRoles (id, user_id, role_id, created_at) VALUES 
-        (uuid_generate_v4(), ADMINISTRATOR_USER, ADMINISTRATOR, now()),
-        (uuid_generate_v4(), OPERATOR_USER, OPERATOR, now()),
-        (uuid_generate_v4(), OPERATOR2_USER, OPERATOR, now()),
-        (uuid_generate_v4(), OPERATOR3_USER, OPERATOR, now()),
-        (uuid_generate_v4(), OPERATOR4_USER, OPERATOR, now()),
-        (uuid_generate_v4(), FINANCE_USER, FINANCE, now()),
-        (uuid_generate_v4(), USER_1, OPERATOR, now()),
+        (uuid_generate_v4(), ADMINISTRATOR_USER, ADMINISTRATOR, now());
+--         (uuid_generate_v4(), OPERATOR_USER, OPERATOR, now()),
+--         (uuid_generate_v4(), OPERATOR2_USER, OPERATOR, now()),
+--         (uuid_generate_v4(), OPERATOR3_USER, OPERATOR, now()),
+--         (uuid_generate_v4(), OPERATOR4_USER, OPERATOR, now()),
+--         (uuid_generate_v4(), FINANCE_USER, FINANCE, now()),
+--         (uuid_generate_v4(), USER_1, OPERATOR, now()),
         
-        (uuid_generate_v4(), CUSTOMER_1, CUSTOMER, now()),
-        (uuid_generate_v4(), CUSTOMER_2, CUSTOMER, now()),
-        (uuid_generate_v4(), CUSTOMER_3, CUSTOMER, now()),
-        (uuid_generate_v4(), CUSTOMER_4, CUSTOMER, now());
+--         (uuid_generate_v4(), CUSTOMER_1, CUSTOMER, now()),
+--         (uuid_generate_v4(), CUSTOMER_2, CUSTOMER, now()),
+--         (uuid_generate_v4(), CUSTOMER_3, CUSTOMER, now()),
+--         (uuid_generate_v4(), CUSTOMER_4, CUSTOMER, now());
 
-INSERT INTO SalesLedger (id, customer_product_id, created_by, marketer_id, status, payment_method, TRN, workflow_history, created_at) VALUES 
-        (SALES_LEDGER_1, COMPANY_USER_PRODUCT_1, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567890', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now()),
-        (SALES_LEDGER_2, COMPANY_USER_PRODUCT_2, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567891', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now()),
-        (SALES_LEDGER_3, COMPANY_USER_PRODUCT_3, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567892', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now());
+-- INSERT INTO SalesLedger (id, customer_product_id, created_by, marketer_id, status, payment_method, TRN, workflow_history, created_at) VALUES 
+--         (SALES_LEDGER_1, COMPANY_USER_PRODUCT_1, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567890', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now()),
+--         (SALES_LEDGER_2, COMPANY_USER_PRODUCT_2, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567891', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now()),
+--         (SALES_LEDGER_3, COMPANY_USER_PRODUCT_3, OPERATOR_USER, OPERATOR_USER, 'APPROVED', 'C2C', '1234567892', '[{"step": "create and send to finance", "action_at": "2025-07-29T05:57:38.722164931Z", "comment": "", "actor_id": "00000000-0000-0000-0000-000000000036", "actor_name": "Initiator"}]', now());
 
-INSERT INTO LedgerServiceItems (id, ledger_id, service_id, price, created_at) VALUES 
-        (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_1, 100, now()),
-        (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_2, 200, now()),
-        (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_3, 300, now()),
-        (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_1, 100, now()),
-        (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_2, 200, now()),
-        (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_3, 300, now()),
-        (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_1, 100, now()),
-        (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_2, 200, now()),
-        (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_3, 300, now());
+-- INSERT INTO LedgerServiceItems (id, ledger_id, service_id, price, created_at) VALUES 
+--         (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_1, 100, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_2, 200, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_1, SERVICE_3, 300, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_1, 100, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_2, 200, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_2, SERVICE_3, 300, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_1, 100, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_2, 200, now()),
+--         (uuid_generate_v4(), SALES_LEDGER_3, SERVICE_3, 300, now());
 
 END $$;
