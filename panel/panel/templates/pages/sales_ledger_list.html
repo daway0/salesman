@@ -90,7 +90,7 @@
                     var row = '<tr>' +
                         '<td>' + (ledger.id || '') + '</td>' +   
                         '<td>' + (ledger.customer_first_name || '') + ' ' + (ledger.customer_last_name || '') + '</td>' +
-                        '<td>' + (ledger.total_price ? ledger.total_price.toLocaleString() : '') + '</td>' +
+                        '<td>' + (ledger.total_price.toLocaleString()) + '</td>' +
                         '<td>' + (ledger.payment_method == 'C2C' ? 'کارت به کارت' : 'دستگاه پرداخت')  + '</td>' +
                         '<td>' + (ledger.TRN || '') + '</td>' +
                         '<td>' + (ledger.approved_at ? new Date(ledger.approved_at).toLocaleString('fa-IR') : '') + '</td>' +

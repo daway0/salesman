@@ -78,7 +78,7 @@
                                     <div id="services-container">
                                         <div class="service-item" data-service-index="0">
                                             <div class="row">
-                                                <div class="col-md-10">
+                                                <div class="col-md-12">
                                                     <select class="form-control service-select" required disabled style="width: 100%">
                                                         <option value="">انتخاب خدمت...</option>
                                                     </select>
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                             <div class="form-group hidden">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12">معرف</label>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">بازاریاب</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <select class="form-control" id="marketer-id" disabled style="width: 100%">
                                         <option value="">در حال بارگذاری...</option>
@@ -129,6 +129,16 @@
                                     <select class="form-control" id="payment-method" required disabled>
                                         <option value="C2C">کارت به کارت</option>
                                         <option value="POS">دستگاه پرداخت</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"> نوع کمیسیون<span class="required">*</span></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" id="commission-level" required disabled>
+                                        <option value="NOT_SPECIFIED"> مشخص نشده</option>
+                                        <option value="NORMAL"> عادی</option>
+                                        <option value="PREMIUM"> خاص</option>
                                     </select>
                                 </div>
                             </div>
@@ -284,18 +294,14 @@
             $('#customer-id').append(option).trigger('change');
         }
         
-        // Handle multiple services
         if (data.service_items && data.service_items.length > 0) {
-            // Clear existing service items except the first one
             $('.service-item:not(:first)').remove();
             
             data.service_items.forEach(function(serviceItem, index) {
                 if (index === 0) {
-                    // Use the first service item
                     var $firstItem = $('.service-item:first');
                     $firstItem.find('.service-select').val(serviceItem.service_id).trigger('change.select2');
                 } else {
-                // Add new service items
                     addServiceItem(serviceItem.service_id);
                 }
             });
@@ -318,6 +324,7 @@
         $('#cancelled-at').val(salesLedger.cancelled_at || '');
         $('#created-at').val(salesLedger.created_at || '');
         $('#updated-at').val(salesLedger.updated_at || '');
+        $('#commission-level').val(salesLedger.commission_level || 'NOT_SPECIFIED'); 
         $('#id').val(salesLedger.id || '');
         $('#payment-method').val(salesLedger.payment_method || '');
         renderWorkflowHistory(salesLedger.workflow_history);
@@ -361,6 +368,7 @@
         $('#marketer-id').parents('.form-group').removeClass('hidden');
         $('#payment-method').parents('.form-group').removeClass('hidden');
         $('#trn').parents('.form-group').removeClass('hidden');
+        $('#commission-level').parents('.form-group').removeClass('hidden');
         $('#status-panel').removeClass('hidden');
         $('#workflow-panel').removeClass('hidden');
     }
@@ -382,12 +390,10 @@
             '</div>' +
         '</div>');
         
-        // Populate the new select with services
         $('.service-select:first option').each(function() {
             $newItem.find('.service-select').append($(this).clone());
         });
         
-        // Initialize Select2 for the new select
         $newItem.find('.service-select').select2({ 
             dir: 'rtl', 
             language: 'fa', 
@@ -396,20 +402,17 @@
             allowClear: true 
         });
         
-        // Set values if provided
         if (serviceId) {
             $newItem.find('.service-select').val(serviceId).trigger('change.select2');
         }
         
         $('#services-container').append($newItem);
         
-        // Enable the new item
         $newItem.find('.service-select').prop('disabled', false);
     }
     
     function removeServiceItem($item) {
         $item.remove();
-        // Reindex remaining items
         $('.service-item').each(function(index) {
             $(this).attr('data-service-index', index);
         });
@@ -428,7 +431,6 @@
             $('.service-select').prop('disabled', false);
             $('#add-service').prop('disabled', false);
             
-            // Reinitialize Select2 for service selects if they were disabled
             $('.service-select').each(function() {
                 if (!$(this).hasClass('select2-hidden-accessible')) {
                     $(this).select2({ 
@@ -458,6 +460,7 @@
                 if (permissions.includes('APPROVE_ALL_INVOICES')) {
                     $('#approve-btn').removeClass('hidden disabled').prop('disabled', false);
                     $('#comment-panel').removeClass('hidden');
+                    $('#commission-level').removeAttr('disabled').parents('.form-group').removeClass('hidden');
                 } 
                 
                 if (permissions.includes('REJECT_ALL_INVOICES')) {
@@ -600,7 +603,6 @@
             type: 'GET',
             dataType: 'json',
             success: function (servicePaths) {
-                // Populate all service selects with the same options
                 $('.service-select').each(function() {
                     var $select = $(this);
                     $select.empty().append('<option value="">انتخاب خدمت...</option>');
@@ -612,7 +614,6 @@
                             })
                         );
                     });
-                    // Initialize Select2 for this select
                     $select.select2({ 
                         dir: 'rtl', 
                         language: 'fa', 
@@ -756,15 +757,15 @@
                 return;
             }
             var approvedBy = '{{ current_user }}';
-            var trn = $('#trn').val().trim() || null;
             var comment = $('#comment').val() || null;
+            var commissionLevel = $('#commission-level').val() || 'NOT_SPECIFIED';
             $.ajax({
                 url: '/api/salesman/sales-ledger/' + salesLedgerId + '/approve',    
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     approved_by: approvedBy,
-                    trn: trn,
+                    commission_level: commissionLevel,
                     comment: comment
                 }),
                 success: function (response) {
@@ -897,7 +898,6 @@
             });
         };
         
-        // Event handlers for service items
         $(document).on('click', '#add-service', function() {
             addServiceItem();
         });

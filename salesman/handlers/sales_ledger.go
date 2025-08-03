@@ -102,6 +102,14 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if approval.CommissionLevel == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Commission level is required"})
+		return
+	}
+
+	commissionLevel := approval.CommissionLevel
+	
 	approval.ApprovedAt = time.Now()
 	recordUpdatedAt := time.Now()
 	id := c.Param("id")
@@ -113,9 +121,9 @@ func (h *SalesLedgerHandler) ApproveSalesLedger(c *gin.Context) {
 	}
 	defer tx.Rollback()
 
-	query := `UPDATE SalesLedger SET status = 'APPROVED', approved_by = $1, approved_at = $2, updated_at = $3
-	WHERE id = $4 AND deleted_at IS NULL AND status = 'PENDING' AND approved_by IS NULL AND approved_at IS NULL`
-	result, err := tx.Exec(query, approval.ApproverID, approval.ApprovedAt, recordUpdatedAt, id)
+	query := `UPDATE SalesLedger SET status = 'APPROVED', approved_by = $1, approved_at = $2, updated_at = $3, commission_level = $4
+	WHERE id = $5 AND deleted_at IS NULL AND status = 'PENDING' AND approved_by IS NULL AND approved_at IS NULL`
+	result, err := tx.Exec(query, approval.ApproverID, approval.ApprovedAt, recordUpdatedAt, commissionLevel, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -497,24 +505,24 @@ func (h *SalesLedgerHandler) GetSalesLedgers(c *gin.Context) {
 		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_product_id, sl.created_by, sl.approved_by, sl.cancelled_by, sl.marketer_id,
 			sl.status, sl.payment_method, sl.TRN, sl.workflow_history, sl.commission_level, sl.approved_at,
 			sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
-			u.first_name, u.last_name, itp.total_price
+			u.first_name, u.last_name, coalesce(total_price, 0)
 		FROM SalesLedger sl
 		INNER JOIN CompanyUserProducts cup ON sl.customer_product_id = cup.id
 		INNER JOIN CompanyUsers cu ON cup.company_user_id = cu.id
 		INNER JOIN Users u ON cu.user_id = u.id
-		INNER JOIN InvoiceTotalPrice itp ON sl.id = itp.ledger_id
+		LEFT JOIN InvoiceTotalPrice itp ON sl.id = itp.ledger_id
 		WHERE sl.deleted_at IS NULL AND sl.created_by = $1
 		ORDER BY sl.updated_at DESC`, createdBy)
 	} else {
 		rows, err = h.DB.Query(`SELECT sl.id, sl.customer_product_id, sl.created_by, sl.approved_by, sl.cancelled_by, sl.marketer_id,
 			sl.status, sl.payment_method, sl.TRN, sl.workflow_history, sl.commission_level, sl.approved_at,
 			sl.cancelled_at, sl.created_at, sl.status, sl.updated_at, sl.deleted_at,
-			u.first_name, u.last_name, itp.total_price
+			u.first_name, u.last_name, coalesce(total_price, 0)
 		FROM SalesLedger sl
 		INNER JOIN CompanyUserProducts cup ON sl.customer_product_id = cup.id
 		INNER JOIN CompanyUsers cu ON cup.company_user_id = cu.id
 		INNER JOIN Users u ON cu.user_id = u.id
-		INNER JOIN InvoiceTotalPrice itp ON sl.id = itp.ledger_id
+		LEFT JOIN InvoiceTotalPrice itp ON sl.id = itp.ledger_id
 		WHERE sl.deleted_at IS NULL
 		ORDER BY sl.updated_at DESC`)
 	}
