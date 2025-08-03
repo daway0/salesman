@@ -33,6 +33,7 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 
 	salesLedgerID := uuid.New()
 	createdAt := time.Now()
+	updatedAt := time.Now()
 
 	var createdByName string
 	err = tx.QueryRow("SELECT concat(first_name, ' ', last_name) as actor_name FROM Users WHERE id = $1", salesLedgerCreate.CreatedBy).Scan(&createdByName)
@@ -55,8 +56,8 @@ func (h *SalesLedgerHandler) CreateSalesLedger(c *gin.Context) {
 		return
 	}
 
-	query := `INSERT INTO SalesLedger (id, customer_product_id, created_by, marketer_id, payment_method, TRN, workflow_history, commission_level, status, created_at)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`
+	query := `INSERT INTO SalesLedger (id, customer_product_id, created_by, marketer_id, payment_method, TRN, workflow_history, commission_level, status, created_at, updated_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id`
 	err = tx.QueryRow(query, salesLedgerID, salesLedgerCreate.CustomerProductID, salesLedgerCreate.CreatedBy,
 		salesLedgerCreate.MarketerID, salesLedgerCreate.PaymentMethod, salesLedgerCreate.TRN,
 		workflowHistory, salesLedgerCreate.CommissionLevel, "PENDING", createdAt).Scan(&salesLedgerID)
