@@ -303,12 +303,7 @@
     }
     function setSalesLedgerFormData(data) {
         var salesLedger = data.sales_ledger;
-        
-        if (salesLedger.customer_product_id) {
-            var customerName = (salesLedger.customer_first_name || '') + ' ' + (salesLedger.customer_last_name || '');
-            var option = new Option(customerName, salesLedger.customer_product_id, true, true);
-            $('#customer-id').append(option).trigger('change');
-        }
+        $('#customer-id').val(salesLedger.customer_product_id).trigger('change');
         
         if (data.service_items && data.service_items.length > 0) {
             $('.service-item:not(:first)').remove();
