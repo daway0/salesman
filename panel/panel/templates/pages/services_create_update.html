@@ -125,14 +125,11 @@
         };
     }
     function setServiceFormData(data) {
-        if (data.product_id) {
-            var option = new Option(data.product_title || '', data.product_id, true, true);
-            $('#product-id').append(option).trigger('change');
-        }
+        $('#product-id').val(data.product_id).trigger('change');
         $('#title').val(data.title || '');
         $('#description').val(data.description || '');
         $('#price').val(data.price || '');
-        $('#has_commission').val(data.has_commission || 'FALSE');
+        $('#has_commission').val(data.has_commission ? 'TRUE' : 'FALSE');
     }
     $(document).ready(function () {
         $.ajaxSetup({
@@ -155,7 +152,7 @@
                     $select.append(
                         $('<option>', {
                             value: product.id,
-                            text: product.title
+                            text: product.title + ' - ' + product.company_title
                         })
                     );
                 });
