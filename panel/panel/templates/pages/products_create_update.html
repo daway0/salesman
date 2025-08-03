@@ -115,10 +115,7 @@
     }
 
     function setProductFormData(data) {
-        if (data.company_id) {
-            var option = new Option(data.company_title || '', data.company_id, true, true);
-            $('#company-id').append(option).trigger('change');
-        }
+        $('#company-id').val(data.company_id).trigger('change');
         $('#title').val(data.title || '');
         $('#has-commission').val(data.has_commission ? 'true' : 'false');
     }
@@ -151,7 +148,6 @@
                         })
                     );
                 });
-                
                 $select.select2({
                     dir: 'rtl',
                     language: 'fa',
@@ -159,31 +155,31 @@
                     minimumInputLength: 0,
                     allowClear: true
                 });
+                
+                if (isEdit && productId) {
+                    $.ajax({
+                        url: '/api/salesman/products/' + productId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            productData = response;
+                            setProductFormData(productData);
+                        },
+                        error: function (xhr) {
+                            new PNotify({
+                                title: 'خطا در بارگذاری اطلاعات محصول',
+                                text: xhr.responseText,
+                                type: 'error',
+                                styling: 'bootstrap3'
+                            });
+                        }
+                    });
+                }
             },
             error: function () {
                 $('#company-id').html('<option value="">خطا در بارگذاری شرکت‌ها</option>');
             }
         });
-
-        if (isEdit && productId) {
-            $.ajax({
-                url: '/api/salesman/products/' + productId,
-                type: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    productData = response;
-                    setProductFormData(productData);
-                },
-                error: function (xhr) {
-                    new PNotify({
-                        title: 'خطا در بارگذاری اطلاعات محصول',
-                        text: xhr.responseText,
-                        type: 'error',
-                        styling: 'bootstrap3'
-                    });
-                }
-            });
-        }
 
         $('#product-form').on('submit', function (e) {
             e.preventDefault();
