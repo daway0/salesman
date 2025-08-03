@@ -326,7 +326,7 @@
         $('#first-name').val(data.first_name || '');
         $('#last-name').val(data.last_name || '');
         $('#nsid').val(data.nsid || '');
-        $('#birthdate').attr('value', data.birthdate || '');
+        $('#birthdate').attr('value', data.birthdate || '').attr('date-iso', data.birthdate || '');
         $('#email').val(data.email || '');
     }
     $(document).ready(function () {
