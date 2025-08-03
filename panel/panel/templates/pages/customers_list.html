@@ -10,7 +10,7 @@
             </div>
             {% if permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
                 <div class="title_right">
-                    <a href="/customers/create/" class="btn btn-primary pull-left">ایجاد مشترک جدید</a>
+                    <a href="/customers/create/" class="btn btn-primary pull-left"><i class="fa fa-plus"></i> ایجاد مشترک جدید</a>
                 </div>
             {% endif %}
         </div>
@@ -82,7 +82,7 @@
                         '<td>' + (customer.is_active ? '<span class="label label-success">فعال</span>' : '<span class="label label-danger">غیر فعال</span>') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_CUSTOMERS" or permissions|has_permission:"DELETE_ALL_CUSTOMERS" %}
                             '<td>' +
-                            '<a href="/customers/edit/' + customer.user_id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/customers/edit/' + customer.user_id + '/" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> ویرایش</a>' +
                             '<a href="/sales-ledger/create/?cid=' + customer.id + '" class="btn btn-success btn-xs"><i class="fa fa-shopping-cart"></i> فاکتور</a>' +
                             '</td>' +
                         {% endif %}

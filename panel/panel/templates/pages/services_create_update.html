@@ -87,20 +87,28 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_SERVICES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد سرویس
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_SERVICES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-save"></i>
                                             ویرایش سرویس
                                         </button>
                                     {% endif %}
 
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"DELETE_ALL_SERVICES" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteService()">حذف سرویس</button>
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteService()">
+                                                <i class="fa fa-trash"></i>
+                                                حذف سرویس
+                                            </button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_SERVICES" %}
-                                            <a class="btn btn-primary pull-left" href="/services/create/">ایجاد سرویس جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/services/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد سرویس جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                 </div>

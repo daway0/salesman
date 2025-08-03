@@ -10,7 +10,7 @@
             </div>
             {% if permissions|has_permission:"CREATE_ALL_USERS" %}
                 <div class="title_right">
-                    <a href="/users/create/" class="btn btn-primary pull-left">ایجاد کاربر جدید</a>
+                    <a href="/users/create/" class="btn btn-primary pull-left"><i class="fa fa-plus"></i> ایجاد کاربر جدید</a>
                 </div>
             {% endif %}
         </div>
@@ -80,7 +80,7 @@
                         '<td>' + (user.last_login_at ? new Date(user.last_login_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_USERS" or permissions|has_permission:"DELETE_ALL_USERS" or permissions|has_permission:"ADD_USER_ROLE" or permissions|has_permission:"DELETE_USER_ROLE" or permissions|has_permission:"VIEW_USER_ROLES" or permissions|has_permission:"VIEW_ALL_USERS" %}
                             '<td>' +
-                            '<a href="/users/edit/' + user.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/users/edit/' + user.id + '/" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> ویرایش</a>' +
                             '</td>' +
                         {% endif %}
                         '</tr>';

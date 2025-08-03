@@ -58,20 +58,28 @@
                                     
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_ROLES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد گروه
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_ROLES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-save"></i>
                                             ویرایش گروه
                                         </button>
                                     {% endif %}
                                     
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"DELETE_ALL_ROLES" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteRole()">حذف گروه</button>
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteRole()">
+                                                <i class="fa fa-trash"></i>
+                                                حذف گروه
+                                            </button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_ROLES" %}
-                                            <a class="btn btn-primary pull-left" href="/roles/create/">ایجاد گروه جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/roles/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد گروه جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                     

@@ -10,7 +10,7 @@
             </div>
             {% if permissions|has_permission:"CREATE_INVOICE" %}
             <div class="title_right">
-                <a href="/sales-ledger/create/" class="btn btn-primary pull-left">ایجاد فاکتور فروش جدید</a>
+                <a href="/sales-ledger/create/" class="btn btn-primary pull-left"><i class="fa fa-plus"></i> ایجاد فاکتور فروش جدید</a>
             </div>
             {% endif %}
         </div>
@@ -99,7 +99,7 @@
                         '<td>' + getStatusLabel(ledger.status) + '</td>' +
                         {% if   permissions|has_permission:"VIEW_OWN_INVOICES" or permissions|has_permission:"VIEW_ALL_INVOICES" or permissions|has_permission:"DELETE_OWN_INVOICES" or permissions|has_permission:"DELETE_ALL_INVOICES" or permissions|has_permission:"APPROVE_ALL_INVOICES" or permissions|has_permission:"REJECT_ALL_INVOICES" or permissions|has_permission:"CANCEL_OWN_INVOICES" or permissions|has_permission:"CANCEL_ALL_INVOICES" %}
                             '<td>' +
-                            '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs">مشاهده</a>' +
+                            '<a href="/sales-ledger/edit/' + ledger.id + '/" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i> مشاهده</a>' +
                             '</td>' +
                         {% endif %}
                         '</tr>';

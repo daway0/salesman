@@ -44,19 +44,27 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_COMPANIES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد شرکت
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_COMPANIES" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-save"></i>
                                             ویرایش شرکت
                                         </button>
                                     {% endif %}
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"DELETE_ALL_COMPANIES" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteCompany()">حذف شرکت</button>
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteCompany()">
+                                                <i class="fa fa-trash"></i>
+                                                حذف شرکت
+                                            </button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_COMPANIES" %}
-                                            <a class="btn btn-primary pull-left" href="/companies/create/">ایجاد شرکت جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/companies/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد شرکت جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                 </div>

@@ -10,7 +10,7 @@
             </div>
             {% if permissions|has_permission:"CREATE_ALL_ROLES" %}
                 <div class="title_right">
-                    <a href="/roles/create/" class="btn btn-primary pull-left">ایجاد گروه جدید</a>
+                    <a href="/roles/create/" class="btn btn-primary pull-left"><i class="fa fa-plus"></i> ایجاد گروه جدید</a>
                 </div>
             {% endif %}
         </div>
@@ -72,7 +72,7 @@
                         '<td>' + (role.description || '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_ROLES" or permissions|has_permission:"DELETE_ALL_ROLES" or permissions|has_permission:"VIEW_ALL_ROLES" %}
                             '<td>' +
-                            '<a href="/roles/edit/' + role.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/roles/edit/' + role.id + '/" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> ویرایش</a>' +
                             '</td>' +
                         {% endif %}
                         '</tr>';

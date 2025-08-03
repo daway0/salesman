@@ -73,20 +73,28 @@
                                     
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد محصول
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_PRODUCTS" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-save"></i>
                                             ویرایش محصول
                                         </button>
                                     {% endif %}
                                     
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"DELETE_ALL_PRODUCTS" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteProduct()">حذف محصول</button>
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteProduct()">
+                                                <i class="fa fa-trash"></i>
+                                                حذف محصول
+                                            </button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
-                                            <a class="btn btn-primary pull-left" href="/products/create/">ایجاد محصول جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/products/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد محصول جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                     

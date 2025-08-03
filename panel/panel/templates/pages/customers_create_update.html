@@ -75,15 +75,22 @@
                                     
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد مشترک
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_CUSTOMERS" %}
-                                        <a class="btn btn-primary pull-left" href="/users/edit/{{ user_id }}/">ویرایش مشترک</a>
+                                        <a class="btn btn-primary pull-left" href="/users/edit/{{ user_id }}/">
+                                            <i class="fa fa-save"></i>
+                                            ویرایش مشترک
+                                        </a>
                                     {% endif %}
                                     
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"CREATE_ALL_CUSTOMERS" %}
-                                            <a class="btn btn-primary pull-left" href="/customers/create/">ایجاد مشترک جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/customers/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد مشترک جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                     

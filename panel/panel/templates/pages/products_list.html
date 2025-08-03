@@ -10,7 +10,7 @@
             </div>
             {% if permissions|has_permission:"CREATE_ALL_PRODUCTS" %}
                 <div class="title_right">
-                    <a href="/products/create/" class="btn btn-primary pull-left">ایجاد محصول جدید</a>
+                    <a href="/products/create/" class="btn btn-primary pull-left"><i class="fa fa-plus"></i> ایجاد محصول جدید</a>
                 </div>
             {% endif %}
         </div>
@@ -74,7 +74,7 @@
                         '<td>' + (product.created_at ? new Date(product.created_at).toLocaleString('fa-IR') : '') + '</td>' +
                         {% if permissions|has_permission:"UPDATE_ALL_PRODUCTS" or permissions|has_permission:"DELETE_ALL_PRODUCTS" %}
                             '<td>' +
-                            '<a href="/products/edit/' + product.id + '/" class="btn btn-primary btn-xs">ویرایش</a>' +
+                            '<a href="/products/edit/' + product.id + '/" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> ویرایش</a>' +
                             '</td>' +
                         {% endif %}
                         '</tr>';

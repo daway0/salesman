@@ -122,20 +122,28 @@
                                     
                                     {% if edit == False and permissions|has_permission:"CREATE_ALL_USERS" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
                                             ایجاد کاربر
                                         </button>
                                     {% elif edit == True and permissions|has_permission:"UPDATE_ALL_USERS" %}
                                         <button type="submit" class="btn btn-success">
+                                            <i class="fa fa-save"></i>
                                             ویرایش کاربر
                                         </button>
                                     {% endif %}
                                     
                                     {% if edit == True %}
                                         {% if permissions|has_permission:"DELETE_ALL_USERS" %}
-                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">حذف کاربر</button>
+                                            <button type="button" class="btn btn-danger pull-left" onclick="deleteUser()">
+                                                <i class="fa fa-trash"></i>
+                                                حذف کاربر
+                                            </button>
                                         {% endif %}
                                         {% if permissions|has_permission:"CREATE_ALL_USERS" %}
-                                            <a class="btn btn-primary pull-left" href="/users/create/">ایجاد کاربر جدید</a>
+                                            <a class="btn btn-primary pull-left" href="/users/create/">
+                                                <i class="fa fa-plus"></i>
+                                                ایجاد کاربر جدید
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                     
